@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "valdazpack"
+version = "0.1.0"
+description = "DAZ Package Validator"
+license = "MIT"
+authors = ["Omni Flux <omniflux@omniflux.com>"]
+readme = "README.rst"
+repository = "https://github.com/Omniflux/valdazpack"
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python :: 3 :: Only",
+	"Programming Language :: Python :: 3.11",
+	"Topic :: Utilities"
+]
+
+[tool.poetry.dependencies]
+python = "^3.11.4"
+Pillow = "^10.0.0"
+lxml = "^4.9.3"
+jinja2 = "^3.1.2"
+jsonpath-ng = "^1.5.3"
+jsonschema = {extras = ["format"], version = "^4.18.3"}
+"fs.dimzipfs" = "^0.1.0"
+"fs.wrapcifs" = "^0.1.0"
+
+[tool.poetry.group.dev.dependencies]
+types-lxml = "^2023.2.11"
+types-jsonschema = "^4.17.0.9"
+types-pillow = "^10.0.0.1"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.0"
+pytest-mock = "^3.11.1"
+
+[tool.poetry.scripts]
+valdazpack = {reference = "valdazpack.main", type = "console"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

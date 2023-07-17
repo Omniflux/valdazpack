@@ -1,0 +1,62 @@
+{
+	"file_version" : "0.6.1.0",
+	"asset_info" : {
+		"id" : "/RSL%20Material.duf",
+		"type" : "preset_material",
+		"contributor" : {
+			"author" : "",
+			"email" : "",
+			"website" : ""
+		},
+		"revision" : "1.0",
+		"modified" : "2023-01-01T00:00:00Z"
+	},
+	"image_library" : [
+		{
+			"id" : "Image.png",
+			"name" : "Image.png",
+			"map_gamma" : 0,
+			"map" : [
+				{
+					"url" : "/C%3A/Image.png",
+					"label" : "Image.png"
+				}
+			]
+		}
+	],
+	"material_library" : [
+		{
+			"id" : "Default",
+			"type" : "Plastic",
+			"diffuse" : {
+				"channel" : {
+					"id" : "diffuse",
+					"type" : "color",
+					"name" : "Diffuse Color",
+					"label" : "Diffuse Color",
+					"value" : [ 1, 1, 1 ],
+					"min" : 0,
+					"max" : 1,
+					"clamped" : true,
+					"default_image_gamma" : 0,
+					"mappable" : true
+				},
+				"group" : "/Diffuse"
+			}
+		}
+	],
+	"scene" : {
+		"materials" : [
+			{
+				"url" : "#Default",
+				"groups" : [ "Default" ]
+			}
+		],
+		"animations" : [
+			{
+				"url" : "name://@selection#materials/Default:?diffuse/image_file",
+				"keys" : [ [ 0, "/C%3A/Image.png" ] ]
+			}
+		]
+	}
+}

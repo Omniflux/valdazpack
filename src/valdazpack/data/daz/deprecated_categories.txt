@@ -1,0 +1,18 @@
+# http://docs.daz3d.com/doku.php/public/dson_spec/format_description/metadata/categories/start
+
+Default/Animations/By Function/Expression
+Default/Environments/Architecture/Complete
+Default/Poses/By Function/Expression
+Default/Poses/By Function/Romance
+Default/Shaders/Fabric
+Default/Shaders/Glass
+Default/Shaders/Hair
+Default/Shaders/Leather
+Default/Shaders/Lights
+Default/Shaders/Liquids
+Default/Shaders/Metal
+Default/Shaders/Other
+Default/Shaders/Skin
+Default/Shaders/Stone
+Default/Shaders/Utilities
+Default/Shaders/Wood

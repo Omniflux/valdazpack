@@ -1,0 +1,52 @@
+<DAZInstallManifest VERSION="0.1">
+ <GlobalID VALUE="b29b5e8e-34d1-4ebe-a7c2-9859117bb0e1"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/content"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/3_0"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/auto_adapted"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/data"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/ReadMe.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/Vendor/Product/Item/geometry.dso"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/Vendor/Product/Item/file.duf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/Vendor/Product/Plane 2/pPlane(11cg000)1_zpos.dsf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/Vendor/Product/Plane 2/Morphs/Vendor/Base/Plane.dsf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/Vendor/Product/Plane 2/UV Sets/Vendor/Base/default.dsf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/Vendor/Product/ReadMe.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/data/Vendor/ReadMe.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/BadLink.djl"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/GoodLink.djl"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/GoodLink.png"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Invalid.djl"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Invalid.png"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/MDL Shader.duf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/MDL Shader 2.duf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Plane.duf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Plane 2.duf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/RSL Material.duf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/ReadMe.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/ReadMe's/Valid Test Product.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/ReadMe's/License.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Images"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Geometries/file.obz"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Geometries/file.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Geometries/Geometries"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Libraries/file.crz"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Libraries/Libraries"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/ReadMe.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Runtime"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/LOCAL_USER_Valid_Test_Product.dsa"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/LOCAL_USER_Valid_Test_Product.dsx"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/LOCAL_USER_Valid_Test_Product.jpg"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/LOCAL_USER_Valid_Test_Product.png"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/Subdirectory"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/Thumbs.db"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Templates/Image.bmp"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Templates/ReadMe.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Templates/Templates"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Image.jpg"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Image.bmp"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Textures"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/DAZ 3D/ReadMe.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/WebLinks/Link.pzs"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/WebLinks/Link.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Scene.daz"/>
+</DAZInstallManifest>

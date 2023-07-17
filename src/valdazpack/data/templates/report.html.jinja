@@ -1,0 +1,156 @@
+{% macro structuredprint(item) %}
+{%- if item is mapping %}
+	{%- for key, value in item|dictsort %}
+	<details>
+		<summary>{{ key }}</summary>
+		{{- structuredprint(value) }}
+	</details>
+	{%- endfor %}
+{%- elif item is iterable and not (item is string or item.__class__.__name__ == 'tuple') -%}
+<ul>
+	{%- for value in item|sort %}
+	<li>{{- structuredprint(value) -}}</li>
+	{%- endfor %}
+</ul>
+{%- elif item.__class__.__name__ == 'tuple' %}
+	{%- for value in item -%}
+	<span class="tuple-val">{{ value }}</span>
+	{%- endfor -%}
+{%- else %}
+	{{- item -}}
+{%- endif -%}
+{% endmacro -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Validation Report for {{ data.product_paths|map('string')|join(', ') }}</title>
+	<style>
+{% include 'report.css' %}
+	</style>
+	<script>
+{% include 'report.js' %}
+	</script>
+</head>
+<body>
+	<h1>Validation Report</h1>
+	{%- if data.daz or data.daz_original or data.poser or data.dson_schema %}
+	<section id="validation-notes">
+		{%- if data.daz %}<div>Validating as if this is a product distributed by Daz Productions, Inc</div>{% endif %}
+		{%- if data.daz_original %}<div>Validating as if this is a product produced by Daz Productions, Inc</div>{% endif %}
+		{%- if data.poser %}<div>Validating with additional Poser library rules (experimental)</div>{% endif %}
+		{%- if data.dson_schema %}<div>Validating DSON schema (experimental)</div>{% endif %}
+	</section>
+	{%- endif %}
+	<section id="validation-targets">
+		<h2>Validation Target{% if data.product_paths|count > 1 %}s{% endif %}</h2>
+		<table>
+			<tbody>
+				{%- for path in data.product_paths|sort %}
+				<tr><th></th><td>{{ path|string }}</td></tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+	</section>
+	{%- if data.packages %}
+	<section id="packages">
+		<h2>Package{% if data.packages|count > 1 %}s{% endif %}</h2>
+		{%- for package in data.packages|sort %}
+		<table>
+			<tbody>
+				<tr><th>Package Type</th><td>{{ package.type.name }}</td></tr>
+				<tr><th>Package Prefix</th><td>{{ package.parsed['prefix'] if package.parsed else none }}</td></tr>
+				<tr><th>Package SKU</th><td>{{ package.parsed['sku'] if package.parsed else none }}</td></tr>
+				<tr><th>Package ID</th><td>{{ package.parsed['id'] if package.parsed else none }}</td></tr>
+				<tr><th>Package Name</th><td>{{ package.parsed['name'] if package.parsed else none }}</td></tr>
+			</tbody>
+			<tbody>
+				<tr><th>Product Name</th><td>{{ package.product_name }}</td></tr>
+				<tr><th>Product Store Index</th><td>{{ package.product_store_idx }}</td></tr>
+				<tr><th>Product File GUID</th><td>{{ package.product_file_guid }}</td></tr>
+			</tbody>
+		</table>
+		{%- endfor %}
+	</section>
+	{%- endif %}
+	<section id="metadata">
+		<h2>Metadata</h2>
+		<details id="metadata-products">
+			<summary>Products</summary>
+			{{ structuredprint(data.metadata.products or none) }}
+		</details>
+		<details id="metadata-artists">
+			<summary>Artists</summary>
+			{{ structuredprint(data.metadata.artists or none) }}
+		</details>
+		<details id="metadata-stores">
+			<summary>Stores</summary>
+			{{ structuredprint(data.metadata.stores or none) }}
+		</details>
+	</section>
+	<section id="contributors">
+		<h2>Contributors</h2>
+		{%- if data.contributors %}
+		<details id="contributors-list">
+			<summary>Contributors</summary>
+			{%- for contributor, details in data.contributors|dictsort %}
+			<details>
+				<summary>{{ contributor }}</summary>
+				{%- for label, detail in details|dictsort %}
+				<details class="contributor-{{ label }}">
+					<summary>{{ label }}</summary>
+					<ul>
+						{%- for item in detail|sort %}
+						{%- if item %}
+						<li>{{ item|urlize(rel='external', target='_blank') }}</a></li>
+						{%- else %}
+						<li>{{ none }}</li>
+						{%- endif %}
+						{%- endfor %}
+					</ul>
+				</details>
+				{%- endfor %}
+			</details>
+			{%- endfor %}
+		</details>
+		{%- else %}{{ none }}{% endif %}
+	</section>
+	<section id="filesystem-information">
+		<h2>Filesystem Information</h2>
+		<details id="vendorDirectories">
+			<summary>Vendor Directories</summary>
+			{%- if data.vendor_paths %}{{ structuredprint(data.vendor_paths) }}{% else %}{{ none }}{% endif -%}
+		</details>
+		<details id="dependencies">
+			<summary>Dependencies</summary>
+			{%- if data.dependency_files %}{{ structuredprint(data.dependency_files) }}{% else %}{{ none }}{% endif %}
+		</details>
+	</section>
+	<section id="issues">
+		<h2>Issues</h2>
+		{%- if data.issues.package or data.issues.product %}
+			{%- for issue in (data.issues.package + data.issues.product)|sort(attribute='type', reverse=true) %}
+			<details class="issue-{{ issue.type|lower }}" data-issue="{{ issue.__class__.__name__ }}">
+				<summary>{{ issue.title }}</summary>
+				<div class="issue-description">{{ issue.description }}</div>
+				<div class="issue-reference">
+					<ul>
+						{%- for reference in issue.reference if issue.reference is not string %}
+						<li>{{ reference|urlize(rel='external', target='_blank') }}</a></li>
+						{%- else %}
+						{%- if issue.reference %}
+						<li>{{ issue.reference|urlize(rel='external', target='_blank') }}</a></li>
+						{%- else %}
+						<li>No reference available</li>
+						{%- endif %}
+						{%- endfor %}
+					</ul>
+				</div>
+				<div class="issue-detail">
+				{{ structuredprint(issue.detail) }}
+				</div>
+			</details>
+			{%- endfor %}
+		{%- else %}{{ none }}{% endif %}
+	</section>
+</body>
+</html>

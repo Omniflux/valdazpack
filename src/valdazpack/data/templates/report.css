@@ -1,0 +1,141 @@
+@font-face {
+	font-family: "color-emoji";
+	src: local("Apple Color Emoji"),
+		 local("Segoe UI Emoji"), 
+		 local("Segoe UI Symbol"),
+		 local("Noto Color Emoji");
+}
+
+table {
+	border: 1px solid #aaa;
+	border-collapse: separate;
+	border-left-width: 0;
+	border-radius: 1rem;
+	border-spacing: 0;
+}
+
+td, th {
+	border-left: 1px solid #aaa;
+	border-top: 1px solid #aaa;
+	padding: 0.5rem;
+	text-align: left;
+}
+
+th { background-color: #ddd }
+
+tbody:first-of-type tr:first-child td,
+tbody:first-of-type tr:first-child th {
+	border-top-width: 0;
+}
+
+tbody:first-of-type tr:first-child td:first-child,
+tbody:first-of-type tr:first-child th:first-child {
+	border-top-left-radius: 1rem;
+}
+
+tbody:last-of-type tr:last-child td:first-child,
+tbody:last-of-type tr:last-child th:first-child {
+	border-bottom-left-radius: 1rem;
+}
+
+caption {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin: 1rem 0;
+	text-align: left;
+}
+
+details {
+	border: 1px solid #aaa;
+	border-radius: 1rem;
+	padding: 0.5rem;
+}
+
+details[open] {
+	padding: 0.5rem;
+	margin: 0.5rem;
+}
+
+summary {
+	background-color: #ddd;
+	border-radius: 1rem;
+	cursor: pointer;
+	font-weight: bold;
+	margin: -0.5rem -0.5rem;
+	padding: 0.5rem 1rem 0.5rem;
+}
+
+details[open] > summary {
+	border-bottom: 1px solid #aaa;
+	border-radius: 1rem 1rem 0 0;
+	margin-bottom: 0.5rem;
+}
+
+details > summary::before {
+	font-family: "color-emoji";
+	padding-right: 0.5rem;
+}
+
+#validation-notes > div {
+	background-color: #ddd;
+	border: 1px solid #aaa;
+	border-radius: 1rem;
+	font-weight: bold;
+	margin-bottom: 0.25rem;
+	padding: 0.25rem 0.5rem;
+	width: fit-content;
+}
+
+#packages table { float: left; }
+#packages table:not(:last-of-type) { margin: 0 1rem 1rem 0; }
+#packages::after {
+	clear: both;
+	content: '';
+	display: block;
+}
+#packages tbody:not(:last-of-type) tr:last-child td,
+#packages tbody:not(:last-of-type) tr:last-child th { border-bottom-style: solid; }
+
+#metadata > details {
+	min-width: 50%;
+	width: fit-content;
+}
+
+details.issue-notice > summary::before { content: '\2139\FE0F'; }
+details.issue-warning > summary::before { content: '\26A0\FE0F'; }
+
+.issue-detail > details[open] { margin: 0.5em; }
+
+.issue-detail:has(> ul) { border-top: 1px solid #aaa; }
+
+.issue-reference ul {
+	background-color: #eee;
+	border: 1px solid #aaa;
+	border-radius: 1rem;
+	padding: 0.5rem 1.5rem;
+}
+
+#contributors li,
+.issue-reference li { padding-left: 0.5rem; }
+
+#contributors li:has(a)::marker,
+.issue-reference li:has(a)::marker { content: '\1F5D7'; }
+
+#contributors li:has(a[href^="mailto:"])::marker { content: '\1F4E7'; }
+
+#contributors li:not(:has(a))::marker,
+.issue-reference li:not(:has(a))::marker { content: '\1F6C7'; }
+
+.tuple-val:first-of-type:has(+ .tuple-val)::after { content: ': '; }
+.tuple-val:has(+ .tuple-val) { padding-right: 1rem; }
+.tuple-val:last-of-type { font-weight: bold; }
+
+.issue-warning[data-issue='UndersizedMetadataIconFilesIssue'] .tuple-val:first-of-type { padding-right: 0; }
+.issue-warning[data-issue='UndersizedMetadataIconFilesIssue'] .tuple-val:first-of-type::after { content: 'x'; }
+.issue-warning[data-issue='UndersizedMetadataIconFilesIssue'] .tuple-val:last-of-type { font-weight: normal; }
+
+.issue-warning[data-issue='UncommonDirectoryInRootOfContentDirectoryIssue'] details:not(:has(li)) > ul::before { content: 'No suggestions available'; }
+
+.vendor,
+.prefix,
+.extension { font-weight: bold; }

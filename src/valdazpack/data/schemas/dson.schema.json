@@ -1,0 +1,1755 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "DSON",
+	"description": "Daz Scene Object Notation",
+	"$comment": "DSON file_version 0.6.0.0",
+	"$defs": {
+		"slash_delimited_path": {
+			"type": "string",
+			"pattern": "^$|^/."
+		},
+		"braced_uuid": {
+			"type": "string",
+			"pattern": "^\\{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\}$"
+		},
+		"axis": {
+			"type": "string",
+			"enum": [ "X", "Y", "Z" ]
+		},
+		"rotation_order": {
+			"type": "string",
+			"enum": [ "XYZ", "YZX", "ZYX", "ZXY", "XZY", "YXZ" ]
+		},
+		"float2": {
+			"type": "array",
+			"items": { "type": "number" },
+			"minItems": 2,
+			"maxItems": 2
+		},
+		"float3": {
+			"type": "array",
+			"items": { "type": "number" },
+			"minItems": 3,
+			"maxItems": 3
+		},
+		"string_array": {
+			"type": "object",
+			"properties": {
+				"count": { "type": "integer" },
+				"values": {
+					"type": "array",
+					"items": { "type": "string" }
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "count", "values" ]
+		},
+		"unique_string_array": {
+			"type": "object",
+			"properties": {
+				"count": { "type": "integer" },
+				"values": {
+					"type": "array",
+					"items": { "type": "string" },
+					"uniqueItems": true
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "count", "values" ]
+		},
+		"int_array": {
+			"type": "object",
+			"properties": {
+				"count": { "type": "integer" },
+				"values": {
+					"type": "array",
+					"items": { "type": "integer" }
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "count", "values" ]
+		},
+		"int2_array": {
+			"type": "object",
+			"properties": {
+				"count": { "type": "integer" },
+				"values": {
+					"type": "array",
+					"items": {
+						"type": "array",
+						"items": { "type": "integer" },
+						"minItems": 2,
+						"maxItems": 2
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "count", "values" ]
+		},
+		"float2_array": {
+			"type": "object",
+			"properties": {
+				"count": { "type": "integer" },
+				"values": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/float2" }
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "count", "values" ]
+		},
+		"float3_array": {
+			"type": "object",
+			"properties": {
+				"count": { "type": "integer" },
+				"values": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/float3" }
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "count", "values" ]
+		},
+		"float_indexed_array": {
+			"type": "object",
+			"properties": {
+				"count": { "type": "integer" },
+				"values": {
+					"type": "array",
+					"items": {
+						"type": "array",
+						"prefixItems": [
+							{ "type": "integer" },
+							{ "type": "number" }
+						],
+						"minItems": 2,
+						"maxItems": 2,
+						"items": false
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "count", "values" ]
+		},
+		"float3_indexed_array": {
+			"oneOf": [
+				{
+					"type": "object",
+					"properties": {
+						"count": { "type": "integer" },
+						"values": {
+							"type": "array",
+							"items": {
+								"type": "array",
+								"prefixItems": [
+									{ "type": "integer" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"minItems": 4,
+								"maxItems": 4,
+								"items": false
+							}
+						}
+					},
+					"additionalProperties": false,
+					"required": [ "count", "values" ]
+				},
+				{
+					"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+					"type": "object",
+					"properties": {
+						"count": { "const": -1 }
+					},
+					"additionalProperties": false,
+					"required": [ "count" ]
+				}
+			]
+		},
+		"channel_base": {
+			"type": "object",
+			"properties": {
+				"id": { "type": "string" },
+				"type": {
+					"type": "string",
+					"enum": [ "alias", "bool", "color", "enum", "float", "image", "int", "string", "float_color" ]
+				},
+				"name": { "type": "string" },
+				"label": { "type": "string" },
+				"visible": { "type": "boolean" },
+				"locked": { "type": "boolean" },
+				"auto_follow": { "type": "boolean" },
+				"legacy_link": {
+					"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+					"type": "string",
+					"format": "uri"
+				}
+			},
+			"required": [ "id", "type", "name" ]
+		},
+		"channel_alias": {
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "alias" },
+						"target_channel": {
+							"type": "string",
+							"format": "uri"
+						}
+					},
+					"required": [ "target_channel" ]
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel_bool": {
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "bool" },
+						"min": { "type": "integer" },
+						"max": { "type": "integer" },
+						"clamped": { "type": "boolean" },
+						"step_size": { "type": "integer" },
+						"value": { "type": "boolean" },
+						"current_value": { "type": "boolean" },
+						"mappable": { "type": "boolean" }
+					}
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel_color": {
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "color" },
+						"value": { "$ref": "#/$defs/float3" },
+						"current_value": { "$ref": "#/$defs/float3" },
+						"mappable": { "type": "boolean" }
+					}
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel_enum": {
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "enum" },
+						"value": { "type": "integer" },
+						"enum_values": { "$ref": "#/$defs/string_array" }
+					}
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel_float": {
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "float" },
+						"value": { "type": "number" },
+						"current_value": { "type": "number" },
+						"min": { "type": "number" },
+						"max": { "type": "number" },
+						"clamped": { "type": "boolean" },
+						"display_as_percent": { "type": "boolean" },
+						"step_size": { "type": "number" },
+						"mappable": { "type": "boolean" }
+					}
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel_image": {
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "image" },
+						"value": { "type": "string" },
+						"current_value": { "type": "string" }
+					}
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel_int": {
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "int" },
+						"value": { "type": "integer" },
+						"current_value": { "type": "integer" },
+						"min": { "type": "integer" },
+						"max": { "type": "integer" },
+						"clamped": { "type": "boolean" },
+						"step_size": { "type": "integer" },
+						"mappable": { "type": "boolean" }
+					}
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel_string": {
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "string" },
+						"value": { "type": "string" },
+						"current_value": { "type": "string" }
+					}
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel_float_color": {
+			"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+			"allOf": [
+				{ "$ref": "#/$defs/channel_base" },
+				{
+					"properties": {
+						"type": { "const": "float_color" },
+						"value": { "$ref": "#/$defs/float3" },
+						"current_value": { "$ref": "#/$defs/float3" },
+						"min": { "type": "number" },
+						"max": { "type": "number" },
+						"clamped": { "type": "boolean" },
+						"step_size": { "type": "number" },
+						"default_image_gamma": { "type": "number" },
+						"mappable": { "type": "boolean" },
+						"color_blend_mode": {
+							"type": "string",
+							"enum": [ "hsl", "hsv", "rgb" ]
+						}
+					}
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"channel": {
+			"oneOf": [
+				{ "$ref": "#/$defs/channel_alias" },
+				{ "$ref": "#/$defs/channel_bool" },
+				{ "$ref": "#/$defs/channel_color" },
+				{ "$ref": "#/$defs/channel_enum" },
+				{ "$ref": "#/$defs/channel_float" },
+				{ "$ref": "#/$defs/channel_image" },
+				{ "$ref": "#/$defs/channel_int" },
+				{ "$ref": "#/$defs/channel_string" },
+				{ "$ref": "#/$defs/channel_float_color" }
+			],
+			"unevaluatedProperties": false
+		},
+		"presentation": {
+			"type": "object",
+			"properties": {
+				"type": { "type": "string" },
+				"label": { "type": "string" },
+				"description": { "type": "string" },
+				"icon_large": { "$ref": "#/$defs/slash_delimited_path" },
+				"icon_small": { "$ref": "#/$defs/slash_delimited_path" },
+				"colors": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/float3" },
+					"minItems": 2,
+					"maxItems": 2
+				},
+				"preferred_base": {
+					"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+					"$ref": "#/$defs/slash_delimited_path"
+				},
+				"auto_fit_base": {
+					"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+					"$ref": "#/$defs/slash_delimited_path"
+				},
+				"extended_bases": {
+					"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+					"type": "array",
+					"items": { "$ref": "#/$defs/slash_delimited_path" }
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "type", "label", "description", "icon_large", "colors" ]
+		},
+		"operation": {
+			"$comment": "SPEC-DIFFERENCE: ['spline_linear', 'spline_tcb'] Not listed in spec",
+			"type": "object",
+			"oneOf": [
+				{
+					"properties": {
+						"op": {
+							"type": "string",
+							"enum": [ "add", "sub", "mult", "div", "neg", "spline_linear", "spline_tcb" ]
+						}
+					}
+				},
+				{
+					"properties": {
+						"op": { "const": "push" },
+						"val": {
+							"oneOf": [
+								{ "type": "number" },
+								{
+									"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+									"type": "array",
+									"items": { "type": "number" },
+									"minItems": 2,
+									"maxItems": 2
+								},
+								{
+									"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+									"type": "array",
+									"items": { "type": "number" },
+									"minItems": 5,
+									"maxItems": 5
+								}
+							]
+						},
+						"url": {
+							"type": "string",
+							"format": "uri"
+						}
+					},
+					"oneOf": [
+						{
+							"required": [ "url" ],
+							"not": { "required": [ "val" ] }
+						},
+						{
+							"required": [ "val" ],
+							"not": { "required": [ "url" ] }
+						}
+					]
+				}
+			],
+			"unevaluatedProperties": false,
+			"required": [ "op" ]
+		},
+		"formula": {
+			"type": "object",
+			"properties": {
+				"output": { "type": "string" },
+				"operations": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/operation" }
+				},
+				"stage": {
+					"$comment": "SPEC-DIFFERENCE: Spec says 'multiply' but actual usage appears to be 'mult'",
+					"type": "string",
+					"enum": [ "mult", "sum" ]
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "output", "operations" ]
+		},
+		"light_directional": {
+			"type": "object",
+			"properties": {
+				"intensity": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 1
+				},
+				"shadow_type": {
+					"type": "string",
+					"enum": [ "none", "shadow_map", "raytraced" ]
+				},
+				"shadow_softness": { "type": "number" },
+				"shadow_bias": { "type": "number" }
+			},
+			"unevaluatedProperties": false
+		},
+		"light_point": {
+			"allOf": [
+				{ "$ref": "#/$defs/light_directional" },
+				{
+					"constant_attenuation": { "type": "number" },
+					"linear_attenuation": { "type": "number" },
+					"quadratic_attenuation": { "type": "number" }
+				}
+			],
+			"unevaluatedProperties": false
+		},
+		"light_spot": {
+			"allOf": [
+				{ "$ref": "#/$defs/light_point" },
+				{
+					"properties": {
+						"falloff_angle": { "type": "number" },
+						"falloff_exponent": { "type": "number" }
+					}
+				}
+
+			],
+			"unevaluatedProperties": false
+		},
+		"bulge_binding": {
+			"type": "object",
+			"properties": {
+				"bulges": {
+					"type": "array",
+					"items": {
+						"$ref": "#/$defs/channel_float",
+						"minItems": 4,
+						"maxItems": 4
+					}
+				},
+				"left_map": { "$ref": "#/$defs/float_indexed_array" },
+				"right_map": { "$ref": "#/$defs/float_indexed_array" }
+			},
+			"additionalProperties": false,
+			"$comment": "SPEC-DIFFERENCE: Spec says 'left_map' AND 'right_map' are both required but some content has neither",
+			"required": [ "bulges" ]
+		},
+		"material_channel": {
+			"type": "object",
+			"properties": {
+				"channel": { "$ref": "#/$defs/channel" },
+				"group": { "$ref": "#/$defs/slash_delimited_path" },
+				"color": { "$ref": "#/$defs/float3" },
+				"strength": { "type": "number" },
+				"image": {
+					"type": "string",
+					"format": "uri"
+					}
+			},
+			"dependentSchemas": {
+				"image": {
+					"oneOf": [
+						{ "required": [ "color" ] },
+						{ "required": [ "strength" ] }
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"daz_brick": {
+			"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+			"type": "object",
+			"properties": {
+				"type": { "const": "studio/material/daz_brick" },
+				"brick_settings": {
+					"type": "object",
+					"properties": {
+						"BrickSetup": {
+							"type": "object",
+							"properties": {
+								"type": { "const": "settings" },
+								"value": {
+									"type": "object",
+									"properties": {
+										"Bricks": {
+											"type": "object",
+											"properties": {
+												"type": { "const": "settings" },
+												"value": {
+													"type": "object",
+													"patternProperties": {
+														".+": {
+															"type": "object",
+															"properties": {
+																"type": { "const": "settings" },
+																"value": {
+																	"type": "object",
+																	"properties": {
+																		"DAZStudioClassName": {
+																			"type": "string",
+																			"pattern": "^Dz.+"
+																		},
+																		"Attributes": {
+																			"type": "object",
+																			"properties": {
+																				"type": { "const": "settings" },
+																				"value": {
+																					"$comment": "TODO",
+																					"type": "object",
+																					"properties": {
+																						"BrickVersion": { "type": "number" }
+																					}
+																				}
+																			},
+																			"additionalProperties": false,
+																			"required": [ "type", "value" ]
+																		},
+																		"Parameters": {
+																			"type": "object",
+																			"properties": {
+																				"type": { "const": "settings" },
+																				"value": {
+																					"type": "object",
+																					"patternProperties": {
+																						".+": {
+																							"type": "object",
+																							"properties": {
+																								"type": { "const": "settings" },
+																								"value": {
+																									"$comment": "TODO",
+																									"type": "object",
+																									"properties": {
+																										"Label": { "type": "string" }
+																									},
+																									"required": [ "Label" ]
+																								}
+																							},
+																							"additionalProperties": false,
+																							"required": [ "type", "value" ]
+																						}
+																					},
+																					"additionalProperties": false
+																				}
+																			},
+																			"additionalProperties": false,
+																			"required": [ "type", "value" ]
+																		}
+																	},
+																	"additionalProperties": false,
+																	"required": [ "DAZStudioClassName", "Attributes", "Parameters" ]
+																}
+															},
+															"additionalProperties": false,
+															"required": [ "type", "value" ]
+														}
+													},
+													"additionalProperties": false
+												}
+											},
+											"additionalProperties": false,
+											"required": [ "type", "value" ]
+										},
+										"Connections": {
+											"type": "object",
+											"properties": {
+												"type": { "const": "settings" },
+												"value": {
+													"type": "object",
+													"patternProperties": {
+														"^Connection_\\d+$": {
+															"type": "object",
+															"properties": {
+																"type": { "const": "settings" },
+																"value": {
+																	"type": "object",
+																	"properties": {
+																		"SourceBrick": { "type": "string" },
+																		"TargetBrick": { "type": "string" },
+																		"SourceParam": { "type": "string" },
+																		"TargetParam": { "type": "string" }
+																	},
+																	"additionalProperties": false,
+																	"required": [ "SourceBrick", "TargetBrick", "SourceParam", "TargetParam" ]
+																}
+															},
+															"additionalProperties": false,
+															"required": [ "type", "value" ]
+														}
+													},
+													"additionalProperties": false
+												}
+											},
+											"additionalProperties": false
+										},
+										"BrickUserName": { "type": "string" },
+										"Identifier": { "$ref": "#/$defs/braced_uuid" }
+									},
+									"additionalProperties": false,
+									"required": [ "Bricks", "Connections", "BrickUserName", "Identifier" ]
+								}
+							},
+							"additionalProperties": false,
+							"required": [ "type", "value" ]
+						}
+					},
+					"additionalProperties": false,
+					"required": [ "BrickSetup" ]
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "type", "brick_settings" ]
+		}
+	},
+	"type": "object",
+	"properties": {
+		"file_version": {
+			"type": "string",
+			"pattern": "^\\d+\\.\\d+\\.\\d+\\.\\d+$"
+		},
+		"asset_info": {
+			"type": "object",
+			"properties": {
+				"id": { "type": "string" },
+				"type": { "type": "string" },
+				"contributor": {
+					"type": "object",
+					"properties": {
+						"author": { "type": "string" },
+						"email": {
+							"anyOf": [
+								{
+									"type": "string",
+									"format": "email"
+								},
+								{
+									"type": "string",
+									"maxLength": 0
+								}
+							]
+						},
+						"website": {
+							"anyOf": [
+								{
+									"type": "string",
+									"format": "uri"
+								},
+								{
+									"type": "string",
+									"maxLength": 0
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [ "author" ]
+				},
+				"revision": {
+					"type": "string",
+					"pattern": "^\\d+\\.\\d+$"
+					},
+				"modified": {
+					"type": "string",
+					"format": "date-time"
+				}
+			},
+			"additionalProperties": false,
+			"required": [ "id", "contributor", "revision" ]
+		},
+		"geometry_library": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "string" },
+					"name": { "type": "string" },
+					"label": { "type": "string" },
+					"type": {
+						"type": "string",
+						"enum": [ "polygon_mesh", "subdivision_surface" ]
+					},
+					"source": {
+						"type": "string",
+						"format": "uri"
+					},
+					"vertices": { "$ref": "#/$defs/float3_array" },
+					"polygon_groups": { "$ref": "#/$defs/unique_string_array" },
+					"polygon_material_groups": { "$ref": "#/$defs/unique_string_array" },
+					"polylist": {
+						"type": "object",
+						"properties": {
+							"count": { "type": "integer" },
+							"values": {
+								"type": "array",
+								"items": {
+									"type": "array",
+									"items": {
+										"type": "integer",
+										"minItems": 5,
+										"maxItems": 6
+									}
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "count", "values" ]
+					},
+					"default_uv_set": {
+						"type": "string",
+						"format": "uri-reference"
+					},
+					"root_region": {
+						"type": "object",
+						"properties": {
+							"id": { "type": "string" },
+							"label": { "type": "string" },
+							"display_hint": {
+								"type": "string",
+								"enum": [ "cards_on", "cards_off" ]
+							},
+							"map": { "$ref": "#/$defs/int_array" },
+							"children": {
+								"type": "array",
+								"items": { "$ref": "#/properties/geometry_library/items/properties/root_region" }
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "id" ],
+						"$comment": "SPEC-DIFFERENCE: Spec says 'map' and 'children' are mutually exclusive, but some content has both or neither"
+					},
+					"graft": {
+						"type": "object",
+						"$comment": "SPEC-DIFFERENCE: Spec says these properties are required, but some items have an empty section",
+						"oneOf": [
+							{
+								"properties": {
+									"vertex_count": { "type": "integer" },
+									"poly_count": { "type": "integer" },
+									"vertex_pairs": { "$ref": "#/$defs/int2_array" },
+									"hidden_polys": { "$ref": "#/$defs/int_array" }
+								},
+								"additionalProperties": false,
+								"required": [ "vertex_count", "poly_count", "vertex_pairs", "hidden_polys" ]
+							},
+							{
+								"properties": { },
+								"additionalProperties": false
+							}
+						]
+					},
+					"rigidity": {
+						"type": "object",
+						"properties": {
+							"weights": { "$ref": "#/$defs/float_indexed_array" },
+							"groups": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": { "type": "string" },
+										"rotation_mode": {
+											"type": "string",
+											"enum": [ "none", "full", "primary", "secondary" ]
+										},
+										"scale_modes": {
+											"type": "array",
+											"items": {
+												"type": "string",
+												"enum": [ "none", "primary", "secondary", "tertiary" ]
+											},
+											"minItems": 3,
+											"maxItems": 3
+										},
+										"reference_vertices": { "$ref": "#/$defs/int_array" },
+										"mask_vertices": { "$ref": "#/$defs/int_array" },
+										"reference": {
+											"type": "string",
+											"format": "uri"
+										},
+										"transform_nodes": {
+											"type": "array",
+											"items": {
+												"type": "string",
+												"format": "uri"
+											}
+										},
+										"type_filters": {
+											"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+											"type": "array",
+											"items": { "type": "string" }
+										},
+										"use_tranform_bones_for_scale": {
+											"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+											"type": "boolean"
+										}
+									},
+									"additionalProperties": false,
+									"required": [ "id", "scale_modes" ]
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "groups" ]
+					},
+					"n-gonlist": {
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"$ref": "#/$defs/int2_array"
+					},
+					"polyline_list": {
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"type": "object",
+						"properties": {
+							"count": { "type": "integer" },
+							"segment_count": { "type": "integer" },
+							"values": {
+								"type": "array",
+								"items": {
+									"type": "array",
+									"items": {
+										"type": "integer",
+										"minItems": 4,
+										"maxItems": 4
+									}
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "count", "segment_count", "values" ]
+					},
+					"legacy_source_info": {
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"type": "object",
+						"properties": {
+							"location": {
+								"type": "string",
+								"format": "uri"
+							},
+							"settings": {
+								"type": "object",
+								"properties": {
+									"DefaultMaterialName": { "type": "string" },
+									"IncludeF": { "type": "boolean" },
+									"IncludeG": { "type": "boolean" },
+									"IncludeL": { "type": "boolean" },
+									"IncludeVT": { "type": "boolean" },
+									"IncludeUsemtl": { "type": "boolean" },
+									"IncludeMtllib": { "type": "boolean" },
+									"LatAxis": { "$ref": "#/$defs/axis" },
+									"VertAxis": { "$ref": "#/$defs/axis" },
+									"DepthAxis": { "$ref": "#/$defs/axis" },
+									"InvertLatAxis": { "type": "boolean" },
+									"InvertVertAxis": { "type": "boolean" },
+									"InvertDepthAxis": { "type": "boolean" },
+									"Scale": { "type": "number" }
+								},
+								"additionalProperties": false,
+								"required": [ "IncludeG", "IncludeVT", "IncludeUsemtl", "LatAxis", "VertAxis", "DepthAxis", "InvertLatAxis", "InvertVertAxis", "InvertDepthAxis", "Scale" ]
+							},
+							"legacy_alt_grp": { "type": "string" },
+							"groups": {
+								"type": "array",
+								"items": { "type": "string" }
+							},
+							"welds": {
+								"type": "array",
+								"items": {
+									"type": "array",
+									"items": {
+										"type": "string",
+										"minItems": 2,
+										"maxItems": 2
+									}
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "location" ]
+					},
+					"id_aliases": {
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"type": "array",
+						"items": { "type": "string" }
+					},
+					"name_aliases": {
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"type": "array",
+						"items": { "type": "string" }
+					},
+					"extra": {
+						"type": "array",
+						"items": { "type": "object" }
+					}
+				},
+				"if": {
+					"properties": {
+						"type": { "const": "subdivision_surface" }
+					}
+				},
+				"then": {
+					"properties": {
+						"edge_interpolation_mode": {
+							"type": "string",
+							"enum": [ "no_interpolation", "edges_and_corners", "edges_only" ]
+						},
+						"edge_weights": {
+							"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+							"$ref": "#/$defs/float3_array"
+						},
+						"subd_normal_smoothing_mode": {
+							"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+							"type": "string",
+							"enum": [ "smooth_all_normals" ]
+						}
+					}
+				},
+				"unevaluatedProperties": false,
+				"required": [ "id", "vertices", "polygon_groups", "polygon_material_groups", "polylist" ]
+			}
+		},
+		"node_library": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "string" },
+					"name": { "type": "string" },
+					"type": {
+						"type": "string",
+						"enum": [ "node", "bone", "figure", "camera", "light" ]
+					},
+					"label": { "type": "string" },
+					"source": {
+						"type": "string",
+						"format": "uri"
+					},
+					"parent": {
+						"type": "string",
+						"format": "uri"
+					},
+					"rotation_order": { "$ref": "#/$defs/rotation_order" },
+					"inherits_scale": { "type": "boolean" },
+					"center_point": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/channel_float",
+							"minItems": 3,
+							"maxItems": 3
+						}
+					},
+					"end_point": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/channel_float",
+							"minItems": 3,
+							"maxItems": 3
+						}
+					},
+					"orientation": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/channel_float",
+							"minItems": 3,
+							"maxItems": 3
+						}
+					},
+					"rotation": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/channel_float",
+							"minItems": 3,
+							"maxItems": 3
+						}
+					},
+					"translation": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/channel_float",
+							"minItems": 3,
+							"maxItems": 3
+						}
+					},
+					"scale": {
+						"type": "array",
+						"items": {
+							"$ref": "#/$defs/channel_float",
+							"minItems": 3,
+							"maxItems": 3
+						}
+					},
+					"general_scale": { "$ref": "#/$defs/channel_float" },
+					"presentation": { "$ref": "#/$defs/presentation" },
+					"formulas": {
+						"type": "array",
+						"items": { "$ref": "#/$defs/formula" }
+					},
+					"id_aliases": {
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"type": "array",
+						"items": { "type": "string" }
+					},
+					"name_aliases": {
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"type": "array",
+						"items": { "type": "string" }
+					},
+					"extended_asset_ids": {
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"type": "array",
+						"items": { "type": "string" }
+					},
+					"extra": {
+						"type": "array",
+						"items": { "type": "object" }
+					}
+				},
+				"required": [ "id", "name", "label" ],
+				"allOf": [
+					{
+						"if": {
+							"properties": {
+								"type": { "const": "camera" }
+							}
+						},
+						"then": {
+							"oneOf": [
+								{
+									"properties": {
+										"perspective": {
+											"type": "object",
+											"properties": {
+												"znear": { "type": "number" },
+												"zfar": { "type": "number" },
+												"yfov": { "type": "number" },
+												"focal_length": { "type": "boolean" },
+												"depth_of_field": { "type": "number" },
+												"focal_distance": { "type": "number" },
+												"fstop": { "type": "number" }
+											},
+											"additionalProperties": false
+										},
+										"orthographic": false
+									},
+									"additionalProperties": false,
+									"required": [ "perspective" ]
+								},
+								{
+									"properties": {
+										"orthographic": {
+											"type": "object",
+											"properties": {
+												"znear": { "type": "number" },
+												"zfar": { "type": "number" },
+												"ymag": { "type": "number" }
+											},
+											"additionalProperties": false
+										},
+										"perspective": false
+									},
+									"additionalProperties": false,
+									"required": [ "orthographic" ]
+								}
+							]
+						}
+					},
+					{
+						"if": {
+							"properties": {
+								"type": { "const": "light" }
+							}
+						},
+						"then": {
+							"properties": {
+								"color": { "$ref": "#/$defs/float3" },
+								"on": { "type": "boolean" }
+							},
+							"oneOf": [
+								{
+									"properties": {
+										"directional": { "$ref": "#/$defs/light_directional" },
+										"point": false,
+										"spot": false
+									}
+								},
+								{
+									"properties": {
+										"point": { "$ref": "#/$defs/light_point" },
+										"directional": false,
+										"spot": false
+									}
+								},
+								{
+									"properties": {
+										"spot": { "$ref": "#/$defs/light_spot" },
+										"directional": false,
+										"point": false
+									}
+								},
+								{
+									"point": false,
+									"directional": false,
+									"spot": false
+								}
+							]
+						}
+					}
+				],
+				"unevaluatedProperties": false
+			}
+		},
+		"uv_set_library": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "string" },
+					"name": { "type": "string" },
+					"label": { "type": "string" },
+					"source": {
+						"type": "string",
+						"format": "uri"
+					},
+					"vertex_count": { "type": "integer" },
+					"uvs": { "$ref": "#/$defs/float2_array" },
+					"polygon_vertex_indices": {
+						"type": "array",
+						"items": {
+							"type": "array",
+							"items": { "type": "integer" },
+							"minItems": 3,
+							"maxItems": 3
+						}
+					}
+				},
+				"additionalProperties": false,
+				"required": [ "id", "vertex_count", "uvs" ]
+			}
+		},
+		"modifier_library": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "string" },
+					"name": { "type": "string" },
+					"label": { "type": "string" },
+					"source": {
+						"type": "string",
+						"format": "uri"
+					},
+					"parent": {
+						"type": "string",
+						"format": "uri"
+					},
+					"presentation": { "$ref": "#/$defs/presentation" },
+					"channel": { "$ref": "#/$defs/channel" },
+					"region": { "type": "string" },
+					"group": { "$ref": "#/$defs/slash_delimited_path" },
+					"formulas": {
+						"type": "array",
+						"items": { "$ref": "#/$defs/formula" }
+					},
+					"morph": {
+						"type": "object",
+						"properties": {
+							"vertex_count": { "type": "number" },
+							"deltas": { "$ref": "#/$defs/float3_indexed_array" },
+							"hd_url": {
+								"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+								"$ref": "#/$defs/slash_delimited_path"
+							},
+							"extra": {
+								"oneOf": [
+									{
+										"type": "array",
+										"items": { "type": "object" }
+									},
+									{
+										"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+										"type": "object",
+										"properties": {
+											"type": { "const": "legacy_morph" },
+											"bone": { "type": "string" },
+											"legacy_deltas": { "$ref": "#/$defs/float3_indexed_array" }
+										},
+										"additionalProperties": false,
+										"required": [ "type" ],
+										"anyOf": [
+											{ "required": ["bone" ] },
+											{ "required": ["legacy_deltas" ] }
+										]
+									}
+								]
+							}
+						},
+						"required": [ "vertex_count", "deltas" ],
+						"additionalProperties": false
+					},
+					"skin": {
+						"type": "object",
+						"properties": {
+							"node": {
+								"type": "string",
+								"format": "uri-reference"
+							},
+							"geometry": {
+								"type": "string",
+								"format": "uri-reference"
+							},
+							"vertex_count": { "type": "number" },
+							"joints": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": { "type": "string" },
+										"node": {
+											"type": "string",
+											"format": "uri-reference"
+										},
+										"node_weights": { "$ref": "#/$defs/float_indexed_array" },
+										"scale_weights": { "$ref": "#/$defs/float_indexed_array" },
+										"local_weights": {
+											"type": "object",
+											"properties": {
+												"x": { "$ref": "#/$defs/float_indexed_array" },
+												"y": { "$ref": "#/$defs/float_indexed_array" },
+												"z": { "$ref": "#/$defs/float_indexed_array" }
+											},
+											"additionalProperties": false
+										},
+										"bulge_weights": {
+											"type": "object",
+											"properties": {
+												"x": { "$ref": "#/$defs/bulge_binding" },
+												"y": { "$ref": "#/$defs/bulge_binding" },
+												"z": { "$ref": "#/$defs/bulge_binding" }
+											},
+											"additionalProperties": false
+										}
+									},
+									"additionalProperties": false,
+									"required": [ "id", "node" ],
+									"anyOf": [
+										{ "required": [ "node_weights" ] },
+										{ "required": [ "scale_weights" ] },
+										{ "required": [ "local_weights" ] }
+									]
+								}
+							},
+							"selection_map": {
+								"$comment": "SPEC-DIFFERENCE: Spec lists this as 'selection_sets'",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": { "type": "string" },
+										"mappings": {
+											"type": "array",
+											"items": {
+												"type": "array",
+												"items": { "type": "string" },
+												"minItems": 2,
+												"maxItems": 2
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [ "id", "mappings" ]
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "node", "geometry", "vertex_count" ]
+					},
+					"extra": {
+						"type": "array",
+						"items": { "type": "object" }
+					}
+				},
+				"required": [ "id" ]
+			}
+		},
+		"image_library": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": { "type": "string" },
+					"name": { "type": "string" },
+					"source": {
+						"type": "string",
+						"format": "uri"
+					},
+					"map_gamma": { "type": "number" },
+					"map_size": { "type": "integer" },
+					"map": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"url": {
+									"type": "string",
+									"format": "uri"
+								},
+								"label": { "type": "string" },
+								"color": { "$ref": "#/$defs/float3" },
+								"transparency": { "type": "number" },
+								"invert": { "type": "boolean" },
+								"rotation": { "type": "number" },
+								"xmirror": { "type": "boolean" },
+								"ymirror": { "type": "boolean" },
+								"xscale": { "type": "number" },
+								"yscale": { "type": "number" },
+								"xoffset": { "type": "number" },
+								"yoffset": { "type": "number" },
+								"operation": {
+									"type": "string",
+									"$comment": "SPEC-DIFFERENCE: Spec does not list 'enum' as a valid value",
+									"enum": [ "alpha_blend", "add", "subtract", "enum", "multiply" ]
+								}
+							},
+							"additionalProperties": false,
+							"required": [ "label" ]
+						}
+					}
+				},
+				"required": [ "id", "name" ]
+			}
+		},
+		"material_library": {
+			"type": "array",
+			"items": {
+				"oneOf": [
+					{
+						"type": "object",
+						"properties": {
+							"id": { "type": "string" },
+							"name": { "type": "string" },
+							"label": { "type": "string" },
+							"source": {
+								"type": "string",
+								"format": "uri"
+							},
+							"uv_set": {
+								"type": "string",
+								"format": "uri"
+							},
+							"type": { "type": "string" },
+							"diffuse": { "$ref": "#/$defs/material_channel" },
+							"diffuse_strength": { "$ref": "#/$defs/material_channel" },
+							"specular": { "$ref": "#/$defs/material_channel" },
+							"specular_strength": { "$ref": "#/$defs/material_channel" },
+							"glossiness": { "$ref": "#/$defs/material_channel" },
+							"ambient": { "$ref": "#/$defs/material_channel" },
+							"ambient_strength": { "$ref": "#/$defs/material_channel" },
+							"reflection": { "$ref": "#/$defs/material_channel" },
+							"reflection_strength": { "$ref": "#/$defs/material_channel" },
+							"refraction": { "$ref": "#/$defs/material_channel" },
+							"refraction_strength": { "$ref": "#/$defs/material_channel" },
+							"ior": { "$ref": "#/$defs/material_channel" },
+							"bump": { "$ref": "#/$defs/material_channel" },
+							"bump_min": { "$ref": "#/$defs/material_channel" },
+							"bump_max": { "$ref": "#/$defs/material_channel" },
+							"displacement": { "$ref": "#/$defs/material_channel" },
+							"displacement_min": { "$ref": "#/$defs/material_channel" },
+							"displacement_max": { "$ref": "#/$defs/material_channel" },
+							"transparency": { "$ref": "#/$defs/material_channel" },
+							"normal": { "$ref": "#/$defs/material_channel" },
+							"u_offset": { "$ref": "#/$defs/material_channel" },
+							"u_scale": { "$ref": "#/$defs/material_channel" },
+							"v_offset": { "$ref": "#/$defs/material_channel" },
+							"v_scale": { "$ref": "#/$defs/material_channel" },
+							"extra": {
+								"type": "array",
+								"items": { "type": "object" }
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "id", "type" ]
+					},
+					{
+						"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+						"type": "object",
+						"properties": {
+							"id": { "type": "string" },
+							"diffuse": { "$ref": "#/$defs/material_channel" },
+							"extra": {
+								"type": "array",
+								"prefixItems": [
+									{ "$ref": "#/$defs/daz_brick" },
+									{
+										"type": "object",
+										"properties": {
+											"type": { "const": "studio_material_channels" },
+											"channels": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"channel": {
+															"$comment": "TODO This is a stripped down version of #/$defs/material_channel",
+															"type": "object"
+														},
+														"group": { "$ref": "#/$defs/slash_delimited_path" },
+														"presentation": { "$ref": "#/$defs/presentation" }
+													},
+													"additionalProperties": false,
+													"required": [ "channel", "group" ]
+												}
+											}
+										},
+										"additionalProperties": false,
+										"required": [ "type", "channels" ]
+									}
+								],
+								"minItems": 2,
+								"maxItems": 2,
+								"items": false
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "id", "extra" ]
+					}
+				]
+			}
+		},
+		"scene": {
+			"type": "object",
+			"properties": {
+				"presentation": { "$ref": "#/$defs/presentation" },
+				"nodes": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": { "type": "string" },
+							"url": {
+								"type": "string",
+								"format": "uri"
+							},
+							"parent": {
+								"type": "string",
+								"format": "uri"
+							},
+							"parent_in_place": {
+								"type": "string",
+								"format": "uri"
+							},
+							"conform_target": {
+								"type": "string",
+								"format": "uri"
+							},
+							"geometries": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": { "type": "string" },
+										"url": {
+											"type": "string",
+											"format": "uri"
+										}
+									},
+									"additionalProperties": false,
+									"required": [ "url" ]
+								}
+							},
+							"preview": {
+								"type": "object",
+								"properties": {
+									"oriented_box": {
+										"type": "object",
+										"properties": {
+											"min": { "$ref": "#/$defs/float3" },
+											"max": { "$ref": "#/$defs/float3" }
+										},
+										"additionalProperties": false
+									},
+									"center_point": { "$ref": "#/$defs/float3" },
+									"end_point": { "$ref": "#/$defs/float3" },
+									"rotation_order": { "$ref": "#/$defs/rotation_order" }
+								},
+								"additionalProperties": false
+							},
+							"extra": {
+								"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+								"type": "array",
+								"items": { "type": "object" }
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "id", "url" ]
+					}
+				},
+				"uvs": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": { "type": "string" },
+							"url": {
+								"type": "string",
+								"format": "uri"
+							},
+							"parent": {
+								"$comment": "SPEC-DIFFERENCE: Spec says required, but often missing",
+								"type": "string",
+								"format": "uri"
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "id", "url" ]
+					}
+				},
+				"modifiers": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": { "type": "string" },
+							"url": {
+								"type": "string",
+								"format": "uri-reference"
+							},
+							"parent": {
+								"$comment": "SPEC-DIFFERENCE: Spec says required, but often missing",
+								"type": "string",
+								"format": "uri"
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "id", "url" ]
+					}
+				},
+				"materials": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"$comment": "SPEC-DIFFERENCE: Spec says required, but often missing",
+								"type": "string"
+							},
+							"url": {
+								"type": "string",
+								"format": "uri"
+							},
+							"geometry": {
+								"type": "string",
+								"format": "uri-reference"
+							},
+							"groups": {
+								"$comment": "SPEC-DIFFERENCE: Spec says required, but often missing",
+								"$ref": "#/$defs/string_array"
+							},
+							"extra": {
+								"$comment": "SPEC-DIFFERENCE: Not listed in spec",
+								"type": "array",
+								"items": { "type": "object" }
+							}
+						},
+						"additionalProperties": false,
+						"required": []
+					}
+				},
+				"animations": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"url": {
+								"type": "string",
+								"format": "uri"
+							},
+							"keys": {
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "array",
+										"oneOf": [
+											{
+												"prefixItems": [
+													{ "type": "number" },
+													{ "type": "number" },
+													{
+														"type": "array",
+														"anyOf": [
+															{
+																"prefixItems": [
+																	{
+																		"type": "string",
+																		"enum": [ "LINEAR", "CONST" ]
+																	}
+																],
+																"minItems": 2,
+																"maxItems": 2
+															},
+															{
+																"prefixItems": [
+																	{ "const": "HERMITE" },
+																	{ "type": "number" },
+																	{ "type": "number" }
+																],
+																"minItems": 3,
+																"maxItems": 3
+															},
+															{
+																"prefixItems": [
+																	{ "const": "TCB" },
+																	{ "type": "number" },
+																	{ "type": "number" },
+																	{ "type": "number" }
+																],
+																"minItems": 4,
+																"maxItems": 4
+															}
+														],
+														"items": false
+													}
+												],
+												"minItems": 3,
+												"maxItems": 3
+											},
+											{
+												"prefixItems": [
+													{ "type": "number" },
+													{ "$ref": "#/$defs/float3" }
+												],
+												"minItems": 2,
+												"maxItems": 2
+											},
+											{
+												"prefixItems": [
+													{ "type": "number" },
+													{ "type": "boolean" }
+												],
+												"minItems": 2,
+												"maxItems": 2
+											},
+											{
+												"prefixItems": [
+													{ "type": "number" },
+													{ "type": "null" }
+												],
+												"minItems": 2,
+												"maxItems": 2
+											},
+											{
+												"prefixItems": [
+													{ "type": "number" },
+													{ "type": "number" }
+												],
+												"minItems": 2,
+												"maxItems": 2
+											},
+											{
+												"prefixItems": [
+													{ "type": "number" },
+													{ "type": "string" }
+												],
+												"minItems": 2,
+												"maxItems": 2
+											}
+										],
+										"minItems": 1
+									}
+								],
+								"minItems": 1,
+								"items": false
+							}
+						},
+						"additionalProperties": false,
+						"required": [ "url", "keys" ]
+					}
+				},
+				"current_camera": {
+					"type": "string",
+					"format": "uri"
+				},
+				"extra": {
+					"type": "array",
+					"items": { "type": "object" }
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false,
+	"required": [ "file_version", "asset_info" ]
+}

@@ -1,0 +1,2093 @@
+{
+	"file_version" : "0.6.1.0",
+	"asset_info" : {
+		"id" : "/Plane.duf",
+		"type" : "scene",
+		"contributor" : {
+			"author" : "",
+			"email" : "",
+			"website" : ""
+		},
+		"revision" : "1.0",
+		"modified" : "2023-01-01T00:00:00Z"
+	},
+	"geometry_library" : [
+		{
+			"id" : "geometry",
+			"name" : "geometry",
+			"type" : "polygon_mesh",
+			"vertices" : {
+				"count" : 4,
+				"values" : [
+					[ -50, -50, 9.938078e-06 ],
+					[ 50, -50, 9.938078e-06 ],
+					[ -50, 50, -9.938078e-06 ],
+					[ 50, 50, -9.938078e-06 ]
+				]
+			},
+			"polygon_groups" : {
+				"count" : 1,
+				"values" : [
+					"Default"
+				]
+			},
+			"polygon_material_groups" : {
+				"count" : 1,
+				"values" : [
+					"Default"
+				]
+			},
+			"polylist" : {
+				"count" : 1,
+				"values" : [
+					[ 0, 0, 0, 1, 3, 2 ]
+				]
+			},
+			"default_uv_set" : "#default",
+			"extra" : [
+				{
+					"type" : "studio_geometry_channels",
+					"channels" : [
+						{
+							"channel" : {
+								"id" : "SubDIALevel",
+								"type" : "int",
+								"label" : "View SubD Level",
+								"visible" : false,
+								"value" : 1,
+								"current_value" : 1,
+								"min" : 0,
+								"max" : 2,
+								"clamped" : true,
+								"step_size" : 1
+							},
+							"group" : "/General/Mesh Resolution"
+						},
+						{
+							"channel" : {
+								"id" : "SubDRenderLevel",
+								"type" : "int",
+								"label" : "Render SubD Level (Minimum)",
+								"visible" : false,
+								"value" : 0,
+								"current_value" : 0,
+								"min" : 0,
+								"max" : 3,
+								"clamped" : true,
+								"step_size" : 1
+							},
+							"group" : "/General/Mesh Resolution"
+						},
+						{
+							"channel" : {
+								"id" : "SubDAlgorithmControl",
+								"type" : "enum",
+								"label" : "SubDivision Algorithm",
+								"visible" : false,
+								"value" : 0,
+								"current_value" : 0,
+								"enum_values" : [ "Catmark", "Bilinear", "Loop", "Catmull-Clark (Legacy)" ]
+							},
+							"group" : "/General/Mesh Resolution"
+						},
+						{
+							"channel" : {
+								"id" : "SubDEdgeInterpolateLevel",
+								"type" : "enum",
+								"label" : "Edge Interpolation",
+								"visible" : false,
+								"value" : 2,
+								"current_value" : 2,
+								"enum_values" : [ "Soft Corners And Edges", "Sharp Edges and Corners", "Sharp Edges" ]
+							},
+							"group" : "/General/Mesh Resolution"
+						},
+						{
+							"channel" : {
+								"id" : "SubDNormalSmoothing",
+								"type" : "enum",
+								"label" : "SubDivision Normals",
+								"visible" : false,
+								"value" : 0,
+								"current_value" : 0,
+								"enum_values" : [ "Smoothed", "Preserve Cage" ]
+							},
+							"group" : "/General/Mesh Resolution"
+						}
+					]
+				}
+			]
+		}
+	],
+	"node_library" : [
+		{
+			"id" : "pPlane(11cg000)1_zpos",
+			"name" : "pPlane(11cg000)1_zpos",
+			"type" : "node",
+			"label" : "Plane",
+			"rotation_order" : "YXZ",
+			"inherits_scale" : true,
+			"center_point" : [
+				{
+					"id" : "x",
+					"type" : "float",
+					"name" : "xOrigin",
+					"label" : "X Origin",
+					"visible" : false,
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				},
+				{
+					"id" : "y",
+					"type" : "float",
+					"name" : "yOrigin",
+					"label" : "Y Origin",
+					"visible" : false,
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				},
+				{
+					"id" : "z",
+					"type" : "float",
+					"name" : "zOrigin",
+					"label" : "Z Origin",
+					"visible" : false,
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				}
+			],
+			"end_point" : [
+				{
+					"id" : "x",
+					"type" : "float",
+					"name" : "xEnd",
+					"label" : "X End",
+					"visible" : false,
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				},
+				{
+					"id" : "y",
+					"type" : "float",
+					"name" : "yEnd",
+					"label" : "Y End",
+					"visible" : false,
+					"value" : 1,
+					"current_value" : 1,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				},
+				{
+					"id" : "z",
+					"type" : "float",
+					"name" : "zEnd",
+					"label" : "Z End",
+					"visible" : false,
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				}
+			],
+			"orientation" : [
+				{
+					"id" : "x",
+					"type" : "float",
+					"name" : "xOrientation",
+					"label" : "X Orientation",
+					"visible" : false,
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				},
+				{
+					"id" : "y",
+					"type" : "float",
+					"name" : "yOrientation",
+					"label" : "Y Orientation",
+					"visible" : false,
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				},
+				{
+					"id" : "z",
+					"type" : "float",
+					"name" : "zOrientation",
+					"label" : "Z Orientation",
+					"visible" : false,
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.01
+				}
+			],
+			"rotation" : [
+				{
+					"id" : "x",
+					"type" : "float",
+					"name" : "XRotate",
+					"label" : "X Rotate",
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.5
+				},
+				{
+					"id" : "y",
+					"type" : "float",
+					"name" : "YRotate",
+					"label" : "Y Rotate",
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.5
+				},
+				{
+					"id" : "z",
+					"type" : "float",
+					"name" : "ZRotate",
+					"label" : "Z Rotate",
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 0.5
+				}
+			],
+			"translation" : [
+				{
+					"id" : "x",
+					"type" : "float",
+					"name" : "XTranslate",
+					"label" : "X Translate",
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 1
+				},
+				{
+					"id" : "y",
+					"type" : "float",
+					"name" : "YTranslate",
+					"label" : "Y Translate",
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 1
+				},
+				{
+					"id" : "z",
+					"type" : "float",
+					"name" : "ZTranslate",
+					"label" : "Z Translate",
+					"value" : 0,
+					"current_value" : 0,
+					"min" : -10000,
+					"max" : 10000,
+					"step_size" : 1
+				}
+			],
+			"scale" : [
+				{
+					"id" : "x",
+					"type" : "float",
+					"name" : "XScale",
+					"label" : "X Scale",
+					"value" : 1,
+					"current_value" : 1,
+					"min" : -10000,
+					"max" : 10000,
+					"display_as_percent" : true,
+					"step_size" : 0.005
+				},
+				{
+					"id" : "y",
+					"type" : "float",
+					"name" : "YScale",
+					"label" : "Y Scale",
+					"value" : 1,
+					"current_value" : 1,
+					"min" : -10000,
+					"max" : 10000,
+					"display_as_percent" : true,
+					"step_size" : 0.005
+				},
+				{
+					"id" : "z",
+					"type" : "float",
+					"name" : "ZScale",
+					"label" : "Z Scale",
+					"value" : 1,
+					"current_value" : 1,
+					"min" : -10000,
+					"max" : 10000,
+					"display_as_percent" : true,
+					"step_size" : 0.005
+				}
+			],
+			"general_scale" : {
+				"id" : "general_scale",
+				"type" : "float",
+				"name" : "Scale",
+				"label" : "Scale",
+				"value" : 1,
+				"current_value" : 1,
+				"min" : -10000,
+				"max" : 10000,
+				"display_as_percent" : true,
+				"step_size" : 0.005
+			},
+			"presentation" : {
+				"type" : "Prop",
+				"label" : "",
+				"description" : "",
+				"icon_large" : "",
+				"colors" : [ [ 0.3529412, 0.3529412, 0.3529412 ], [ 1, 1, 1 ] ]
+			},
+			"extra" : [
+				{
+					"type" : "studio_node_channels",
+					"version" : 4,
+					"channels" : [
+						{
+							"channel" : {
+								"id" : "Disable Transform",
+								"type" : "bool",
+								"label" : "Disable Local Transform",
+								"visible" : false,
+								"value" : false,
+								"current_value" : false
+							},
+							"group" : "/General/Transforms"
+						},
+						{
+							"channel" : {
+								"id" : "Ignore Local Transform",
+								"type" : "bool",
+								"label" : "Ignore Local Transform",
+								"visible" : false,
+								"value" : false,
+								"current_value" : false
+							},
+							"group" : "/General/Transforms"
+						},
+						{
+							"channel" : {
+								"id" : "Point At",
+								"type" : "numeric_node",
+								"label" : "Point At",
+								"value" : 1,
+								"current_value" : 1,
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true,
+								"step_size" : 0.01,
+								"needs_node" : true,
+								"node" : null
+							},
+							"group" : "/General/Constraints"
+						},
+						{
+							"channel" : {
+								"id" : "Visible",
+								"type" : "bool",
+								"label" : "Visible",
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Display"
+						},
+						{
+							"channel" : {
+								"id" : "Visible in Viewport",
+								"type" : "bool",
+								"label" : "Visible in Viewport",
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Display/Scene View"
+						},
+						{
+							"channel" : {
+								"id" : "Selectable",
+								"type" : "bool",
+								"label" : "Selectable (in Viewport)",
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Display/Scene View"
+						},
+						{
+							"channel" : {
+								"id" : "Renderable",
+								"type" : "bool",
+								"label" : "Visible in Render",
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Display/Rendering"
+						},
+						{
+							"channel" : {
+								"id" : "Cast Shadows",
+								"type" : "bool",
+								"label" : "Cast Shadows",
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Display/Rendering"
+						},
+						{
+							"channel" : {
+								"id" : "Render Priority",
+								"type" : "enum",
+								"label" : "Render Priority",
+								"visible" : false,
+								"value" : 3,
+								"current_value" : 3,
+								"enum_values" : [ "Lowest", "Low", "Below Normal", "Normal", "Above Normal", "High", "Highest" ]
+							},
+							"group" : "/Display/Rendering"
+						},
+						{
+							"channel" : {
+								"id" : "Visible in Simulation",
+								"type" : "bool",
+								"label" : "Visible in Simulation",
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Display/Simulation"
+						}
+					]
+				}
+			]
+		}
+	],
+	"uv_set_library" : [
+		{
+			"id" : "default",
+			"name" : "default",
+			"label" : "Default UVs",
+			"vertex_count" : 4,
+			"uvs" : {
+				"count" : 4,
+				"values" : [
+					[ 0, 0 ],
+					[ 1, 0 ],
+					[ 0, 1 ],
+					[ 1, 1 ]
+				]
+			},
+			"polygon_vertex_indices" : [
+			]
+		}
+	],
+	"modifier_library" : [
+		{
+			"id" : "Plane",
+			"name" : "Plane",
+			"parent" : "#geometry",
+			"presentation" : {
+				"type" : "Modifier/Shape",
+				"label" : "",
+				"description" : "",
+				"icon_large" : "",
+				"colors" : [ [ 0.3529412, 0.3529412, 0.3529412 ], [ 1, 1, 1 ] ]
+			},
+			"channel" : {
+				"id" : "value",
+				"type" : "float",
+				"name" : "Value",
+				"label" : "Plane",
+				"value" : 0,
+				"current_value" : 0,
+				"min" : -1,
+				"max" : 1,
+				"clamped" : true,
+				"display_as_percent" : true,
+				"step_size" : 0.01
+			},
+			"group" : "/Morphs/Morph Loader",
+			"morph" : {
+				"vertex_count" : 4,
+				"deltas" : {
+					"count" : 4,
+					"values" : [
+						[ 0, 49, 51, -1.00001 ],
+						[ 1, -49, 51, -1.00001 ],
+						[ 2, 49, -49, 1.00001 ],
+						[ 3, -49, -49, 1.00001 ]
+					]
+				}
+			}
+		}
+	],
+	"material_library" : [
+		{
+			"id" : "Default",
+			"diffuse" : {
+				"channel" : {
+					"id" : "diffuse",
+					"type" : "color",
+					"name" : "Diffuse Color",
+					"label" : "Diffuse Color",
+					"value" : [ 1, 1, 1 ],
+					"current_value" : [ 1, 1, 1 ],
+					"min" : 0,
+					"max" : 1,
+					"clamped" : true
+				},
+				"group" : "/Diffuse"
+			},
+			"extra" : [
+				{
+					"type" : "studio/material/daz_brick",
+					"brick_settings" : {
+						"BrickSetup" : {
+							"type" : "settings",
+							"value" : {
+								"Bricks" : {
+									"type" : "settings",
+									"value" : {
+										"Brick_1" : {
+											"type" : "settings",
+											"value" : {
+												"DAZStudioClassName" : "DzSimpleSurfaceBrick",
+												"Attributes" : {
+													"type" : "settings",
+													"value" : {
+														"BrickSettings" : {
+															"type" : "settings",
+															"value" : {
+																"BrickSet" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Name" : "shader_Surface",
+																		"LastInvalidate" : "1673562917"
+																	}
+																},
+																"BrickTitle" : "Surface (1)",
+																"HideParams" : false,
+																"PosX" : -273,
+																"PosY" : -510,
+																"BrickIsRightToLeft" : false,
+																"Width" : [ "i", 200 ],
+																"Height" : [ "i", 199 ],
+																"BrickParams" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Param_0" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_1" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														},
+														"BrickVersion" : 1,
+														"BrickProperties" : {
+															"type" : "settings",
+															"value" : {
+																"shadowPassActive" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Shadow Pass",
+																		"Hidden" : false,
+																		"Path" : "/General",
+																		"UserProperty" : false,
+																		"CanAnimate" : true,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : true,
+																		"DefaultValue" : true
+																	}
+																},
+																"beautyPassActive" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Beauty Pass",
+																		"Hidden" : false,
+																		"Path" : "/General",
+																		"UserProperty" : false,
+																		"CanAnimate" : true,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : true,
+																		"DefaultValue" : true
+																	}
+																}
+															}
+														}
+													}
+												},
+												"Parameters" : {
+													"type" : "settings",
+													"value" : {
+														"c_in" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_c_in_b1_t0",
+																"Label" : "Color",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Color",
+																		"Hidden" : false,
+																		"Path" : "/Surface (1)",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"DefaultValue" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"Name" : "Color"
+																	}
+																}
+															}
+														},
+														"o_in" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_o_in_b1_t0",
+																"Label" : "Opacity",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Opacity",
+																		"Hidden" : false,
+																		"Path" : "/Surface (1)",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"DefaultValue" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"Name" : "opac"
+																	}
+																}
+															}
+														},
+														"acceptShadows" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_acceptShadows_b1_t0",
+																"Label" : "Accept Shadows",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Accept Shadows",
+																		"Hidden" : true,
+																		"Path" : "/Surface (1)",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : true,
+																		"DefaultValue" : true,
+																		"Name" : "Accept Shadows"
+																	}
+																}
+															}
+														},
+														"rootSettings" : {
+															"type" : "settings",
+															"value" : {
+																"Label" : "Root Settings"
+															}
+														}
+													}
+												}
+											}
+										},
+										"Brick_2" : {
+											"type" : "settings",
+											"value" : {
+												"DAZStudioClassName" : "DzDefaultMaterialBrick",
+												"Attributes" : {
+													"type" : "settings",
+													"value" : {
+														"BrickSettings" : {
+															"type" : "settings",
+															"value" : {
+																"BrickTitle" : "DS Default Material (2)",
+																"HideParams" : false,
+																"PosX" : -731,
+																"PosY" : -579,
+																"BrickIsRightToLeft" : false,
+																"Width" : [ "i", 200 ],
+																"Height" : [ "i", 336 ],
+																"BrickParams" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Param_0" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_1" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_2" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_3" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_4" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_5" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_6" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_7" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_8" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_9" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_10" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 18,
+																						"Green" : 19,
+																						"Blue" : 21
+																					}
+																				}
+																			}
+																		},
+																		"Param_14" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 101,
+																						"Green" : 127,
+																						"Blue" : 8
+																					}
+																				}
+																			}
+																		},
+																		"Param_15" : {
+																			"type" : "settings",
+																			"value" : {
+																				"ConnectionColor" : {
+																					"type" : "settings",
+																					"value" : {
+																						"Red" : 142,
+																						"Green" : 212,
+																						"Blue" : 72
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														},
+														"BrickVersion" : 1.1,
+														"BrickProperties" : {
+															"type" : "settings",
+															"value" : {
+																"Lighting Model" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Lighting Model",
+																		"Hidden" : false,
+																		"Path" : "/General",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : true,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", 0 ],
+																		"Max" : [ "i", 5 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : [ "i", 0 ],
+																		"DefaultValue" : [ "i", 0 ]
+																	}
+																}
+															}
+														}
+													}
+												},
+												"Parameters" : {
+													"type" : "settings",
+													"value" : {
+														"DiffuseColor" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_DiffuseColor_b2_t0",
+																"Label" : "Diffuse Color",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Diffuse Color",
+																		"Hidden" : false,
+																		"Path" : "/Diffuse",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"DefaultValue" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"Name" : "Diffuse Color"
+																	}
+																}
+															}
+														},
+														"DiffuseStrength" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_DiffuseStrength_b2_t0",
+																"Label" : "Diffuse Strength",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Diffuse Strength",
+																		"Hidden" : false,
+																		"Path" : "/Diffuse",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : true,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 1,
+																		"Min" : 0,
+																		"Max" : 1,
+																		"Sensitivity" : 0.01,
+																		"AsPercent" : true,
+																		"Value" : 1,
+																		"DefaultValue" : 1,
+																		"Name" : "Diffuse Strength"
+																	}
+																}
+															}
+														},
+														"Glossiness" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_Glossiness_b2_t0",
+																"Label" : "Glossiness",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Glossiness",
+																		"Hidden" : false,
+																		"Path" : "/Specular",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : true,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 1,
+																		"Min" : 0,
+																		"Max" : 1,
+																		"Sensitivity" : 0.01,
+																		"AsPercent" : true,
+																		"Value" : 1,
+																		"DefaultValue" : 0.95,
+																		"Name" : "Glossiness"
+																	}
+																}
+															}
+														},
+														"SpecularColor" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_SpecularColor_b2_t0",
+																"Label" : "Specular Color",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Specular Color",
+																		"Hidden" : false,
+																		"Path" : "/Specular",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 153 ],
+																				"Green" : [ "i", 153 ],
+																				"Blue" : [ "i", 153 ]
+																			}
+																		},
+																		"DefaultValue" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"Name" : "Specular Color"
+																	}
+																}
+															}
+														},
+														"SpecularStrength" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_SpecularStrength_b2_t0",
+																"Label" : "Specular Strength",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Specular Strength",
+																		"Hidden" : false,
+																		"Path" : "/Specular",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : true,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 1,
+																		"Min" : 0,
+																		"Max" : 1,
+																		"Sensitivity" : 0.01,
+																		"AsPercent" : true,
+																		"Value" : 1,
+																		"DefaultValue" : 1,
+																		"Name" : "Specular Strength"
+																	}
+																}
+															}
+														},
+														"SpecularThroughOpacity" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_SpecularThroughOpacity_b2_t0",
+																"Label" : "Specular Through Opacity",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Multiply Specular Through Opacity",
+																		"Hidden" : false,
+																		"Path" : "/Specular",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : true,
+																		"DefaultValue" : true,
+																		"Name" : "Multiply Specular Through Opacity"
+																	}
+																}
+															}
+														},
+														"AmbientColor" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_AmbientColor_b2_t0",
+																"Label" : "Ambient Color",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Ambient Color",
+																		"Hidden" : false,
+																		"Path" : "/Ambient",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 0 ],
+																				"Green" : [ "i", 0 ],
+																				"Blue" : [ "i", 0 ]
+																			}
+																		},
+																		"DefaultValue" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 0 ],
+																				"Green" : [ "i", 0 ],
+																				"Blue" : [ "i", 0 ]
+																			}
+																		},
+																		"Name" : "Ambient Color"
+																	}
+																}
+															}
+														},
+														"AmbientStrength" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_AmbientStrength_b2_t0",
+																"Label" : "Ambient Strength",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Ambient Strength",
+																		"Hidden" : false,
+																		"Path" : "/Ambient",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : true,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 1,
+																		"Min" : 0,
+																		"Max" : 1,
+																		"Sensitivity" : 0.01,
+																		"AsPercent" : true,
+																		"Value" : 1,
+																		"DefaultValue" : 1,
+																		"Name" : "Ambient Strength"
+																	}
+																}
+															}
+														},
+														"OpacityColor" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_OpacityColor_b2_t0",
+																"Label" : "Opacity Color",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Opacity Strength",
+																		"Hidden" : false,
+																		"Path" : "/Opacity",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 1,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 0 ],
+																		"Value" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"DefaultValue" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 255 ],
+																				"Green" : [ "i", 255 ],
+																				"Blue" : [ "i", 255 ]
+																			}
+																		},
+																		"Name" : "Opacity Strength"
+																	}
+																}
+															}
+														},
+														"ReflectionColor" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_ReflectionColor_b2_t0",
+																"Label" : "Reflection Color",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Reflection Color",
+																		"Hidden" : true,
+																		"Path" : "/DS Default Material (2)",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 0 ],
+																				"Green" : [ "i", 0 ],
+																				"Blue" : [ "i", 0 ]
+																			}
+																		},
+																		"DefaultValue" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 0 ],
+																				"Green" : [ "i", 0 ],
+																				"Blue" : [ "i", 0 ]
+																			}
+																		},
+																		"Name" : "reflection"
+																	}
+																}
+															}
+														},
+														"RefractionColor" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_RefractionColor_b2_t0",
+																"Label" : "Refraction Color",
+																"Prop_0" : {
+																	"type" : "settings",
+																	"value" : {
+																		"Label" : "Refraction Color",
+																		"Hidden" : true,
+																		"Path" : "/DS Default Material (2)",
+																		"UserProperty" : false,
+																		"CanAnimate" : false,
+																		"Locked" : false,
+																		"Manipulator" : true,
+																		"Favorite" : false,
+																		"GlobalFavorite" : false,
+																		"Selected" : false,
+																		"AutoFollow" : false,
+																		"AutoFollowTarget" : "",
+																		"XYZInterest" : "None",
+																		"Clamped" : false,
+																		"Mapable" : false,
+																		"NeedMap" : false,
+																		"DefaultImageGamma" : 0,
+																		"Min" : [ "i", -2147483648 ],
+																		"Max" : [ "i", 2147483647 ],
+																		"Sensitivity" : [ "i", 1 ],
+																		"Value" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 0 ],
+																				"Green" : [ "i", 0 ],
+																				"Blue" : [ "i", 0 ]
+																			}
+																		},
+																		"DefaultValue" : {
+																			"type" : "settings",
+																			"value" : {
+																				"Red" : [ "i", 0 ],
+																				"Green" : [ "i", 0 ],
+																				"Blue" : [ "i", 0 ]
+																			}
+																		},
+																		"Name" : "refraction"
+																	}
+																}
+															}
+														},
+														"PIn" : {
+															"type" : "settings",
+															"value" : {
+																"Label" : "Point"
+															}
+														},
+														"In" : {
+															"type" : "settings",
+															"value" : {
+																"Label" : "In"
+															}
+														},
+														"Nn" : {
+															"type" : "settings",
+															"value" : {
+																"Label" : "Nn"
+															}
+														},
+														"ColorOut" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_ColorOut_b2_t0",
+																"Label" : "Material Color"
+															}
+														},
+														"OpacityOut" : {
+															"type" : "settings",
+															"value" : {
+																"Tokens" : "elr_OpacityOut_b2_t0",
+																"Label" : "Material Opacity"
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								},
+								"Connections" : {
+									"type" : "settings",
+									"value" : {
+										"Connection_0" : {
+											"type" : "settings",
+											"value" : {
+												"SourceBrick" : "Brick_1",
+												"TargetBrick" : "Brick_2",
+												"SourceParam" : "c_in",
+												"TargetParam" : "ColorOut"
+											}
+										},
+										"Connection_1" : {
+											"type" : "settings",
+											"value" : {
+												"SourceBrick" : "Brick_1",
+												"TargetBrick" : "Brick_2",
+												"SourceParam" : "o_in",
+												"TargetParam" : "OpacityOut"
+											}
+										}
+									}
+								},
+								"BrickUserName" : "DAZ Default Material",
+								"Identifier" : "{531c50fe-bcff-4965-9256-a83e737d1bbe}"
+							}
+						}
+					}
+				},
+				{
+					"type" : "studio_material_channels",
+					"channels" : [
+						{
+							"channel" : {
+								"id" : "Tags",
+								"type" : "string",
+								"label" : "Tags",
+								"value" : "",
+								"current_value" : ""
+							},
+							"group" : "/General"
+						},
+						{
+							"channel" : {
+								"id" : "Smooth On",
+								"type" : "bool",
+								"label" : "Smooth",
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Smoothing"
+						},
+						{
+							"channel" : {
+								"id" : "Smooth Angle",
+								"type" : "float",
+								"label" : "Angle",
+								"value" : 89.9,
+								"current_value" : 89.9,
+								"min" : 0,
+								"max" : 180,
+								"clamped" : true,
+								"step_size" : 0.01
+							},
+							"group" : "/Smoothing"
+						},
+						{
+							"channel" : {
+								"id" : "Line Preview Color",
+								"type" : "color",
+								"label" : "Line Preview Color",
+								"value" : [ 0, 0, 0 ],
+								"current_value" : [ 0, 0, 0 ],
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true
+							},
+							"group" : "/Lines"
+						},
+						{
+							"channel" : {
+								"id" : "Line Start Width",
+								"type" : "float",
+								"label" : "Line Start Width (mm)",
+								"value" : 0.1,
+								"current_value" : 0.1,
+								"min" : -10000,
+								"max" : 10000,
+								"step_size" : 0.01
+							},
+							"group" : "/Lines/Generation"
+						},
+						{
+							"channel" : {
+								"id" : "Line End Width",
+								"type" : "float",
+								"label" : "Line End Width (mm)",
+								"value" : 0.1,
+								"current_value" : 0.1,
+								"min" : -10000,
+								"max" : 10000,
+								"step_size" : 0.01
+							},
+							"group" : "/Lines/Generation"
+						},
+						{
+							"channel" : {
+								"id" : "Line UV Width",
+								"type" : "float",
+								"label" : "Line UV Width",
+								"value" : 0,
+								"current_value" : 0,
+								"min" : 0,
+								"max" : 1,
+								"step_size" : 0.01
+							},
+							"group" : "/Lines/Generation"
+						},
+						{
+							"channel" : {
+								"id" : "Render Priority",
+								"type" : "enum",
+								"label" : "Render Priority",
+								"visible" : false,
+								"value" : 3,
+								"current_value" : 3,
+								"enum_values" : [ "Lowest", "Low", "Below Normal", "Normal", "Above Normal", "High", "Highest" ]
+							},
+							"group" : "/Render Priority"
+						},
+						{
+							"channel" : {
+								"id" : "Propagate Priority",
+								"type" : "bool",
+								"label" : "Propagate Priority",
+								"visible" : false,
+								"value" : false,
+								"current_value" : false
+							},
+							"group" : "/Render Priority"
+						},
+						{
+							"channel" : {
+								"id" : "Accept Shadows",
+								"type" : "bool",
+								"label" : "Accept Shadows",
+								"visible" : false,
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Surface (1)"
+						},
+						{
+							"channel" : {
+								"id" : "Diffuse Strength",
+								"type" : "float",
+								"label" : "Diffuse Strength",
+								"value" : 1,
+								"current_value" : 1,
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true,
+								"display_as_percent" : true,
+								"step_size" : 0.01
+							},
+							"group" : "/Diffuse"
+						},
+						{
+							"channel" : {
+								"id" : "Glossiness",
+								"type" : "float",
+								"label" : "Glossiness",
+								"value" : 0.95,
+								"current_value" : 1,
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true,
+								"display_as_percent" : true,
+								"step_size" : 0.01
+							},
+							"group" : "/Specular"
+						},
+						{
+							"channel" : {
+								"id" : "Specular Color",
+								"type" : "color",
+								"label" : "Specular Color",
+								"value" : [ 1, 1, 1 ],
+								"current_value" : [ 0.6, 0.6, 0.6 ],
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true
+							},
+							"group" : "/Specular"
+						},
+						{
+							"channel" : {
+								"id" : "Specular Strength",
+								"type" : "float",
+								"label" : "Specular Strength",
+								"value" : 1,
+								"current_value" : 1,
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true,
+								"display_as_percent" : true,
+								"step_size" : 0.01
+							},
+							"group" : "/Specular"
+						},
+						{
+							"channel" : {
+								"id" : "Multiply Specular Through Opacity",
+								"type" : "bool",
+								"label" : "Multiply Specular Through Opacity",
+								"value" : true,
+								"current_value" : true
+							},
+							"group" : "/Specular"
+						},
+						{
+							"channel" : {
+								"id" : "Ambient Color",
+								"type" : "color",
+								"label" : "Ambient Color",
+								"value" : [ 0, 0, 0 ],
+								"current_value" : [ 0, 0, 0 ],
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true
+							},
+							"group" : "/Ambient"
+						},
+						{
+							"channel" : {
+								"id" : "Ambient Strength",
+								"type" : "float",
+								"label" : "Ambient Strength",
+								"value" : 1,
+								"current_value" : 1,
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true,
+								"display_as_percent" : true,
+								"step_size" : 0.01
+							},
+							"group" : "/Ambient"
+						},
+						{
+							"channel" : {
+								"id" : "Opacity Strength",
+								"type" : "color",
+								"label" : "Opacity Strength",
+								"value" : [ 1, 1, 1 ],
+								"current_value" : [ 1, 1, 1 ],
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true
+							},
+							"group" : "/Opacity"
+						},
+						{
+							"channel" : {
+								"id" : "reflection",
+								"type" : "color",
+								"label" : "Reflection Color",
+								"visible" : false,
+								"value" : [ 0, 0, 0 ],
+								"current_value" : [ 0, 0, 0 ],
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true
+							},
+							"group" : "/DS Default Material (2)"
+						},
+						{
+							"channel" : {
+								"id" : "refraction",
+								"type" : "color",
+								"label" : "Refraction Color",
+								"visible" : false,
+								"value" : [ 0, 0, 0 ],
+								"current_value" : [ 0, 0, 0 ],
+								"min" : 0,
+								"max" : 1,
+								"clamped" : true
+							},
+							"group" : "/DS Default Material (2)"
+						}
+					]
+				}
+			]
+		}
+	],
+	"scene" : {
+		"nodes" : [
+			{
+				"id" : "pPlane(11cg000)1_zpos-1",
+				"url" : "#pPlane%2811cg000%291_zpos",
+				"name" : "pPlane(11cg000)1_zpos",
+				"label" : "Plane",
+				"geometries" : [
+					{
+						"id" : "geometry-1",
+						"url" : "#geometry",
+						"name" : "shape",
+						"label" : "shape",
+						"type" : "polygon_mesh"
+					}
+				],
+				"preview" : {
+					"oriented_box" : {
+						"min" : [ -0.999, 1, -0.999 ],
+						"max" : [ 1, 1, 1 ]
+					},
+					"center_point" : [ 0, 0, 0 ],
+					"end_point" : [ 0, 1, 0 ],
+					"rotation_order" : "YXZ"
+				},
+				"extra" : [
+					{
+						"type" : "studio_node_channels",
+						"version" : 4
+					},
+					{
+						"type" : "studio/element_data/simple_data",
+						"name" : "RealityObjID",
+						"settings" : {
+							"RealityObjID" : "pPlane(11cg000)1_zpos_4-63443"
+						}
+					}
+				]
+			}
+		],
+		"modifiers" : [
+			{
+				"id" : "Plane-1",
+				"url" : "#Plane",
+				"parent" : "#geometry-1"
+			}
+		],
+		"materials" : [
+			{
+				"id" : "Default-1",
+				"url" : "#Default",
+				"geometry" : "#geometry-1",
+				"groups" : [ "Default" ],
+				"diffuse" : {
+					"channel" : {
+						"id" : "diffuse",
+						"type" : "color",
+						"name" : "Diffuse Color",
+						"current_value" : [ 1, 1, 1 ]
+					}
+				},
+				"uv_set" : "#default",
+				"extra" : [
+					{
+						"type" : "studio/material/daz_brick"
+					}
+				]
+			}
+		],
+		"extra" : [
+			{
+				"type" : "studio_scene_settings",
+				"animation_settings" : {
+					"current_time" : 0,
+					"current_frames_per_second" : 30,
+					"animation_range" : [ 0, 1 ],
+					"play_range" : [ 0, 1 ]
+				},
+				"backdrop_visible" : false,
+				"backdrop_visible_in_render" : true
+			},
+			{
+				"type" : "studio_simulation_settings",
+				"simulation_options" : {
+					"active_engine" : "DzDForceEngine",
+					"simulation_elements" : [
+						{
+							"id" : "dForce Simulation Options",
+							"channels" : [
+								{
+									"channel" : {
+										"id" : "Gravity",
+										"type" : "float",
+										"current_value" : 1
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Air Resistance",
+										"type" : "float",
+										"current_value" : 0.15
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Velocity Limit",
+										"type" : "float",
+										"current_value" : 32.2
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Initialization Time",
+										"type" : "float",
+										"current_value" : 0
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Start Bones From Memorized Pose",
+										"type" : "bool",
+										"current_value" : true
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Pose Transition Time",
+										"type" : "float",
+										"current_value" : 1
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Frames To Simulate",
+										"type" : "enum",
+										"current_value" : 0
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Stabilization Time",
+										"type" : "float",
+										"current_value" : 1
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Simulation Range",
+										"type" : "int2",
+										"current_value" : [ 1, 30 ]
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Frames Per Second Multiplier",
+										"type" : "int",
+										"current_value" : 2
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Subframes",
+										"type" : "int",
+										"current_value" : 8
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Iterations",
+										"type" : "int",
+										"current_value" : 32
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Collision Mesh Resolution",
+										"type" : "enum",
+										"current_value" : 0
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Collision Mode",
+										"type" : "enum",
+										"current_value" : 1
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Collision Iterations",
+										"type" : "int",
+										"current_value" : 4
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Repulse Depth Ratio",
+										"type" : "float",
+										"current_value" : 0.1
+									}
+								},
+								{
+									"channel" : {
+										"id" : "Repulse Stiffness Control",
+										"type" : "float",
+										"current_value" : 10000
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		]
+	}
+}

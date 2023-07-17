@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:simpleType name="guid">
+    <xs:annotation>
+      <xs:documentation>Globally Unique Identifier (GUID)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="non-blank-string">
+    <xs:restriction base="xs:string">
+      <xs:pattern value=".*\S+.*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ProductSupplement">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="ProductName">
+          <xs:complexType>
+            <xs:attribute name="VALUE" use="required" type="non-blank-string"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ProductStoreIDX" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="VALUE" use="required">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:pattern value="[0-9]{1,}-[0-9]{1,2}"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="UserOrderId" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>Ignored in embedded Supplement.dsx</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:attribute name="VALUE" use="required" type="non-blank-string"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="UserOrderDate" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>Ignored in embedded Supplement.dsx</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:attribute name="VALUE" use="required" type="xs:dateTime"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="InstallerDate" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>Ignored in embedded Supplement.dsx</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:attribute name="VALUE" use="required" type="xs:dateTime"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ProductFileGuid" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>Ignored in embedded Supplement.dsx</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:attribute name="VALUE" use="required" type="guid"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="InstallTypes">
+          <xs:complexType>
+            <xs:attribute name="VALUE" use="required">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:pattern value="(Software|Plugin|Content)(,|(,(Software|Plugin|Content)){0,2})"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ProductTags">
+          <xs:complexType>
+            <xs:attribute name="VALUE" use="required" type="non-blank-string"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+      <xs:attribute name="VERSION" use="required" type="non-blank-string"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

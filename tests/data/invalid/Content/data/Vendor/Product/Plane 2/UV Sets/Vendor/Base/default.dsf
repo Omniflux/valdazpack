@@ -1,0 +1,41 @@
+{
+	"file_version" : "0.6.1.0",
+	"asset_info" : {
+		"id" : "/data/Vendor/Product/Plane%202/UV%20Sets/Vendor/Base/default.dsf",
+		"type" : "uv_set",
+		"contributor" : {
+			"author" : "",
+			"email" : "",
+			"website" : ""
+		},
+		"revision" : "0.0",
+		"modified" : "2023-01-01T00:00:00Z"
+	},
+	"uv_set_library" : [
+		{
+			"id" : "default",
+			"name" : "default",
+			"label" : "Default UVs",
+			"vertex_count" : 4,
+			"uvs" : {
+				"count" : 4,
+				"values" : [
+					[ 0, 0 ],
+					[ 1, 0 ],
+					[ 0, 1 ],
+					[ 1, 1 ]
+				]
+			},
+			"polygon_vertex_indices" : [
+			]
+		}
+	],
+	"scene" : {
+		"uvs" : [
+			{
+				"id" : "default-1",
+				"url" : "#default"
+			}
+		]
+	}
+}

@@ -1,0 +1,5 @@
+# Daz Studio 4.21.0.5: App.getAssetMgr().getAudiences()
+
+Children
+Teens
+Adults

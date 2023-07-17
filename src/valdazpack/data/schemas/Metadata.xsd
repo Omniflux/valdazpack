@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:simpleType name="guid">
+    <xs:annotation>
+      <xs:documentation>Globally Unique Identifier (GUID)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="non-blank-string">
+    <xs:restriction base="xs:string">
+      <xs:pattern value=".*\S+.*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="relative-path">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^/].*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="absolute-path">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="/.+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ContentDBInstall">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Products">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Product" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="StoreID">
+                      <xs:complexType>
+                        <xs:attribute name="VALUE" use="required" type="non-blank-string"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="GlobalID">
+                      <xs:complexType>
+                        <xs:attribute name="VALUE" use="required" type="guid"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ProductToken" minOccurs="0">
+                      <xs:complexType>
+                        <xs:attribute name="VALUE" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Description" minOccurs="0" type="non-blank-string"/>
+                    <xs:element name="Artists" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Artist" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="VALUE" use="required" type="non-blank-string"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                      <xs:unique name="UniqueArtist">
+                        <xs:selector xpath="Artist"/>
+                        <xs:field xpath="@VALUE"/> 
+                      </xs:unique>
+                    </xs:element>
+                    <xs:element name="Assets">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Asset" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="ContentType" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:attribute name="VALUE" use="required" type="relative-path"/>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="Audience" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:attribute name="VALUE" use="required" type="xs:string"/>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="Categories" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="Category" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:attribute name="VALUE" use="required" type="absolute-path"/>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                  <xs:unique name="UniqueCategory">
+                                    <xs:selector xpath="Category"/>
+                                    <xs:field xpath="@VALUE"/> 
+                                  </xs:unique>
+                                </xs:element>
+                                <xs:element name="Tags" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="Tag" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:attribute name="VALUE" use="required" type="xs:string"/>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                  <xs:unique name="UniqueTag">
+                                    <xs:selector xpath="Tag"/>
+                                    <xs:field xpath="@VALUE"/> 
+                                  </xs:unique>
+                                </xs:element>
+                                <xs:element name="Description" minOccurs="0" type="xs:string"/>
+                                <xs:element name="Compatibilities" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="Compatibility" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:attribute name="VALUE" use="required" type="absolute-path"/>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                  <xs:unique name="UniqueCompatibility">
+                                    <xs:selector xpath="Compatibility"/>
+                                    <xs:field xpath="@VALUE"/> 
+                                  </xs:unique>
+                                </xs:element>
+                                <xs:element name="CompatibilityBase" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:attribute name="VALUE" use="required" type="absolute-path"/>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="Userwords" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="Userword" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:attribute name="VALUE" use="required" type="xs:string"/>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                  <xs:unique name="UniqueUserword">
+                                    <xs:selector xpath="Userword"/>
+                                    <xs:field xpath="@VALUE"/> 
+                                  </xs:unique>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute name="VALUE" use="required" type="relative-path"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                      <xs:unique name="UniqueAsset">
+                        <xs:selector xpath="Asset"/>
+                        <xs:field xpath="@VALUE"/> 
+                      </xs:unique>
+                    </xs:element>
+                    <xs:element name="SupportAssets">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="SupportAsset" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="VALUE" use="required" type="absolute-path"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="VALUE" use="required" type="absolute-path"/>
+                      </xs:complexType>
+                      <xs:unique name="UniqueSupportAssets">
+                        <xs:selector xpath="SupportAsset"/>
+                        <xs:field xpath="@VALUE"/> 
+                      </xs:unique>
+                    </xs:element>
+                    <xs:element name="ObjectCompatibilities" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ObjectCompatibility" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="VALUE" use="required" type="non-blank-string"/>
+                              <xs:attribute name="REF" use="required" type="absolute-path"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                      <xs:unique name="ObjectCompatibility">
+                        <xs:selector xpath="ObjectCompatibility"/>
+                        <xs:field xpath="@VALUE"/> 
+                      </xs:unique>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="VALUE" use="required" type="non-blank-string"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+		  <xs:unique name="UniqueProduct">
+			<xs:selector xpath="Product"/>
+			<xs:field xpath="@VALUE"/> 
+		  </xs:unique>
+		  <xs:unique name="UniqueGlobalID">
+			<xs:selector xpath="Product/GlobalID"/>
+			<xs:field xpath="@VALUE"/> 
+		  </xs:unique>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="VERSION" use="required" type="non-blank-string"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,19 @@
+from valdazpack.validator import ValidationData
+from valdazpack.issues.libraries import (
+	ExcessRuntimeLibrariesDirectoryIssue,
+	FilesInRootOfRuntimeLibrariesDirectoryIssue,
+	UnexpectedDirectoriesInRuntimeLibrariesDirectoryIssue,
+	InvalidCompressedFilesInRuntimeLibrariesDirectoryIssue
+)
+
+def test_ExcessRuntimeLibrariesDirectoryIssue(validatorINVALIDPoser: ValidationData):
+	assert any(isinstance(x, ExcessRuntimeLibrariesDirectoryIssue) for x in validatorINVALIDPoser.issues.product)
+
+def test_FilesInRootOfRuntimeLibrariesDirectoryIssue(validatorINVALIDPoser: ValidationData):
+	assert any(isinstance(x, FilesInRootOfRuntimeLibrariesDirectoryIssue) for x in validatorINVALIDPoser.issues.product)
+
+def test_UnexpectedDirectoriesInRuntimeLibrariesDirectoryIssue(validatorINVALIDPoser: ValidationData):
+	assert any(isinstance(x, UnexpectedDirectoriesInRuntimeLibrariesDirectoryIssue) for x in validatorINVALIDPoser.issues.product)
+
+def test_InvalidCompressedFilesInRuntimeLibrariesDirectoryIssue(validatorINVALIDPoser: ValidationData):
+	assert any(isinstance(x, InvalidCompressedFilesInRuntimeLibrariesDirectoryIssue) for x in validatorINVALIDPoser.issues.product)

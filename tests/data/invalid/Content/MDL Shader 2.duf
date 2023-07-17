@@ -1,0 +1,58 @@
+{
+	"file_version" : "0.6.1.0",
+	"asset_info" : {
+		"id" : "/MDL%20Shader.duf",
+		"type" : "preset_shader",
+		"contributor" : {
+			"author" : "",
+			"email" : "",
+			"website" : ""
+		},
+		"revision" : "1.0",
+		"modified" : "2023-01-01T00:00:00Z"
+	},
+	"material_library" : [
+		{
+			"id" : "Default",
+			"extra" : [
+				{
+					"type" : "studio/material/uber_iray",
+					"version" : "1.1.0.0"
+				},
+				{
+					"type" : "studio_material_channels",
+					"channels" : [
+						{
+							"channel" : {
+								"id" : "Tags",
+								"type" : "string",
+								"label" : "Tags",
+								"value" : ""
+							},
+							"group" : "/General"
+						}
+					]
+				}
+			]
+		}
+	],
+	"scene" : {
+		"materials" : [
+			{
+				"url" : "#Default",
+				"extra" : [
+					{
+						"type" : "studio/material/uber_iray",
+						"version" : "1.1.0.0"
+					}
+				]
+			}
+		],
+		"animations" : [
+			{
+				"url" : "name://@selection#materials:?extra/studio_material_channels/channels/Tags/value",
+				"keys" : [ [ 0, "" ] ]
+			}
+		]
+	}
+}

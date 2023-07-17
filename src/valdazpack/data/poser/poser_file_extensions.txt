@@ -1,0 +1,22 @@
+# Daz Studio 4.21.0.5: App.getContentMgr().getPoserFileExtensions()
+
+pz3
+pzz
+cr2
+crz
+pz2
+p2z
+fc2
+fcz
+hr2
+hrz
+hd2
+hdz
+pp2
+ppz
+lt2
+ltz
+cm2
+cmz
+mc6
+mcz

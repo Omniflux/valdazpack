@@ -1,0 +1,6 @@
+# Daz Studio 4.21.0.5: App.getContentMgr().getNativeBaseUserFacingExcludedDirs()
+
+data
+ReadMe's
+Runtime
+Uninstallers

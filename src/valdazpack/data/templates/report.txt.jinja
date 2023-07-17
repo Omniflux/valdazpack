@@ -1,0 +1,58 @@
+Validation Report for {{ data.product_paths|map('string')|join(', ') }}
+
+{% if data.daz or data.daz_original or data.poser or data.dson_schema %}
+{% if data.daz %}Validating as if this is a product distributed by Daz Productions, Inc{% endif %}
+{% if data.daz_original %}Validating as if this is a product produced by Daz Productions, Inc{% endif %}
+{% if data.poser %}Validating with additional Poser library rules{% endif %}
+{% if data.dson_schema %}Validating DSON schema (experimental){% endif %}
+{%- endif -%}
+
+{%- for package in data.packages|sort %}
+Package Type: {{ package.type.name }}
+Package Prefix: {{ package.parsed['prefix'] if package.parsed else none }}
+Package SKU: {{ package.parsed['sku'] if package.parsed else none }}
+Package ID: {{ package.parsed['id'] if package.parsed else none }}
+Package Name: {{ package.parsed['name'] if package.parsed else none }}
+Product Name: {{ package.product_name }}
+Product Store Index: {{ package.product_store_idx }}
+Product File GUID: {{ package.product_file_guid }}
+{%- endfor %}
+
+Metadata Products:{% for product in data.metadata.products|sort %}
+	{{ product }}
+{%- else %} {{ none }}{% endfor %}
+Metadata Artists:{% for artist in data.metadata.artists|sort %}
+	{{ artist }}
+{%- else %} {{ none }}{% endfor %}
+Metadata Stores:{% for store in data.metadata.stores|sort %}
+	{{ store }}
+{%- else %} {{ none }}{% endfor %}
+
+Contributors:{% for contributor, details in data.contributors|dictsort %}
+	{{ contributor }}
+	{%- for label, detail in details|dictsort %}
+		{{ label }}: {{ detail|first if detail|count == 1 else detail|sort }}
+	{%- endfor %}
+{%- else %} {{ none }}{% endfor %}
+
+Vendor Directories:{% for vendor, directories in data.vendor_paths|dictsort %}
+	{{ vendor }}:
+	{%- for directory in directories|sort %}
+		{{ directory }}
+	{%- endfor %}
+{%- else %} {{ none }}{% endfor %}
+
+Dependencies:{% for dependency, files in data.dependency_files|dictsort %}
+	{{ dependency }}:
+	{%- for file in files|sort %}
+		{{ file }}
+	{%- endfor %}
+{%- else %} {{ none }}{% endfor %}
+
+Issues:{% for issue in (data.issues.package + data.issues.product)|sort(attribute='type', reverse=true) %}
+
+{{ issue.type|upper }}: {{ issue.title }}
+{{ issue.description }}
+{{ issue.reference or 'No reference available' }}
+{{ issue.detail|pformat }}
+{%- else %} {{ none }}{% endfor %}

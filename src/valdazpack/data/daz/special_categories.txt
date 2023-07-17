@@ -1,0 +1,5 @@
+# http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/interface/panes/smart_content/products_page/category_view/start
+
+Default/Lost and Found
+Default/Saved Files
+Default/Scan Results

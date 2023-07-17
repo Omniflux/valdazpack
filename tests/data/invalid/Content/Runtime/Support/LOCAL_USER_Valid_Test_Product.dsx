@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentDBInstall VERSION="1.0">
+ <Products>
+  <Product VALUE="Invalid Test Product">
+   <StoreID VALUE="DAZ 3D"/>
+   <GlobalID VALUE="39941b10-6b9b-4fa2-81da-8d1f6aec1497"/>
+   <Assets>
+    <Asset VALUE="MDL Shader.duf">
+     <ContentType VALUE="Preset/Materials/Hierarchical/RSL"/>
+     <Audience VALUE="Teens"/>
+     <Userwords>
+      <Userword VALUE=""/>
+     </Userwords>
+    </Asset>
+    <Asset VALUE="MDL Shader 2.duf">
+     <ContentType VALUE="Preset/Shader"/>
+     <Audience VALUE="Teens"/>
+     <Userwords>
+      <Userword VALUE=""/>
+     </Userwords>
+    </Asset>
+    <Asset VALUE="RSL Material.duf">
+     <ContentType VALUE="Preset/Shader/MDL"/>
+     <Audience VALUE="Teen"/>
+     <Userwords>
+      <Userword VALUE=""/>
+     </Userwords>
+    </Asset>
+    <Asset VALUE="Test Asset.duf">
+     <ContentType VALUE="Follower/Wardrobe/Shoes"/>
+     <Audience VALUE="Unknown"/>
+     <Userwords>
+      <Userword VALUE=""/>
+     </Userwords>
+    </Asset>
+   </Assets>
+   <SupportAssets VALUE="/Runtime/Support/LOCAL_USER_Valid_Test_Product.dsx">
+    <SupportAsset VALUE="/ReadMe's/Valid Test Product.txt"/>
+   </SupportAssets>
+  </Product>
+  <Product VALUE="Invalid Test Product 2">
+   <StoreID VALUE="Some Store"/>
+   <GlobalID VALUE="39941b10-6b9b-4fa2-81da-8d1f6aec1498"/>
+   <Assets>
+    <Asset VALUE="Test Asset.duf">
+     <Categories>
+      <Category VALUE="/Default/Shaders"/>
+      <Category VALUE="/Default/Shaders/"/>
+      <Category VALUE="/Default/Shaders/Other"/>
+      <Category VALUE="/Default/Lost and Found"/>
+      <Category VALUE="/Shaders/"/>
+     </Categories>
+     <Tags>
+      <Tag VALUE=""/>
+     </Tags>
+     <Description>Text</Description>
+     <Compatibilities>
+      <Compatibility VALUE="/Genesis 8/Female"/>
+      <Compatibility VALUE="/Genesis 8 Female Centaur/Female Centaur Body"/>
+      <Compatibility VALUE="/Genesis 8 Female Centaur/Centaur Shell"/>
+     </Compatibilities>
+     <Userwords>
+      <Userword VALUE="Text"/>
+     </Userwords>
+    </Asset>
+   </Assets>
+   <SupportAssets VALUE="/Runtime/Support/LOCAL_USER_Invalid_Test_Product.dsx">
+    <SupportAsset VALUE="/ReadMe's/Invalid Test Product.txt"/>
+   </SupportAssets>
+  </Product>
+ </Products>
+</ContentDBInstall>

@@ -1,0 +1,61 @@
+{
+	"file_version" : "0.6.1.0",
+	"asset_info" : {
+		"id" : "/data/Vendor/Product/Plane%202/Morphs/Vendor/Base/Plane.dsf",
+		"type" : "modifier",
+		"contributor" : {
+			"author" : "",
+			"email" : "",
+			"website" : ""
+		},
+		"revision" : "0.0",
+		"modified" : "2023-01-01T00:00:00Z"
+	},
+	"modifier_library" : [
+		{
+			"id" : "Plane",
+			"name" : "Plane",
+			"parent" : "/data/Vendor/Product/Plane%202/pPlane%2811cg000%291_zpos.dsf#geometry",
+			"presentation" : {
+				"type" : "Modifier/Shape",
+				"label" : "",
+				"description" : "",
+				"icon_large" : "",
+				"colors" : [ [ 0.3529412, 0.3529412, 0.3529412 ], [ 1, 1, 1 ] ]
+			},
+			"channel" : {
+				"id" : "value",
+				"type" : "float",
+				"name" : "Value",
+				"label" : "Plane",
+				"value" : 1,
+				"min" : -1,
+				"max" : 1,
+				"clamped" : true,
+				"display_as_percent" : true,
+				"step_size" : 0.01
+			},
+			"group" : "/Morphs/Morph Loader",
+			"morph" : {
+				"vertex_count" : 4,
+				"deltas" : {
+					"count" : 4,
+					"values" : [
+						[ 0, 49, 51, -1.00001 ],
+						[ 1, -49, 51, -1.00001 ],
+						[ 2, 49, -49, 1.00001 ],
+						[ 3, -49, -49, 1.00001 ]
+					]
+				}
+			}
+		}
+	],
+	"scene" : {
+		"modifiers" : [
+			{
+				"id" : "Plane-1",
+				"url" : "#Plane"
+			}
+		]
+	}
+}

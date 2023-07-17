@@ -1,0 +1,7 @@
+<ProductSupplement VERSION="0.1">
+ <ProductName VALUE="Valid Test Product"/>
+ <ProductFileGuid VALUE="30b46b76-ef1c-df6c-c0ad-f7a53b627778"/>
+ <ProductStoreIDX VALUE="4062536662900013176-01"/>
+ <InstallTypes VALUE="Content"/>
+ <ProductTags VALUE="DAZStudio4_5"/>
+</ProductSupplement>

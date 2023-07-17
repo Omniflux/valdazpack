@@ -1,0 +1,6 @@
+# http://docs.daz3d.com/doku.php/public/dson_spec/format_description/metadata/content_types/start
+
+Follower/Wardrobe/Shoe
+Follower/Wardrobe/Shoe/Left
+Follower/Wardrobe/Shoe/Right
+Follower/Wardrobe/Shoes

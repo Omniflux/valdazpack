@@ -1,0 +1,7 @@
+<DAZInstallManifest VERSION="0.1">
+ <GlobalID VALUE="b29b5e8e-34d1-4ebe-a7c2-9859117bb0e1"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/ReadMe's/Valid Test Product.txt"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/LOCAL_USER_Valid_Test_Product.dsa"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/LOCAL_USER_Valid_Test_Product.dsx"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Support/LOCAL_USER_Valid_Test_Product.png"/>
+</DAZInstallManifest>

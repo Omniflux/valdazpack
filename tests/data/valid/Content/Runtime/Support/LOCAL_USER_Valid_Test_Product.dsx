@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentDBInstall VERSION="1.0">
+ <Products>
+  <Product VALUE="Valid Test Product">
+   <StoreID VALUE="LOCAL USER"/>
+   <GlobalID VALUE="39941b10-6b9b-4fa2-81da-8d1f6aec1497"/>
+   <Assets>
+   </Assets>
+   <SupportAssets VALUE="/Runtime/Support/LOCAL_USER_Valid_Test_Product.dsx">
+    <SupportAsset VALUE="/ReadMe's/Valid Test Product.txt"/>
+   </SupportAssets>
+  </Product>
+ </Products>
+</ContentDBInstall>
