@@ -34,7 +34,7 @@ pytest = "^7.4.0"
 pytest-mock = "^3.11.1"
 
 [tool.poetry.scripts]
-valdazpack = {reference = "valdazpack.main", type = "console"}
+valdazpack = {reference = "valdazpack.__main__:_main", type = "console"}
 
 [build-system]
 requires = ["poetry-core"]
