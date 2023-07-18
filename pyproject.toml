@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "valdazpack"
-version = "0.1.0"
+version = "0.1.1"
 description = "DAZ Package Validator"
 license = "MIT"
 authors = ["Omni Flux <omniflux@omniflux.com>"]
