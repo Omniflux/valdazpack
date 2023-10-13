@@ -46,7 +46,7 @@ class FilesReferenceNonexistentFilesIssue(ProductWarning):
 
 class FilesReferenceAbsolutePathsIssue(ProductWarning):
 	title = 'Absolute file path reference(s)'
-	description = "File references should be relative to Content directory (should not begin with 'C:/' or '/')"
+	description = "File references should be relative to Content directory (should not begin with '/C:/' or '//')"
 
 class LegacyFilesIssue(ProductWarning):
 	title = 'Legacy file(s) (*.daz, *.ds) in Content directory'
