@@ -67,7 +67,7 @@ class ValidateDSONFiles(ProductRuleset):
 	
 			if dson:
 				self.dson = dson
-				self.asset_type: str = next(iter(self.asset_type_parser.find(dson))).value  # pyright: ignore[reportUnknownArgumentType]
+				self.asset_type: str = getattr(next(iter(self.asset_type_parser.find(dson)), None), 'value', '')
 
 				self._getContributors()
 				self._checkAssetID(filename)
