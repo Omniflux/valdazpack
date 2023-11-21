@@ -124,7 +124,6 @@
 
 1 $.material_library[*].extra[*].definition
 1 $.modifier_library[*].extra.smoothing.collision_node
-1 $.modifier_library[*].presentation.label
 
 1 $.scene.nodes[*].extra[*].clone_info_path
 1 $.scene.nodes[*].extra[*].file
