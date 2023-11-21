@@ -56,10 +56,6 @@ class MissingThumbnailsIssue(ProductWarning):
 	title = 'Missing thumbnail(s)'
 	description = "Assets should have thumbnails"
 
-class FullExtensionThumbnailsIssue(ProductWarning):
-	title = 'Full extension thumbnail(s)'
-	description = "Distributed assets should have asset extension removed from thumbnail name to prevent user from overwriting when resaving"
-
 class UnexpectedFilesInUserFacingDirectoriesIssue(ProductWarning):
 	title = 'Unexpected file(s) in user facing directory'
 	description = ("Files in user facing directories should consist of *.duf, *.dsa, *.dsb, *.dse and accompanying thumbnails (*.png) and tips (*.tip.png). "

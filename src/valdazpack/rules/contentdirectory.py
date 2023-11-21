@@ -213,7 +213,6 @@ class ValidateContentDirectory(ProductRuleset):
 		"""Check product thumbnails."""
 
 		missingThumbnails: list[str] = []
-		fullExtensionThumbnails: list[str] = []
 
 		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files(filter=_USER_FACING_FILE_EXTENSIONS, exclude_dirs=_NON_USER_FACING_DIRECTORIES)):  # pyright: ignore[reportUnknownMemberType]
 			fullExtThumbnail = f'{file}.png'
@@ -221,14 +220,9 @@ class ValidateContentDirectory(ProductRuleset):
 			if not self.data.product_fs.exists(fullExtThumbnail):
 				if not self.data.product_fs.exists(f'{splitext(file)[0]}.png'):
 					missingThumbnails.append(file)
-			else:
-				fullExtensionThumbnails.append(fullExtThumbnail)
 
 		if missingThumbnails:
 			self._addIssue(issues.MissingThumbnailsIssue(missingThumbnails))
-
-		if fullExtensionThumbnails:
-			self._addIssue(issues.FullExtensionThumbnailsIssue(fullExtensionThumbnails))
 
 	@rule
 	def _checkUnexpectedUserFacingFiles(self) -> None:
