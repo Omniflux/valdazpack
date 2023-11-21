@@ -1,10 +1,11 @@
 import json
-import jsonschema
 
 from pathlib import Path
 from typing import cast, Any, BinaryIO
 
 from fs.iotools import RawWrapper
+from jsonschema.protocols import Validator
+from jsonschema.validators import validator_for
 from lxml import etree
 
 from .resources import read_datafile_bytes
@@ -51,13 +52,13 @@ class SchemaCheckedJSON():
 		...
 	"""
 
-	cache: dict[str, jsonschema.Validator] = {}
+	cache: dict[str, Validator] = {}
 	data: dict[str, Any]
 
 	def __init__(self, json_file: Path | BinaryIO, schema: str) -> None:
 		if not schema in self.cache:
 			schema_data: dict[str, Any] = json.loads(read_datafile_bytes(f'schemas/{schema}'))
-			validator = cast(jsonschema.Validator, jsonschema.validators.validator_for(schema_data))  # pyright: ignore[reportGeneralTypeIssues, reportUnknownMemberType]
+			validator = cast(Validator, validator_for(schema_data))  # pyright: ignore[reportGeneralTypeIssues, reportUnknownMemberType]
 			validator.check_schema(schema_data)
 			self.cache[schema] = validator(schema_data)  # pyright: ignore[reportGeneralTypeIssues, reportUnknownArgumentType]
 
