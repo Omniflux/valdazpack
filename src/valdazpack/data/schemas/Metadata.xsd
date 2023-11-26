@@ -13,6 +13,12 @@
       <xs:pattern value=".*\S+.*"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="non-blank-multiline-string">
+    <xs:restriction base="xs:string">
+      <xs:whiteSpace value="collapse"/>
+      <xs:pattern value=".*\S.*"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="relative-path">
     <xs:restriction base="xs:string">
       <xs:pattern value="[^/].*"/>
@@ -47,7 +53,7 @@
                         <xs:attribute name="VALUE" use="required"/>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="Description" minOccurs="0" type="non-blank-string"/>
+                    <xs:element name="Description" minOccurs="0" type="non-blank-multiline-string"/>
                     <xs:element name="Artists" minOccurs="0">
                       <xs:complexType>
                         <xs:sequence>
