@@ -139,7 +139,10 @@ class ValidateDSONFiles(ProductRuleset):
 						if '://' in value:
 							path = unquote(urlparse(value).path.split(':', 1)[-1])
 						else:
-							path = unquote(urlparse(value.split(':', 1)[-1]).path)
+							# Work around double forward slash being interpreted as netloc by urlparse
+							leading_slash_count = len(re.split("[^/]", value, 1)[0])
+							value = value.lstrip('/')
+							path = '/' * leading_slash_count + unquote(urlparse(value.split(':', 1)[-1]).path)
 
 						if ' ' in value:
 							warn(f'Possible unquoted attribute marked as quoted: {filename}: {str(v.full_path)}, value: {value}')
@@ -157,7 +160,7 @@ class ValidateDSONFiles(ProductRuleset):
 						self.data.postload_files.add(path)
 
 		for file in url_references - {''}:
-			if not trackDependencyIfExists(self.data, file, filename):
+			if file.startswith('//') or not trackDependencyIfExists(self.data, file, filename):
 				self.data.missing_referenced_files.setdefault(file, set()).add(filename)
 
 	@rule

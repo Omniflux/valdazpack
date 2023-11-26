@@ -1,3 +1,5 @@
+import re
+
 from collections import defaultdict
 from fs.path import splitext
 from itertools import chain
@@ -184,10 +186,12 @@ class ValidateContentDirectory(ProductRuleset):
 		"""Check invalid file references."""
 
 		if self.data.missing_referenced_files:
+			absoluteRegex = re.compile(r'^\/([a-z]:)?\/', re.IGNORECASE)
+	
 			absoluteFileReferences: dict[str, set[str]] = {}
 			missingFileReferences: dict[str, set[str]] = {}
 			for k, v in self.data.missing_referenced_files.items():
-				if k.startswith('/'):
+				if absoluteRegex.match(k):
 					absoluteFileReferences[k] = v
 				else:
 					missingFileReferences[k] = v
