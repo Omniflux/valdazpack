@@ -21,6 +21,7 @@ class ValidatePackages(PackageRuleset):
 			self._checkPackageNameParseable(package)
 			self._checkDAZPackageType(package)
 			self._checkOtherPackageType(package)
+			self._checkReadMeIncluded(package)
 
 		if self.bad_package_names:
 			self._addIssue(issues.PackageNameIssue(self.bad_package_names))
@@ -51,3 +52,12 @@ class ValidatePackages(PackageRuleset):
 
 		if not self.data.daz and package.type != PackageType.CUSTOM:
 			self.bad_standard_pkgs.append(package.path.name)
+
+	@rule
+	def _checkReadMeIncluded(self, package: Package) -> None:
+		"""Check ReadMe.pdf included in package."""
+
+		if package.root_fs.isfile('ReadMe.pdf'):
+			package.readme = True
+		else:
+			self._addIssue(issues.NoPackageReadMeIssue())

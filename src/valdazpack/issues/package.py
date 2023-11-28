@@ -1,4 +1,4 @@
-from . import PackageWarning
+from . import PackageNotice, PackageWarning
 
 class PackageNameIssue(PackageWarning):
 	title = 'Invalid Package Filename'
@@ -16,3 +16,7 @@ class StandardPackageNameIssue(PackageWarning):
 	title = 'Standard Package Filename'
 	reference = 'http://docs.daz3d.com/doku.php/public/software/install_manager/referenceguide/tech_articles/package_naming/'
 	description = "Packages not distributed by Daz Productions, Inc must not have a source prefix of 'IM', 'DZ', 'DAZ', 'DAZ3D', or 'TAFI'"
+
+class NoPackageReadMeIssue(PackageNotice):
+	title = 'No Package ReadMe included'
+	description = "Packages may include a 'ReadMe.pdf' file in the root accessible by clicking the ReadMe button in Install Manager"

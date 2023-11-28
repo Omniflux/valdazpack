@@ -13,6 +13,7 @@ Package Prefix: {{ package.parsed['prefix'] if package.parsed else none }}
 Package SKU: {{ package.parsed['sku'] if package.parsed else none }}
 Package ID: {{ package.parsed['id'] if package.parsed else none }}
 Package Name: {{ package.parsed['name'] if package.parsed else none }}
+Package ReadMe: {{ 'Included' if package.readme else 'Not included' }}
 Product Name: {{ package.product_name }}
 Product Store Index: {{ package.product_store_idx }}
 Product File GUID: {{ package.product_file_guid }}

@@ -43,6 +43,7 @@ class Package:
 		self.product_name: str | None = None
 		self.product_store_idx: str | None = None
 		self.product_file_guid = self._calculateProductFileGUID()
+		self.readme: bool = False
 
 		if self.path and (matches := re.match(r'^(?P<prefix>[A-Z][0-9A-Z]{0,6})(?=\d{8})(?P<sku>\d{8})(-(?P<id>\d{2}))?_(?P<name>[0-9A-Za-z]+)\.zip$', self.path.name)):
 			self.parsed = cast(ParsedPackageFilename, matches.groupdict())

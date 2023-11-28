@@ -62,6 +62,7 @@
 				<tr><th>Package SKU</th><td>{{ package.parsed['sku'] if package.parsed else none }}</td></tr>
 				<tr><th>Package ID</th><td>{{ package.parsed['id'] if package.parsed else none }}</td></tr>
 				<tr><th>Package Name</th><td>{{ package.parsed['name'] if package.parsed else none }}</td></tr>
+				<tr><th>Package ReadMe</th><td>{{ 'Included' if package.readme else 'Not included' }}</td></tr>
 			</tbody>
 			<tbody>
 				<tr><th>Product Name</th><td>{{ package.product_name }}</td></tr>
