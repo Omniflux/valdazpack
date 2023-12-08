@@ -75,7 +75,7 @@ class ValidationData:
 
 def _create_merged_fs(filesystems: list[Path]) -> MultiFS:
 	def _path_to_fs(path: Path) -> FS:
-		for f in [f'dimzip://{path}', f'zip://{path}', f'osfs://{path}']:
+		for f in [f'dimzip://{path.as_posix()}', f'zip://{path.as_posix()}', f'osfs://{path.as_posix()}']:
 			try:
 				if isinstance(fs := open_fs(f), DIMZipFS):
 					if fs.isdir('Content'):
