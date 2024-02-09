@@ -5,6 +5,5 @@ dae
 fbx
 dxf
 3ds
-dae
 obj
 obz
