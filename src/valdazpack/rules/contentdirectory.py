@@ -42,6 +42,8 @@ class ValidateContentDirectory(ProductRuleset):
 		self._checkAssetThumbnails()
 		self._checkUnexpectedUserFacingFiles()
 
+		# TODO Check for duplicate files
+
 		# data.referenced_files must be populated by ValidateDSONFiles, etc. before this step
 		self._checkUnreferencedTextureFiles()
 

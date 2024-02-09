@@ -56,6 +56,11 @@ class ImageHasIncorrectFileExtensionIssue(ProductWarning):
 	title = 'Image(s) with incorrect file extension'
 	description = "Image file extension does not match detected image type"
 
+class SingleColorImageIssue(ProductWarning):
+	title = 'Single Color Image(s) in Textures directory'
+	reference = 'https://www.daz3d.com/forums/discussion/667606/oh-fugazi-why-so-many-discrete-2k-black-or-white-maps'
+	description = "Single color image files use VRAM unnecessarily, should set channel color instead"
+
 class UnexpectedFilesInWebLinksDirectoryIssue(ProductWarning):
 	title = 'Unexpected file(s) in WebLinks directory'
 	description = "Only *.pzs files should be in WebLinks directory"

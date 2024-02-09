@@ -1,5 +1,7 @@
-from fs.path import combine, split
 from urllib.parse import urlparse
+
+from fs.path import combine, split
+from PIL import Image
 
 from ..issues import runtime as issues
 from ..validator.resources import read_list_from
@@ -116,6 +118,19 @@ class ValidateRuntimeDirectory(ProductRuleset):
 
 		if incorrect_image_texture_file_extensions:
 			self._addIssue(issues.ImageHasIncorrectFileExtensionIssue(incorrect_image_texture_file_extensions))
+
+		single_color_image_files: list[str] = []
+		if self.data.product_fs.isdir(_TEXTURES_DIR):
+			for file in self.data.product_fs.walk.files(_TEXTURES_DIR):  # pyright: ignore[reportUnknownMemberType]:
+				try:
+					with Image.open(self.data.product_fs.openbin(file)) as im:
+						if (colors := im.getcolors()) and len(colors) == 1:
+							single_color_image_files.append(file)
+				except Exception:
+					pass
+
+		if single_color_image_files:
+			self._addIssue(issues.SingleColorImageIssue(single_color_image_files))
 
 		# TODO: check bump and displacement maps are 16+bit greyscale? normal maps 16+bit? ensure none are jpg?
 		# Use wand / imagemagick instead of Pillow?
