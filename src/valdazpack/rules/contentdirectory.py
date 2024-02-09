@@ -15,6 +15,8 @@ from ..validator.utilities import Step, checkTypo, thumbnailsFor, trackDependenc
 _TEXTURES_DIR = 'Runtime/Textures'
 _NON_USER_FACING_DIRECTORIES = [d.lower() for d in read_list_from('daz/user_facing_excluded_directories.txt')]
 _USER_FACING_FILE_EXTENSIONS = [f'*.{ext.lower()}' for ext in read_list_from('daz/native_file_extensions.txt')]
+_GRATUITOUS_FILES = [f.lower() for f in read_list_from('daz/gratuitous_content_files.txt')]
+_GRATUITOUS_FILE_EXTENSIONS = [f'.{ext.lower()}' for ext in read_list_from('daz/gratuitous_content_file_extensions.txt')]
 
 
 class ValidateContentDirectory(ProductRuleset):
@@ -108,18 +110,16 @@ class ValidateContentDirectory(ProductRuleset):
 	def _checkGratuitousFiles(self) -> None:
 		"""Check product for gratuitous files."""
 
-		GRATUITOUS_FILES = ['Thumbs.db', 'InstallManagerFileRegister.json']
-
 		gratuitous_files: list[str] = []
 		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files()):  # pyright: ignore[reportUnknownMemberType]
 			path = Path(file)
-			if path.name.startswith('.') or '__MACOSX' in path.parts or path.name.lower() in [x.lower() for x in GRATUITOUS_FILES]:
+			if '__MACOSX' in path.parts or path.name.lower() in _GRATUITOUS_FILES or path.suffix.lower() in _GRATUITOUS_FILE_EXTENSIONS:
 				gratuitous_files.append(file)
 
 		for directory in (dir.lstrip('/') for dir in self.data.product_fs.walk.dirs()):  # pyright: ignore[reportUnknownMemberType]
 			path = Path(directory)
-			if path.name.startswith('.') or '__MACOSX' in path.parts:
-					gratuitous_files.append(directory)
+			if '__MACOSX' in path.parts:
+				gratuitous_files.append(directory)
 
 		if gratuitous_files:
 			self._addIssue(issues.GratuitousFilesIssue(gratuitous_files))
