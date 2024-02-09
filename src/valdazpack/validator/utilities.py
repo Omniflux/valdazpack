@@ -111,8 +111,9 @@ def checkImageDir(fs: FS, dir: str, preferred_suffixes: set[str]) -> tuple[list[
 		preferred_suffixes (set[str]): List of preferred file extensions.
 	"""
 
+	# TODO: I did not document where these extensions came from; find documentation (move to data/daz/image_file_extensions.txt?)
 	DS_SUPPORTED_TEXTURE_SUFFIXES = set(['.bmp', '.bum', '.gif', '.jpeg', '.jpg', '.png', '.hdr', '.exr', '.tif', '.tiff', '.tga'])
-	PIL_UNSUPPORTED_IMAGE_SUFFIXES = set(['.dsi', '.svg', '.hdr', '.exr', '.bum'])
+	PIL_UNSUPPORTED_IMAGE_SUFFIXES = set(['.dsi', '.svg', '.hdr', '.exr'])
 
 	non_image_files: list[str] = []
 	atypical_image_files: list[str] = []
