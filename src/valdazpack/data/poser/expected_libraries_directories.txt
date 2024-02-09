@@ -1,5 +1,8 @@
+# Daz Studio 4.22.0.15: App.getContentMgr().getPoserBaseUserFacingDirs()
+
 Camera
 Character
+Collections
 Face
 Hair
 Hand
