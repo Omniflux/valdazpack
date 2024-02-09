@@ -37,6 +37,7 @@ class ValidateDSONFiles(ProductRuleset):
 		self.preset_shader_parser = parse('$.scene.materials[*].extra[*].type')
 		self.preset_shader_count = parse('$.scene.materials[*].extra[*].`len`')
 		self.active_morph_parser = parse('$.modifier_library[?(@.channel.value != 0 & @.channel.value != 0)].channel')
+		self.morph_loader_group_parser = parse('$.modifier_library[?(@.group == "/Morphs/Morph Loader")].channel')
 		self.probable_path = re.compile(r'\b(data|runtime)\/', re.IGNORECASE)
 
 		self.invalid_dson_files: dict[str, Exception] = {}
@@ -46,6 +47,7 @@ class ValidateDSONFiles(ProductRuleset):
 		self.morphs_in_duf_files: dict[str, list[str]] = {}
 		self.materials_in_duf_files: dict[str, list[str]] = {}
 		self.active_morphs_in_dsf_files: dict[str, list[tuple[str, str]]] = {}
+		self.morph_loader_group_in_dsf_files: dict[str, list[str]] = {}
 		for filename in self.data.product_fs.walk.files(filter=['*.dsf', '*.duf']):  # pyright: ignore[reportUnknownMemberType]
 			dson: dict[str, Any] | None = None
 
@@ -75,6 +77,7 @@ class ValidateDSONFiles(ProductRuleset):
 
 				if filename.lower().endswith('.dsf'):
 					self._checkActiveMorphsInDSF(filename)
+					self._checkMorphLoaderGroupInDSF(filename)
 
 				elif filename.lower().endswith('.duf'):
 					self._getShaderTypeInDUF(filename)
@@ -100,6 +103,9 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.active_morphs_in_dsf_files:
 			self._addIssue(issues.ActiveMorphsInDSFFilesIssue(self.active_morphs_in_dsf_files))
+
+		if self.morph_loader_group_in_dsf_files:
+			self._addIssue(issues.MorphLoaderGroupInDSFFilesIssue(self.morph_loader_group_in_dsf_files))
 
 	@rule
 	def _getContributors(self) -> None:
@@ -204,3 +210,10 @@ class ValidateDSONFiles(ProductRuleset):
 
 		for channel in self.active_morph_parser.find(self.dson):
 			self.active_morphs_in_dsf_files.setdefault(filename, []).append((channel.value['label'], channel.value['value']))
+
+	@rule
+	def _checkMorphLoaderGroupInDSF(self, filename: str) -> None:
+		"""Check for Morph Loader path in DSF."""
+
+		for channel in self.morph_loader_group_parser.find(self.dson):
+			self.morph_loader_group_in_dsf_files.setdefault(filename, []).append(channel.value['label'])

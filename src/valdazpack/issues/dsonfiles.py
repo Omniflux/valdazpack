@@ -32,3 +32,8 @@ class ShaderInDUFFilesIssue(ProductWarning):
 class ActiveMorphsInDSFFilesIssue(ProductWarning):
 	title = 'Active Morph(s) in DSON Support File(s) (*.dsf)'
 	description = "Morphs should be set to 0 or False when saved as Support Assets. Use Presets to set active values."
+
+class MorphLoaderGroupInDSFFilesIssue(ProductWarning):
+	title = 'Morph(s) in "Morphs/Morph Loader" property group in DSON Support File(s) (*.dsf)'
+	description = ("Morphs should be reassigned from the 'Morphs/Morph Loader' property group to an appropriate "
+	               "group for filtering.")
