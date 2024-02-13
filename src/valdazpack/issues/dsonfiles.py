@@ -9,6 +9,10 @@ class AssetIDMismatchFilesIssue(ProductNotice):
 	title = 'Asset ID mismatch(es) in DSON file(s)'
 	description = "Asset ID in DSON file does not match filename"
 
+class DuplicateFormulasInMorphsIssue(ProductWarning):
+	title = 'Duplicate formula(s) in morph(s)'
+	description = "Each formula target may only occur once per morph"
+
 class GeometryInDUFFilesIssue(ProductWarning):
 	title = 'Geometry in DSON User File(s) (*.duf)'
 	reference = 'http://docs.daz3d.com/doku.php/public/software/dazstudio/4/userguide/creating_content/packaging/tutorials/packaging_genesis_morph_products/start'
