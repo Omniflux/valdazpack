@@ -33,6 +33,7 @@ class ValidateDSONFiles(ProductRuleset):
 		self.geometry_parser = parse('$.geometry_library[*].id')
 		self.uvs_parser = parse('$.uv_set_library[*].id')
 		self.morphs_parser = parse('$.modifier_library[*].id')
+		self.id_parser = parse('($.scene.*[*].id)|($.*[*].id)')
 		self.material_daz_brick_parser = parse('$.material_library[?(@.extra[*].type == "studio/material/daz_brick")].id')
 		self.asset_type_parser = parse('$.asset_info.type')
 		self.preset_shader_parser = parse('$.scene.materials[*].extra[*].type')
@@ -44,6 +45,7 @@ class ValidateDSONFiles(ProductRuleset):
 
 		self.invalid_dson_files: dict[str, Exception] = {}
 		self.asset_id_mismatch_files: dict[str, str] = {}
+		self.duplicate_ids_in_files: dict[str, list[str]] = {}
 		self.duplicate_formulas_in_morphs: dict[str, dict[str, list[str]]] = {}
 		self.geometry_in_duf_files: dict[str, list[str]] = {}
 		self.uvs_in_duf_files: dict[str, list[str]] = {}
@@ -77,6 +79,7 @@ class ValidateDSONFiles(ProductRuleset):
 				self._getContributors()
 				self._checkAssetID(filename)
 				self._checkDSONFileReferences(filename)
+				self._checkDuplicateIdsInFiles(filename)
 				self._checkDuplicateFormulasInMorphs(filename)
 
 				if filename.lower().endswith('.dsf'):
@@ -92,6 +95,9 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.asset_id_mismatch_files:
 			self._addIssue(issues.AssetIDMismatchFilesIssue(self.asset_id_mismatch_files))
+
+		if self.duplicate_ids_in_files:
+			self._addIssue(issues.DuplicateIDsInFilesIssue(self.duplicate_ids_in_files))
 
 		if self.duplicate_formulas_in_morphs:
 			self._addIssue(issues.DuplicateFormulasInMorphsIssue(self.duplicate_formulas_in_morphs))
@@ -175,6 +181,17 @@ class ValidateDSONFiles(ProductRuleset):
 		for file in url_references - {''}:
 			if file.startswith('//') or not trackDependencyIfExists(self.data, file, filename):
 				self.data.missing_referenced_files.setdefault(file, set()).add(filename)
+
+	@rule
+	def _checkDuplicateIdsInFiles(self, filename: str) -> None:
+		"""Check for duplicate IDs in files."""
+
+		id_counts: dict[str, int] = defaultdict(int)
+		for id in self.id_parser.find(self.dson):
+			id_counts[id.value] += 1
+
+		for id in (k for k, v in id_counts.items() if v > 1):
+			self.duplicate_ids_in_files.setdefault(filename, []).append(id)
 
 	@rule
 	def _checkDuplicateFormulasInMorphs(self, filename: str) -> None:

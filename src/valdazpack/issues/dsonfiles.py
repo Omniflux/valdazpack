@@ -9,6 +9,10 @@ class AssetIDMismatchFilesIssue(ProductNotice):
 	title = 'Asset ID mismatch(es) in DSON file(s)'
 	description = "Asset ID in DSON file does not match filename"
 
+class DuplicateIDsInFilesIssue(ProductWarning):
+	title = 'Duplicate ID(s) in file(s)'
+	description = "An ID may only be defined once per file"
+
 class DuplicateFormulasInMorphsIssue(ProductWarning):
 	title = 'Duplicate formula(s) in morph(s)'
 	description = "Each formula target may only occur once per morph"
