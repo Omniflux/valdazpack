@@ -52,9 +52,12 @@ class Package:
 			self.type = PackageType(self.parsed['prefix'] not in read_list_from('daz/reserved_package_prefixes.txt'))
 
 			if self.type == PackageType.STANDARD:
-				self.product_store_idx = f"{self.parsed['sku'].lstrip('0')}-{self.parsed['id']}"
+				self.product_store_idx = f"{self.parsed['sku'].lstrip('0')}"
 			else:
-				self.product_store_idx = f"{str(int(self.parsed['prefix'], 36))}{self.parsed['sku']}-{self.parsed['id']}"
+				self.product_store_idx = f"{str(int(self.parsed['prefix'], 36))}{self.parsed['sku']}"
+			
+			if self.parsed['id']:
+				self.product_store_idx += f"-{self.parsed['id']}"
 
 	def __lt__(self, other: Self) -> bool:
 		return self.path.name < other.path.name
