@@ -58,8 +58,8 @@ class ImageHasIncorrectFileExtensionIssue(ProductWarning):
 
 class SingleColorImageIssue(ProductWarning):
 	title = 'Single Color Image(s) in Textures directory'
-	reference = 'https://www.daz3d.com/forums/discussion/667606/oh-fugazi-why-so-many-discrete-2k-black-or-white-maps'
-	description = "Single color image files use VRAM unnecessarily, should set channel color instead"
+	reference = 'https://www.daz3d.com/forums/discussion/667606'
+	description = "Single color image files use VRAM unnecessarily; channel value should be set instead"
 
 class UnexpectedFilesInWebLinksDirectoryIssue(ProductWarning):
 	title = 'Unexpected file(s) in WebLinks directory'
