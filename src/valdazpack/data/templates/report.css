@@ -139,3 +139,12 @@ details.issue-warning > summary::before { content: '\26A0\FE0F'; }
 .vendor,
 .prefix,
 .extension { font-weight: bold; }
+
+.color-box {
+	display: inline-block;
+	position: absolute;
+	border: 1px solid black;
+	height: 0.9rem;
+	width: 0.9rem;
+	margin-left: 0.5rem;
+}
