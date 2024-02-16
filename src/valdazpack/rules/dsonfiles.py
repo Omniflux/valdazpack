@@ -141,7 +141,7 @@ class ValidateDSONFiles(ProductRuleset):
 		except Exception:
 			asset_id = ''
 
-		if not filename.lower().endswith(asset_id.lower()):
+		if not filename.lower() == asset_id.lower():
 			self.asset_id_mismatch_files[filename] = asset_id
 
 	@rule
