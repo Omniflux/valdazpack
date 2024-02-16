@@ -124,7 +124,7 @@ class ValidateRuntimeDirectory(ProductRuleset):
 			for file in self.data.product_fs.walk.files(_TEXTURES_DIR):  # pyright: ignore[reportUnknownMemberType]:
 				try:
 					with Image.open(self.data.product_fs.openbin(file)) as im:
-						if (colors := im.convert('RGB').getcolors(1)):
+						if (colors := im.convert('RGBA' if im.has_transparency_data else 'RGB').getcolors(1)):
 							single_color_image_files.append((file, str(colors[0][1])))  # pyright: ignore[reportArgumentType]:
 				except Exception:
 					pass
