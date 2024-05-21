@@ -15,6 +15,7 @@ from PIL import Image
 
 from .validationdata import ValidationData
 
+add_type('image/vnd.adobe.photoshop', '.psd')
 add_type('image/x-tga', '.tga')
 
 class Step(NamedTuple):
