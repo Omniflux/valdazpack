@@ -140,7 +140,7 @@ class ValidateRuntimeDirectory(ProductRuleset):
 		"""Check images files in Runtime/Templates."""
 
 		# This is a guess
-		PREFERRED_TEMPLATE_SUFFIXES = set(['.svg', '.png', '.jpeg', '.jpg', '.tiff', '.tif', '.tga',])
+		PREFERRED_TEMPLATE_SUFFIXES = set(['.svg', '.png', '.jpeg', '.jpg', '.tiff', '.tif', '.tga', '.psd'])
 
 		(non_image_template_files,
 		atypical_image_template_files,
