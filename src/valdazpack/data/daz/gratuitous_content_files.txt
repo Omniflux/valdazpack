@@ -2,4 +2,5 @@
 ._.DS_Store
 Desktop.ini
 InstallManagerFileRegister.json
+pspbrwse.jbf
 Thumbs.db
