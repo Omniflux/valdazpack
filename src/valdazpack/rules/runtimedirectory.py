@@ -124,7 +124,11 @@ class ValidateRuntimeDirectory(ProductRuleset):
 			for file in self.data.product_fs.walk.files(_TEXTURES_DIR):  # pyright: ignore[reportUnknownMemberType]:
 				try:
 					with Image.open(self.data.product_fs.openbin(file)) as im:
-						if (colors := im.convert('RGBA' if im.has_transparency_data else 'RGB').getcolors(1)):
+						# TODO: Pillow does not convert from 16/32 bit pixel images to 8bit pixel images well.
+						# https://github.com/python-pillow/Pillow/pull/3838
+						# Find another way to check this (different library?)
+						if not im.mode.startswith('I') and (colors := im.convert('RGBA' if im.has_transparency_data else 'RGB').getcolors(1)):
+							# TODO this incorrectly catches some tiff files. multilayer?
 							single_color_image_files.append((file, str(colors[0][1])))  # pyright: ignore[reportArgumentType]:
 				except Exception:
 					pass
