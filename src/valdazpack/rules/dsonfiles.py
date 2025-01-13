@@ -175,8 +175,8 @@ class ValidateDSONFiles(ProductRuleset):
 
 					url_references.add(path)
 
-					if str(v.path) in ['AssetFile', 'PresetFile']:
-						self.data.postload_files.add(path)
+					if str(object=v.path) in ['AssetFile', 'PresetFile']:
+						self.data.postload_files.add(path.lstrip('/'))
 
 		for file in url_references - {''}:
 			if file.startswith('//') or not trackDependencyIfExists(self.data, file, filename):
