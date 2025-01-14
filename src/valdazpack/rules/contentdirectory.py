@@ -2,7 +2,7 @@ import re
 
 from collections import defaultdict
 from fs.path import splitext
-from itertools import chain
+from itertools import chain, groupby
 from pathlib import Path
 from typing import cast
 
@@ -41,6 +41,7 @@ class ValidateContentDirectory(ProductRuleset):
 		self._checkLegacyFormatFiles()
 		self._checkAssetThumbnails()
 		self._checkUnexpectedUserFacingFiles()
+		self._checkRepeatedFileExtensions()
 
 		# TODO Check for duplicate files
 
@@ -259,3 +260,16 @@ class ValidateContentDirectory(ProductRuleset):
 
 		if fullExtensionTipFiles:
 			self._addIssue(issues.FullExtensionTipFilesIssue(fullExtensionTipFiles))
+
+	@rule
+	def _checkRepeatedFileExtensions(self) -> None:
+		"""Check for repeated file extensions."""
+
+		repeated_extensions: list[str] = []
+		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files()):  # pyright: ignore[reportUnknownMemberType]
+			suffixes = Path(file).suffixes
+			if len(suffixes) > len([k for k, _ in groupby(suffixes, lambda x: str.lower(x))]):
+				repeated_extensions.append(file)
+
+		if repeated_extensions:
+			self._addIssue(issues.RepeatedFileExtensionsIssue(repeated_extensions))

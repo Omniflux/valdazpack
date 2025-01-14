@@ -69,3 +69,7 @@ class UnreferencedFilesInTexturesDirectoryIssue(ProductNotice):
 	title = 'Unreferenced file(s) in Textures directory'
 	description = ("Files in Runtime/Textures directory should be referenced by a user facing file. Validation can detect references from most DSON user files (*.duf) in most cases, "
 	               "but not by scripts (*.dsa, *.dsb, *.dse) or legacy files (*.daz, *.ds). There may be false positives in this list.")
+	
+class RepeatedFileExtensionsIssue(ProductWarning):
+	title = 'Repeated file extension(s) on file(s) in Content directory'
+	description = "File extensions should not be repeated"
