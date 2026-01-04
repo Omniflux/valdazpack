@@ -41,7 +41,7 @@ def _content_location(path: str) -> Path:
 			fs.opendir(relpath((parsed_url.path or '').lstrip('\\')))  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
 		except ResourceNotFound as e:
 			raise ArgumentTypeError(f'{parsed_url.path} not found in {parsed_url.resource}')  # pyright: ignore[reportUnboundVariable, reportUnknownMemberType]
-		except:
+		except Exception as e:
 			raise ArgumentTypeError(e)
 		else:
 			return Path(path)
