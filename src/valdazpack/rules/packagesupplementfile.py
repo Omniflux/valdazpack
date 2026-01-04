@@ -71,7 +71,7 @@ class ValidateSupplementFiles(PackageRuleset):
 
 		package.product_name = self.supplement.xpath("/ProductSupplement/ProductName")[0].attrib['VALUE']
 
-		if package.parsed and package.parsed['name'] != (simplified_name := alpha_numeric(package.product_name)):
+		if package.parsed and package.parsed['name'] != (simplified_name := alpha_numeric(package.product_name or '')):
 			self.name_mismatch[package.path.as_posix()] = (simplified_name, package.parsed['name'])
 
 	@rule
