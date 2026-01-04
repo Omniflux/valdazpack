@@ -94,7 +94,7 @@ class ValidateContentDirectory(ProductRuleset):
 		expected_directories_lc = [d.lower() for d in expected_directories]
 
 		unexpected_directory_alternatives: dict[str, list[str]] = {}
-		if unexpected_directories := [entry.name for entry in self.data.product_fs.scandir('') if entry.is_dir and not entry.name.lower() in expected_directories_lc]:
+		if unexpected_directories := [entry.name for entry in self.data.product_fs.scandir('') if entry.is_dir and entry.name.lower() not in expected_directories_lc]:
 			for dir in unexpected_directories:
 				matches = checkTypo(dir, expected_directories, 0.5)
 				unexpected_directory_alternatives[dir] = matches if matches and dir.lower() != 'content' else []
@@ -212,7 +212,7 @@ class ValidateContentDirectory(ProductRuleset):
 
 		if self.data.product_fs.isdir(_TEXTURES_DIR):
 			referenced_files_lc = {f.lower() for f in self.data.referenced_files}
-			if unreferenced_files := [file for file in self.data.product_fs.walk.files(_TEXTURES_DIR) if not '/' + file.lower() in referenced_files_lc]:  # pyright: ignore[reportUnknownMemberType]
+			if unreferenced_files := [file for file in self.data.product_fs.walk.files(_TEXTURES_DIR) if '/' + file.lower() not in referenced_files_lc]:  # pyright: ignore[reportUnknownMemberType]
 				self._addIssue(issues.UnreferencedFilesInTexturesDirectoryIssue(unreferenced_files))
 
 	@rule

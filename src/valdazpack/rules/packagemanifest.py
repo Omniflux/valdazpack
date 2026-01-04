@@ -56,12 +56,12 @@ class ValidatePackageManifests(PackageRuleset):
 	def _checkUnlistedManifestFiles(self, package: Package) -> None:
 		"""Check for files not listed in Manifest but included in zip file."""
 
-		if extra_files := [file for file in (file.lstrip('/') for file in package.root_fs.walk.files()) if not file in self.manifest_files + _EXPECTED_PACKAGE_FILES]:
+		if extra_files := [file for file in (file.lstrip('/') for file in package.root_fs.walk.files()) if file not in self.manifest_files + _EXPECTED_PACKAGE_FILES]:
 			self.unlisted_manifest_files[package.path.name] = extra_files
 
 	@rule
 	def _checkRootExtraneousFiles(self, package: Package) -> None:
 		"""Check for unexpected files in root of zip file."""
 
-		if root_files := [file for file in (entry.name.lstrip('/') for entry in package.root_fs.scandir('') if entry.is_file and not entry.name in _EXPECTED_PACKAGE_FILES)]:
+		if root_files := [file for file in (entry.name.lstrip('/') for entry in package.root_fs.scandir('') if entry.is_file and entry.name not in _EXPECTED_PACKAGE_FILES)]:
 			self.extraneous_root_files[package.path.name] = root_files

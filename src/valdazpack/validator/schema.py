@@ -26,7 +26,7 @@ class SchemaCheckedXML():
 	cache: dict[str, etree.XMLSchema] = {}
 
 	def __init__(self, xml_file: Path | BinaryIO, schema: str) -> None:
-		if not schema in self.cache:
+		if schema not in self.cache:
 			xmlschema = etree.XMLSchema(etree.fromstring(read_datafile_bytes(f'schemas/{schema}')))
 			self.cache[schema] = xmlschema
 		else:
@@ -56,7 +56,7 @@ class SchemaCheckedJSON():
 	data: dict[str, Any]
 
 	def __init__(self, json_file: Path | BinaryIO, schema: str) -> None:
-		if not schema in self.cache:
+		if schema not in self.cache:
 			schema_data: dict[str, Any] = json.loads(read_datafile_bytes(f'schemas/{schema}'))
 			validator = cast(Validator, validator_for(schema_data))  # pyright: ignore[reportGeneralTypeIssues, reportUnknownMemberType]
 			validator.check_schema(schema_data)

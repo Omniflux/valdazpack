@@ -44,7 +44,7 @@ class ValidateRuntimeSupportDirectory(ProductRuleset):
 
 		metadata: dict[str, list[str]] = {}
 		for file in [Path(f) for f in self.data.product_fs.walk.files(_SUPPORT_DIR)]:  # pyright: ignore[reportUnknownMemberType]
-			if not file.stem in metadata:
+			if file.stem not in metadata:
 				metadata[file.stem] = []
 			metadata[file.stem].append(file.suffix)
 
@@ -56,12 +56,12 @@ class ValidateRuntimeSupportDirectory(ProductRuleset):
 		undersized_icon_files: dict[str, tuple[int, int]] = {}
 		supportDirPath = Path(_SUPPORT_DIR)
 		for entry in metadata:
-			if not '.dsx' in metadata[entry]:
+			if '.dsx' not in metadata[entry]:
 				for suffix in metadata[entry]:
 					unexpected_files.append((supportDirPath / f"{entry}{suffix}").as_posix())
 			else:
 				dsx_files.append((supportDirPath / f"{entry}.dsx").as_posix())
-				if not '.dsa' in metadata[entry]:
+				if '.dsa' not in metadata[entry]:
 					missing_script_files.append((supportDirPath / f"{entry}.dsa").as_posix())
 
 				if not any (suffix in IMAGE_SUFFIXES for suffix in metadata[entry]):

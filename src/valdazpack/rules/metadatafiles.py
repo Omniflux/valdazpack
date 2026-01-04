@@ -496,7 +496,7 @@ class ValidateMetadataFiles(ProductRuleset):
 		strippedNames = [alpha_numeric(product) for product in self.data.metadata.products]
 
 		for package in self.data.packages:
-			if not package.product_name in self.data.metadata.products and not (package.parsed and not package.parsed['name'] in strippedNames):
+			if package.product_name not in self.data.metadata.products and not (package.parsed and package.parsed['name'] not in strippedNames):
 				self.product_name_mismatches.append(package.product_name or (package.parsed['name'] if package.parsed else ''))
 
 	@rule
@@ -506,5 +506,5 @@ class ValidateMetadataFiles(ProductRuleset):
 		support_dir_lc = _SUPPORT_DIR.lower()
 		assets_lc = [asset.lower() for asset in self.listed_assets]
 
-		if unlisted_assets := [file for file in self.data.product_fs.walk.files() if not (f := file.lstrip('/').lower()).startswith(support_dir_lc) and not f in assets_lc]:  # pyright: ignore[reportUnknownMemberType]
+		if unlisted_assets := [file for file in self.data.product_fs.walk.files() if not (f := file.lstrip('/').lower()).startswith(support_dir_lc) and f not in assets_lc]:  # pyright: ignore[reportUnknownMemberType]
 			self._addIssue(issues.MetadataUnlistedAssetsIssue(unlisted_assets))

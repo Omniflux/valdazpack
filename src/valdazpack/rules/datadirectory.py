@@ -134,7 +134,7 @@ class ValidateDataDirectory(ProductRuleset):
 
 		unreferenced_files: list[str] = []
 		for file in self.data.product_fs.walk.files(_DATA_DIR, exclude=_LEGACY_FILE_EXTENSIONS):  # pyright: ignore[reportUnknownMemberType]
-			if (not '/' + file.lower() in referenced_files_lc
+			if ('/' + file.lower() not in referenced_files_lc
 				and not (len(filepath := iteratepath(file)) > 4 and filepath[4].lower() in _ITEM_SUBDIRECTORIES_WITH_VENDOR_SUBDIRECTORIES + _ITEM_SUBDIRECTORIES_TO_SKIP_REFERENCE_CHECK)):
 				unreferenced_files.append(file)
 
