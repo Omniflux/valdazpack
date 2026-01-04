@@ -38,13 +38,14 @@ class ValidateDSONFiles(ProductRuleset):
 		self.asset_type_parser = parse('$.asset_info.type')
 		self.preset_shader_parser = parse('$.scene.materials[*].extra[*].type')
 		self.preset_shader_count = parse('$.scene.materials[*].extra[*].`len`')
+		self.favorites_materials_parser = parse('$.scene.materials[*].extra[?(@.type == "studio_material_channels")].favorites')
+		self.favorites_node_properties_parser = parse('$.scene.nodes[*].extra[?(@.type == "studio_node_channels")].favorites')
 		self.formula_names_parser = parse('$.formulas[*].output')
 		self.active_morph_parser = parse('$.modifier_library[?(@.channel.value != 0 & @.channel.value != 0)].channel')
 		self.morph_loader_group_parser = parse('$.modifier_library[?(@.group == "/Morphs/Morph Loader")].channel')
 		self.probable_path = re.compile(r'\b(data|runtime)\/', re.IGNORECASE)
 
 		# TODO Add check for simulation data in non scene files
-		# TODO Add check for favorites in materials/parameters
 
 		self.invalid_dson_files: dict[str, Exception] = {}
 		self.asset_id_mismatch_files: dict[str, str] = {}
@@ -54,6 +55,8 @@ class ValidateDSONFiles(ProductRuleset):
 		self.uvs_in_duf_files: dict[str, list[str]] = {}
 		self.morphs_in_duf_files: dict[str, list[str]] = {}
 		self.materials_in_duf_files: dict[str, list[str]] = {}
+		self.favorites_in_materials_in_duf_files: dict[str, dict[str, list[str]]] = {}
+		self.favorites_in_node_properties_in_duf_files: dict[str, dict[str, list[str]]] = {}
 		self.active_morphs_in_dsf_files: dict[str, list[tuple[str, str]]] = {}
 		self.morph_loader_group_in_dsf_files: dict[str, list[str]] = {}
 		for filename in self.data.product_fs.walk.files(filter=['*.dsf', '*.duf']):  # pyright: ignore[reportUnknownMemberType]
@@ -91,6 +94,8 @@ class ValidateDSONFiles(ProductRuleset):
 
 				elif filename.lower().endswith('.duf'):
 					self._getShaderTypeInDUF(filename)
+					self._checkFavoritesInMaterialsInDUF(filename)
+					self._checkFavoritesInNodePropertiesInDUF(filename)
 					self._checkSupportAssetsInDUF(filename)
 
 		if self.invalid_dson_files:
@@ -116,6 +121,12 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.materials_in_duf_files:
 			self._addIssue(issues.ShaderInDUFFilesIssue(self.materials_in_duf_files))
+
+		if self.favorites_in_materials_in_duf_files:
+			self._addIssue(issues.FavoriteInMaterialInDUFFilesIssue(self.favorites_in_materials_in_duf_files))
+
+		if self.favorites_in_node_properties_in_duf_files:
+			self._addIssue(issues.FavoriteInNodePropertyInDUFFilesIssue(self.favorites_in_node_properties_in_duf_files))
 
 		if self.active_morphs_in_dsf_files:
 			self._addIssue(issues.ActiveMorphsInDSFFilesIssue(self.active_morphs_in_dsf_files))
@@ -234,6 +245,20 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if shaders:
 			self.data.shader_users[filename] = shaders
+
+	@rule
+	def _checkFavoritesInMaterialsInDUF(self, filename: str) -> None:
+		"""Check for Favorites saved in Materials."""
+		for favorites in self.favorites_materials_parser.find(self.dson):
+			material = favorites.context.context.context	# pyright: ignore[reportAssignmentType, reportOptionalMemberAccess]
+			self.favorites_in_materials_in_duf_files.setdefault(filename, {})[material.value['id']] = favorites.value
+
+	@rule
+	def _checkFavoritesInNodePropertiesInDUF(self, filename: str) -> None:
+		"""Check for Favorites saved in Node Properties."""
+		for favorites in self.favorites_node_properties_parser.find(self.dson):
+			property = favorites.context.context.context  # pyright: ignore[reportAssignmentType, reportOptionalMemberAccess]
+			self.favorites_in_node_properties_in_duf_files.setdefault(filename, {})[property.value['id']] = favorites.value
 
 	@rule
 	def _checkSupportAssetsInDUF(self, filename: str) -> None:

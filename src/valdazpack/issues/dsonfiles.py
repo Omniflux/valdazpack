@@ -37,6 +37,14 @@ class ShaderInDUFFilesIssue(ProductWarning):
 	title = 'Custom Shader(s) in DSON User File(s) (*.duf)'
 	description = "Custom Shaders should be saved as Support Assets, to prevent being resaved in user's Scene file"
 
+class FavoriteInMaterialInDUFFilesIssue(ProductWarning):
+	title = 'Favorite(s) in Materials(s) in DSON User File(s) (*.duf)'
+	description = "Favorites should not be set in distributed files"
+
+class FavoriteInNodePropertyInDUFFilesIssue(ProductWarning):
+	title = 'Favorite(s) in Node Properties(s) in DSON User File(s) (*.duf)'
+	description = "Favorites should not be set in distributed files"
+
 class ActiveMorphsInDSFFilesIssue(ProductWarning):
 	title = 'Active Morph(s) in DSON Support File(s) (*.dsf)'
 	description = "Morphs should be set to 0 or False when saved as Support Assets. Use Presets to set active values."
