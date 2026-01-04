@@ -6,6 +6,7 @@ from typing import Any
 from urllib.parse import urlparse, unquote
 from warnings import warn
 
+from jsonpath_ng import DatumInContext
 from jsonpath_ng.ext import parse
 
 from ..issues import dsonfiles as issues
@@ -251,14 +252,14 @@ class ValidateDSONFiles(ProductRuleset):
 	def _checkFavoritesInMaterialsInDUF(self, filename: str) -> None:
 		"""Check for Favorites saved in Materials."""
 		for favorites in self.favorites_materials_parser.find(self.dson):
-			material = favorites.context.context.context	# pyright: ignore[reportAssignmentType, reportOptionalMemberAccess]
+			material: DatumInContext = favorites.context.context.context  # pyright: ignore[reportAssignmentType, reportOptionalMemberAccess]
 			self.favorites_in_materials_in_duf_files.setdefault(filename, {})[material.value['id']] = favorites.value
 
 	@rule
 	def _checkFavoritesInNodePropertiesInDUF(self, filename: str) -> None:
 		"""Check for Favorites saved in Node Properties."""
 		for favorites in self.favorites_node_properties_parser.find(self.dson):
-			property = favorites.context.context.context  # pyright: ignore[reportAssignmentType, reportOptionalMemberAccess]
+			property: DatumInContext = favorites.context.context.context  # pyright: ignore[reportAssignmentType, reportOptionalMemberAccess]
 			self.favorites_in_node_properties_in_duf_files.setdefault(filename, {})[property.value['id']] = favorites.value
 
 	@rule

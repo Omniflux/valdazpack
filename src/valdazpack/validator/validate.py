@@ -1,4 +1,5 @@
 from .validationdata import ValidationData
+from . import Ruleset
 from ..rules.datadirectory import ValidateDataDirectory
 from ..rules.dsonfiles import ValidateDSONFiles
 from ..rules.metadatafiles import ValidateMetadataFiles
@@ -13,7 +14,7 @@ from ..rules.runtimesupportdirectory import ValidateRuntimeSupportDirectory
 from ..rules.zipfile import ValidateZipFiles
 
 def validate(data: ValidationData) -> None:
-	rules = [
+	rules: list[type[Ruleset]] = [
 		ValidateZipFiles,
 		ValidatePackages,
 		ValidatePackageManifests,

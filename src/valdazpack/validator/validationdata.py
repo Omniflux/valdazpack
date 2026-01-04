@@ -103,6 +103,6 @@ def _get_unwrapped_fs(fs: FS, fs_type: Type[T]) -> T | None:
 		return fs
 	else:
 		try:
-			return _get_unwrapped_fs(fs.delegate_fs(), fs_type)  # pyright: ignore[reportGeneralTypeIssues, reportUnknownArgumentType, reportUnknownMemberType]
+			return _get_unwrapped_fs(fs.delegate_fs(), fs_type)  # pyright: ignore[reportAttributeAccessIssue, reportUnknownArgumentType, reportUnknownMemberType]
 		except AttributeError:
 			pass

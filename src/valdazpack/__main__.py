@@ -18,13 +18,13 @@ class PrettyPrinterWithoutStringWrapping(PrettyPrinter):
 
 	def __init__(self, *args: Any) -> None:
 		super().__init__(*args)
-		self._dispatch[str.__repr__] = self._pprint_str  # pyright: ignore[reportGeneralTypeIssues, reportUnknownMemberType]
+		self._dispatch[str.__repr__] = self._pprint_str  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
 
 	def _pprint_str(self, _self: PrettyPrinter, *args: Any) -> None:
 		width = self._width
 		self._width = sys.maxsize
 		try:
-			super()._pprint_str(*args)  # pyright: ignore[reportGeneralTypeIssues, reportUnknownMemberType]
+			super()._pprint_str(*args)  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
 		finally:
 			self._width = width
 
@@ -40,7 +40,7 @@ def _content_location(path: str) -> Path:
 			fs = open_fs(url)
 			fs.opendir(relpath((parsed_url.path or '').lstrip('\\')))  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
 		except ResourceNotFound as e:
-			raise ArgumentTypeError(f'{parsed_url.path} not found in {parsed_url.resource}')  # pyright: ignore[reportUnboundVariable, reportUnknownMemberType]
+			raise ArgumentTypeError(f'{parsed_url.path} not found in {parsed_url.resource}')  # pyright: ignore[reportPossiblyUnboundVariable, reportUnknownMemberType]
 		except Exception as e:
 			raise ArgumentTypeError(e)
 		else:
@@ -56,7 +56,7 @@ def _jinja_user_template(template_filepath: str) -> Template:
 		raise ArgumentTypeError(f"Template not found: {template_filepath}")
 
 	jinja_env = Environment(loader=FileSystemLoader(searchpath=filepath.parent), auto_reload=False)
-	jinja_env.filters['pformat'] = PrettyPrinterWithoutStringWrapping().pformat  # pyright: ignore[reportGeneralTypeIssues, reportUnknownMemberType]
+	jinja_env.filters['pformat'] = PrettyPrinterWithoutStringWrapping().pformat  # pyright: ignore[reportUnknownMemberType]
 
 	try:
 		return jinja_env.get_template(filepath.name)
@@ -89,8 +89,8 @@ def _main() -> None:
 	if args.template:
 		template = args.template
 	else:
-		jinja_env = Environment(loader=PackageLoader(__package__, "data/templates",), autoescape=select_autoescape(['html.jinja']), auto_reload=False)
-		jinja_env.filters['pformat'] = PrettyPrinterWithoutStringWrapping().pformat  # pyright: ignore[reportGeneralTypeIssues, reportUnknownMemberType]
+		jinja_env = Environment(loader=PackageLoader(__package__, "data/templates",), autoescape=select_autoescape(['html.jinja']), auto_reload=False)  # pyright: ignore[reportArgumentType]
+		jinja_env.filters['pformat'] = PrettyPrinterWithoutStringWrapping().pformat  # pyright: ignore[reportUnknownMemberType]
 		template = jinja_env.get_template("report.html.jinja" if args.html else "report.txt.jinja")
 
 	# Validate

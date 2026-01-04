@@ -133,7 +133,7 @@ def checkImageDir(fs: FS, dir: str, preferred_suffixes: set[str]) -> tuple[list[
 				try:
 					with Image.open(fs.openbin(file)) as im:
 						im.verify()
-						if (mime_type := cast(str | None, im.get_format_mimetype())) and suffix not in guess_all_extensions(mime_type):  # pyright: ignore[reportGeneralTypeIssues, reportUnknownMemberType]
+						if (mime_type := im.get_format_mimetype()) and suffix not in guess_all_extensions(mime_type):
 							incorrect_image_suffixes[file] = mime_type
 				except Exception:
 					if suffix not in PIL_UNSUPPORTED_IMAGE_SUFFIXES:

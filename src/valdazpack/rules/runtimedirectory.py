@@ -129,7 +129,7 @@ class ValidateRuntimeDirectory(ProductRuleset):
 						# Find another way to check this (different library?)
 						if not im.mode.startswith('I') and (colors := im.convert('RGBA' if im.has_transparency_data else 'RGB').getcolors(1)):
 							# TODO this incorrectly catches some tiff files. multilayer?
-							single_color_image_files.append((file, str(colors[0][1])))  # pyright: ignore[reportArgumentType]:
+							single_color_image_files.append((file, str(colors[0][1])))
 				except Exception:
 					pass
 

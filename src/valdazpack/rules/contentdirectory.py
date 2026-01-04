@@ -59,7 +59,7 @@ class ValidateContentDirectory(ProductRuleset):
 		"""Check product for case insensitive path collisions."""
 
 		case_insensitive_path_count: dict[str, list[str]] = defaultdict(list)
-		for entry in self.data.product_fs_unwrapped.walk.info():  # pyright: ignore[reportUnknownMemberType]
+		for entry in self.data.product_fs_unwrapped.walk.info():
 			case_insensitive_path_count[entry[0].lower()].append(entry[0])
 		
 		if case_insensitive_collisions := [entries for entries in case_insensitive_path_count.values() if len(entries) > 1]:
