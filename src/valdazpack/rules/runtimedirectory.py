@@ -138,6 +138,7 @@ class ValidateRuntimeDirectory(ProductRuleset):
 
 		# TODO: check bump and displacement maps are 16+bit greyscale? normal maps 16+bit? ensure none are jpg?
 		# Use wand / imagemagick instead of Pillow?
+		# Check for normal map in wrong channel
 
 	@rule
 	def _checkTemplateImageFiles(self) -> None:

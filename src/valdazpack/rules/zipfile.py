@@ -12,6 +12,8 @@ class ValidateZipFiles(Ruleset):
 		data (ValidationData): validation data of product to validate.
 	"""
 
+	# TODO Add check for unicode filename in ZIP, DIM does not support it
+
 	def _validate(self) -> None:
 		"""Perform validation."""
 

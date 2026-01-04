@@ -444,6 +444,7 @@ class ValidateMetadataFiles(ProductRuleset):
 		for element in self.metadata.xpath("/ContentDBInstall/Products/Product/Assets/Asset/CompatibilityBase"):
 			if compatibility_base := element[0].attrib['VALUE'] if len(element) else None:
 				compatibility_base = compatibility_base # TODO: Validate compatibility base
+				# TODO: Materials, shaders, etc. should not have compatibility base set
 			else:
 				pass # TODO: Only some types need compatibility base listed
 				#missing_compatibility_base.append (e.attrib['VALUE'])

@@ -32,7 +32,7 @@ class ValidateDSONFiles(ProductRuleset):
 		self.ext_file_parsers = [ ({'0': False, '1': True}[(x := line.split(maxsplit=1))[0]], parse(x[1])) for line in read_list_from('daz/dson_external_file_references.txt') ]
 		self.geometry_parser = parse('$.geometry_library[*].id')
 		self.uvs_parser = parse('$.uv_set_library[*].id')
-		self.morphs_parser = parse('$.modifier_library[*].id')
+		self.morphs_parser = parse('$.modifier_library[*].id')  # TODO Skip simulation_settings
 		self.id_parser = parse('($.scene.*[*].id)|($.*[*].id)')
 		self.material_daz_brick_parser = parse('$.material_library[?(@.extra[*].type == "studio/material/daz_brick")].id')
 		self.asset_type_parser = parse('$.asset_info.type')
@@ -42,6 +42,9 @@ class ValidateDSONFiles(ProductRuleset):
 		self.active_morph_parser = parse('$.modifier_library[?(@.channel.value != 0 & @.channel.value != 0)].channel')
 		self.morph_loader_group_parser = parse('$.modifier_library[?(@.group == "/Morphs/Morph Loader")].channel')
 		self.probable_path = re.compile(r'\b(data|runtime)\/', re.IGNORECASE)
+
+		# TODO Add check for simulation data in non scene files
+		# TODO Add check for favorites in materials/parameters
 
 		self.invalid_dson_files: dict[str, Exception] = {}
 		self.asset_id_mismatch_files: dict[str, str] = {}
