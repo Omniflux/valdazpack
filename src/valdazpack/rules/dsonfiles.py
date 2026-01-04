@@ -33,6 +33,7 @@ class ValidateDSONFiles(ProductRuleset):
 		self.geometry_parser = parse('$.geometry_library[*].id')
 		self.uvs_parser = parse('$.uv_set_library[*].id')
 		self.morphs_parser = parse('$.modifier_library[*].id')  # TODO Skip simulation_settings
+		self.morphs_data_parser = parse('$.modifier_library[?(@.morph)|(@.skin)].id')
 		self.id_parser = parse('($.scene.*[*].id)|($.*[*].id)')
 		self.material_daz_brick_parser = parse('$.material_library[?(@.extra[*].type == "studio/material/daz_brick")].id')
 		self.asset_type_parser = parse('$.asset_info.type')
@@ -266,7 +267,7 @@ class ValidateDSONFiles(ProductRuleset):
 
 		geometry: list[str] = [v.value for v in self.geometry_parser.find(self.dson)]
 		uvs: list[str] = [v.value for v in self.uvs_parser.find(self.dson)]
-		morphs: list[str] = [v.value for v in self.morphs_parser.find(self.dson)]
+		morphs: list[str] = [v.value for v in self.morphs_data_parser.find(self.dson)]
 		materials: list[str] = [v.value for v in self.material_daz_brick_parser.find(self.dson)]
 
 		if geometry:
