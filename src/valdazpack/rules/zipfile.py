@@ -12,14 +12,13 @@ class ValidateZipFiles(Ruleset):
 		data (ValidationData): validation data of product to validate.
 	"""
 
-	# TODO Add check for unicode filename in ZIP, DIM does not support it
-
 	def _validate(self) -> None:
 		"""Perform validation."""
 
 		super()._validate()
 
 		self.collisions: dict[str, list[list[str]]] = {}
+
 		for zip in self.data.zips:
 			self._checkPathCollisions(zip._zip)  # pyright: ignore[reportPrivateUsage]
 

@@ -20,3 +20,11 @@ class StandardPackageNameIssue(PackageWarning):
 class NoPackageReadMeIssue(PackageNotice):
 	title = 'No Package ReadMe included'
 	description = "Packages may include a 'ReadMe.pdf' file in the root accessible by clicking the ReadMe button in Install Manager"
+
+class UnicodeFilenamesInPackage(PackageWarning):
+	title = 'Unicode Filename(s) in Package'
+	description = "DIM does not support extracting unicode filenames from packages"
+
+class NonASCIIFilenamesInPackage(PackageWarning):
+	title = 'Non ASCII Filename(s) in Package'
+	description = "DIM may not extract non ASCII filenames correctly"

@@ -5,7 +5,9 @@ from valdazpack.validator import ValidationData, validate
 from valdazpack.issues.package import (
 	PackageNameIssue,
 	CustomPackageNameIssue,
-	StandardPackageNameIssue
+	StandardPackageNameIssue,
+	NonASCIIFilenamesInPackage,
+	UnicodeFilenamesInPackage,
 )
 
 from .conftest import createZipFromData
@@ -40,3 +42,13 @@ def test_CustomPackageNameIssue(dimzipfileCUSTOM: Path):
 	v = ValidationData([dimzipfileCUSTOM], daz=True)
 	validate(v)
 	assert v.daz and any(isinstance(x, CustomPackageNameIssue) for x in v.issues.package)
+
+def test_NonASCIIFilenamesInPackageIssue(dimzipfileINVALID: Path):
+	v = ValidationData([dimzipfileINVALID])
+	validate(v)
+	assert any(isinstance(x, NonASCIIFilenamesInPackage) for x in v.issues.package)
+
+def test_UnicodeFilenamesInPackageIssue(dimzipfileINVALID: Path):
+	v = ValidationData([dimzipfileINVALID])
+	validate(v)
+	assert any(isinstance(x, UnicodeFilenamesInPackage) for x in v.issues.package)
