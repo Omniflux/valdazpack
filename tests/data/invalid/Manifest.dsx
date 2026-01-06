@@ -15,11 +15,13 @@
  <File TARGET="Content" ACTION="Install" VALUE="Content/BadLink.djl"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/GoodLink.djl"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/GoodLink.png"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Instructions.pdf"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Invalid.djl"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Invalid.png"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/MDL Shader.duf"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/MDL Shader 2.duf"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Plane.duf"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Plane.duf.tip.png"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Plane 2.duf"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/RSL Material.duf"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/ReadMe.txt"/>
@@ -44,6 +46,7 @@
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Templates/Templates"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Image.jpg"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Image.bmp"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/SingleColor.png.png"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Textures"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/DAZ 3D/ReadMe.txt"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/WebLinks/Link.pzs"/>

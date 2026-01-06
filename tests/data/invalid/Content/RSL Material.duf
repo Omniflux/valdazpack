@@ -22,6 +22,17 @@
 					"label" : "Image.png"
 				}
 			]
+		},
+		{
+			"id" : "Image.png",
+			"name" : "Image.png",
+			"map_gamma" : 0,
+			"map" : [
+				{
+					"url" : "/C%3A/Image.png",
+					"label" : "Image.png"
+				}
+			]
 		}
 	],
 	"material_library" : [

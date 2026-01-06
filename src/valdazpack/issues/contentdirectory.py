@@ -58,7 +58,7 @@ class MissingThumbnailsIssue(ProductWarning):
 
 class UnexpectedFilesInUserFacingDirectoriesIssue(ProductWarning):
 	title = 'Unexpected file(s) in user facing directory'
-	description = ("Files in user facing directories should consist of *.duf, *.dsa, *.dsb, *.dse and accompanying thumbnails (*.png) and tips (*.tip.png). "
+	description = ("Files in user facing directories should consist of *.djl, *.duf, *.dsa, *.dsb, *.dse and accompanying thumbnails (*.png) and tips (*.tip.png). "
 	               "These files may be misplaced or better located in the data, ReadMe's, or Runtime directories.")
 
 class FullExtensionTipFilesIssue(ProductWarning):

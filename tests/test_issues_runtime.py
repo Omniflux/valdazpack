@@ -13,10 +13,11 @@ from valdazpack.issues.runtime import (
 	AtypicalImageFilesInTemplatesDirectoryIssue,
 	UnreadableImageFilesInTexturesDirectoryIssue,
 	UnreadableImageFilesInTemplatesDirectoryIssue,
+	SingleColorImageIssue,
 	ImageHasIncorrectFileExtensionIssue,
 	UnexpectedFilesInWebLinksDirectoryIssue,
 	InvalidPZSFileIssue,
-	WebLinksIssue
+	WebLinksIssue,
 )
 
 def test_ExcessRuntimeDirectoryIssue(validatorINVALID: ValidationData):
@@ -60,6 +61,9 @@ def test_UnreadableImageFilesInTemplatesDirectoryIssue(validatorINVALID: Validat
 
 def test_ImageHasIncorrectFileExtensionIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, ImageHasIncorrectFileExtensionIssue) for x in validatorINVALID.issues.product)
+
+def test_SingleColorImageIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, SingleColorImageIssue) for x in validatorINVALID.issues.product)
 
 def test_UnexpectedFilesInWebLinksDirectoryIssue(validatorINVALIDPoser: ValidationData):
 	assert any(isinstance(x, UnexpectedFilesInWebLinksDirectoryIssue) for x in validatorINVALIDPoser.issues.product)

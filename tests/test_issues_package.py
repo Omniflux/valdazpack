@@ -6,6 +6,7 @@ from valdazpack.issues.package import (
 	PackageNameIssue,
 	CustomPackageNameIssue,
 	StandardPackageNameIssue,
+	NoPackageReadMeIssue,
 	NonASCIIFilenamesInPackage,
 	UnicodeFilenamesInPackage,
 )
@@ -42,6 +43,11 @@ def test_CustomPackageNameIssue(dimzipfileCUSTOM: Path):
 	v = ValidationData([dimzipfileCUSTOM], daz=True)
 	validate(v)
 	assert v.daz and any(isinstance(x, CustomPackageNameIssue) for x in v.issues.package)
+
+def test_NoPackageReadMeIssue(dimzipfileINVALID: Path):
+	v = ValidationData([dimzipfileINVALID])
+	validate(v)
+	assert any(isinstance(x, NoPackageReadMeIssue) for x in v.issues.package)
 
 def test_NonASCIIFilenamesInPackageIssue(dimzipfileINVALID: Path):
 	v = ValidationData([dimzipfileINVALID])

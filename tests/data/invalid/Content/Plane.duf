@@ -1326,7 +1326,7 @@
 																		"CanAnimate" : false,
 																		"Locked" : false,
 																		"Manipulator" : true,
-																		"Favorite" : false,
+																		"Favorite" : true,
 																		"GlobalFavorite" : false,
 																		"Selected" : false,
 																		"AutoFollow" : false,
@@ -1903,7 +1903,10 @@
 				"extra" : [
 					{
 						"type" : "studio_node_channels",
-						"version" : 4
+						"version" : 4,
+						"favorites" : [
+							"XTranslate"
+						]
 					},
 					{
 						"type" : "studio/element_data/simple_data",
@@ -1940,6 +1943,12 @@
 				"extra" : [
 					{
 						"type" : "studio/material/daz_brick"
+					},
+					{
+						"type" : "studio_material_channels",
+						"favorites" : [
+							"Ambient%20Color"
+						]
 					}
 				]
 			}

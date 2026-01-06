@@ -18,7 +18,11 @@ from valdazpack.issues.contentdirectory import (
 	FilesReferenceNonexistentFilesIssue,
 	FilesReferenceAbsolutePathsIssue,
 	LegacyFilesIssue,
-	UnreferencedFilesInTexturesDirectoryIssue
+	MissingThumbnailsIssue,
+	UnexpectedFilesInUserFacingDirectoriesIssue,
+	FullExtensionTipFilesIssue,
+	UnreferencedFilesInTexturesDirectoryIssue,
+	RepeatedFileExtensionsIssue,
 )
 
 from .conftest import mockExistsWithoutFile
@@ -72,5 +76,18 @@ def test_FilesReferenceAbsolutePathsIssue(validatorINVALID: ValidationData):
 def test_LegacyFilesIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, LegacyFilesIssue) for x in validatorINVALID.issues.product)
 
+def test_MissingThumbnailsIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, MissingThumbnailsIssue) for x in validatorINVALID.issues.product)
+
+def test_UnexpectedFilesInUserFacingDirectoriesIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, UnexpectedFilesInUserFacingDirectoriesIssue) for x in validatorINVALID.issues.product)
+
+def test_FullExtensionTipFilesIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, FullExtensionTipFilesIssue) for x in validatorINVALID.issues.product)
+
 def test_UnreferencedFilesInTexturesDirectoryIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, UnreferencedFilesInTexturesDirectoryIssue) for x in validatorINVALID.issues.product)
+
+def test_RepeatedFileExtensionsIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, RepeatedFileExtensionsIssue) for x in validatorINVALID.issues.product)
+	
