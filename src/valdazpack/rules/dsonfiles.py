@@ -33,7 +33,6 @@ class ValidateDSONFiles(ProductRuleset):
 		self.ext_file_parsers = [ ({'0': False, '1': True}[(x := line.split(maxsplit=1))[0]], parse(x[1])) for line in read_list_from('daz/dson_external_file_references.txt') ]
 		self.geometry_parser = parse('$.geometry_library[*].id')
 		self.uvs_parser = parse('$.uv_set_library[*].id')
-		self.morphs_parser = parse('$.modifier_library[*].id')  # TODO Skip simulation_settings
 		self.morphs_data_parser = parse('$.modifier_library[?(@.morph)|(@.skin)].id')
 		self.id_parser = parse('($.scene.*[*].id)|($.*[*].id)')
 		self.material_daz_brick_parser = parse('$.material_library[?(@.extra[*].type == "studio/material/daz_brick")].id')
@@ -42,7 +41,6 @@ class ValidateDSONFiles(ProductRuleset):
 		self.preset_shader_count = parse('$.scene.materials[*].extra[*].`len`')
 		self.favorites_materials_parser = parse('$.scene.materials[*].extra[?(@.type == "studio_material_channels")].favorites')
 		self.favorites_node_properties_parser = parse('$.scene.nodes[*].extra[?(@.type == "studio_node_channels")].favorites')
-		self.formula_names_parser = parse('$.formulas[*].output')
 		self.active_morph_parser = parse('$.modifier_library[?(@.channel.value != 0 & @.channel.value != 0)].channel')
 		self.morph_loader_group_parser = parse('$.modifier_library[?(@.group == "/Morphs/Morph Loader")].channel')
 		self.probable_path = re.compile(r'\b(data|runtime)\/', re.IGNORECASE)
@@ -52,7 +50,6 @@ class ValidateDSONFiles(ProductRuleset):
 		self.invalid_dson_files: dict[str, Exception] = {}
 		self.asset_id_mismatch_files: dict[str, str] = {}
 		self.duplicate_ids_in_files: dict[str, list[str]] = {}
-		self.duplicate_formulas_in_morphs: dict[str, dict[str, list[str]]] = {}
 		self.geometry_in_duf_files: dict[str, list[str]] = {}
 		self.uvs_in_duf_files: dict[str, list[str]] = {}
 		self.morphs_in_duf_files: dict[str, list[str]] = {}
@@ -88,7 +85,6 @@ class ValidateDSONFiles(ProductRuleset):
 				self._checkAssetID(filename)
 				self._checkDSONFileReferences(filename)
 				self._checkDuplicateIdsInFiles(filename)
-				self._checkDuplicateFormulasInMorphs(filename)
 
 				if filename.lower().endswith('.dsf'):
 					self._checkActiveMorphsInDSF(filename)
@@ -108,9 +104,6 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.duplicate_ids_in_files:
 			self._addIssue(issues.DuplicateIDsInFilesIssue(self.duplicate_ids_in_files))
-
-		if self.duplicate_formulas_in_morphs:
-			self._addIssue(issues.DuplicateFormulasInMorphsIssue(self.duplicate_formulas_in_morphs))
 
 		if self.geometry_in_duf_files:
 			self._addIssue(issues.GeometryInDUFFilesIssue(self.geometry_in_duf_files))
@@ -208,28 +201,6 @@ class ValidateDSONFiles(ProductRuleset):
 
 		for id in (k for k, v in id_counts.items() if v > 1):
 			self.duplicate_ids_in_files.setdefault(filename, []).append(id)
-
-	@rule
-	def _checkDuplicateFormulasInMorphs(self, filename: str) -> None:
-		"""Check for duplicate formulas in Morphs."""
-
-		# http://docs.daz3d.com/doku.php/public/dson_spec/object_definitions/formula/start
-		# This states "Multiple formulas may output to the same property", however doing so
-		# appears to cause an error. Perhaps it means formulas from different files?
-		# Perhaps my test cases were wrong?
-
-		# This check may be wrong and should be replaced with a narrower check, but not sure
-		# what the specific rules are....
-
-		for morph in self.morphs_parser.find(self.dson):
-			formula_counts: dict[str, int] = defaultdict(int)
-
-			if morph.context:
-				for formula in self.formula_names_parser.find(morph.context.value):
-					formula_counts[formula.value] += 1
-
-			for formula in (k for k, v in formula_counts.items() if v > 1):
-				self.duplicate_formulas_in_morphs.setdefault(filename, {}).setdefault(morph.value, []).append(formula)
 
 	@rule
 	def _getShaderTypeInDUF(self, filename: str) -> None:

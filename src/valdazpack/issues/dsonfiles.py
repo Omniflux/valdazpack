@@ -13,10 +13,6 @@ class DuplicateIDsInFilesIssue(ProductWarning):
 	title = 'Duplicate ID(s) in file(s)'
 	description = "An ID may only be defined once per file"
 
-class DuplicateFormulasInMorphsIssue(ProductWarning):
-	title = 'Duplicate formula(s) in morph(s)'
-	description = "Each formula target may only occur once per morph"
-
 class GeometryInDUFFilesIssue(ProductWarning):
 	title = 'Geometry in DSON User File(s) (*.duf)'
 	reference = 'http://docs.daz3d.com/doku.php/public/software/dazstudio/4/userguide/creating_content/packaging/tutorials/packaging_genesis_morph_products/start'
