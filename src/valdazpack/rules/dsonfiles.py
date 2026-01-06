@@ -1,13 +1,11 @@
 import json
+import jsonpath
 import re
 
 from collections import defaultdict
-from typing import Any
+from typing import Any, cast
 from urllib.parse import urlparse, unquote
 from warnings import warn
-
-from jsonpath_ng import DatumInContext
-from jsonpath_ng.ext import parse
 
 from ..issues import dsonfiles as issues
 from ..validator.resources import read_list_from
@@ -30,19 +28,19 @@ class ValidateDSONFiles(ProductRuleset):
 		super()._validate()
 
 		# Cache these
-		self.ext_file_parsers = [ ({'0': False, '1': True}[(x := line.split(maxsplit=1))[0]], parse(x[1])) for line in read_list_from('daz/dson_external_file_references.txt') ]
-		self.geometry_parser = parse('$.geometry_library[*].id')
-		self.uvs_parser = parse('$.uv_set_library[*].id')
-		self.morphs_data_parser = parse('$.modifier_library[?(@.morph)|(@.skin)].id')
-		self.id_parser = parse('($.scene.*[*].id)|($.*[*].id)')
-		self.material_daz_brick_parser = parse('$.material_library[?(@.extra[*].type == "studio/material/daz_brick")].id')
-		self.asset_type_parser = parse('$.asset_info.type')
-		self.preset_shader_parser = parse('$.scene.materials[*].extra[*].type')
-		self.preset_shader_count = parse('$.scene.materials[*].extra[*].`len`')
-		self.favorites_materials_parser = parse('$.scene.materials[*].extra[?(@.type == "studio_material_channels")].favorites')
-		self.favorites_node_properties_parser = parse('$.scene.nodes[*].extra[?(@.type == "studio_node_channels")].favorites')
-		self.active_morph_parser = parse('$.modifier_library[?(@.channel.value != 0 & @.channel.value != 0)].channel')
-		self.morph_loader_group_parser = parse('$.modifier_library[?(@.group == "/Morphs/Morph Loader")].channel')
+		self.ext_file_parsers = [ ({'0': False, '1': True}[(x := line.split(maxsplit=1))[0]], jsonpath.compile(x[1])) for line in read_list_from('daz/dson_external_file_references.txt') ]
+		self.geometry_parser = jsonpath.compile('$.geometry_library[?!@.extra[?@.type == "studio/geometry/shell"]].id')
+		self.uvs_parser = jsonpath.compile('$.uv_set_library[*].id')
+		self.morphs_data_parser = jsonpath.compile('$.modifier_library[?@.morph || @.skin].id')
+		self.id_parser = jsonpath.compile('$.scene.*[*].id | $.*[*].id')
+		self.material_daz_brick_parser = jsonpath.compile('$.material_library[?@.extra[?@.type == "studio/material/daz_brick"]].id')
+		self.asset_type_parser = jsonpath.compile('$.asset_info.type')
+		self.preset_shader_parser = jsonpath.compile('$.scene.materials[*].extra[?startswith(@.type, "studio/material/")].type')
+		self.preset_old_shader_parser = jsonpath.compile('$.scene.materials[*].extra[?!startswith(@.type, "studio/material/")].type')
+		self.favorites_materials_parser = jsonpath.compile('$.scene.materials[*].extra[?@.type == "studio_material_channels"].favorites')
+		self.favorites_node_properties_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio_node_channels"].favorites')
+		self.active_morph_parser = jsonpath.compile('$.modifier_library[?@.channel.value && @.channel.value != 0].channel')
+		self.morph_loader_group_parser = jsonpath.compile('$.modifier_library[?@.group == "/Morphs/Morph Loader"].channel.label')
 		self.probable_path = re.compile(r'\b(data|runtime)\/', re.IGNORECASE)
 
 		# TODO Add check for simulation data in non scene files
@@ -79,7 +77,7 @@ class ValidateDSONFiles(ProductRuleset):
 	
 			if dson:
 				self.dson = dson
-				self.asset_type: str = getattr(next(iter(self.asset_type_parser.find(dson)), None), 'value', '')
+				self.asset_type = cast(str, next(iter(self.asset_type_parser.findall(dson))) or '')
 
 				self._getContributors()
 				self._checkAssetID(filename)
@@ -160,10 +158,10 @@ class ValidateDSONFiles(ProductRuleset):
 		# TODO: this is slow. Try JMESPath? dpath? multithread? ... something...
 		url_references: set[str] = set()
 		for encoded, parser in self.ext_file_parsers:
-			for v in parser.find(self.dson):
-				value = v.value
-				if isinstance(value, str):
+			for v in parser.finditer(self.dson):
+				if isinstance(v.value, str):
 					if encoded:
+						value = v.value
 						if '://' in value:
 							path = unquote(urlparse(value).path.split(':', 1)[-1])
 						else:
@@ -173,14 +171,14 @@ class ValidateDSONFiles(ProductRuleset):
 							path = '/' * leading_slash_count + unquote(urlparse(value.split(':', 1)[-1]).path)
 
 						if ' ' in value:
-							warn(f'Possible unquoted attribute marked as quoted: {filename}: {str(v.full_path)}, value: {value}')
+							warn(f'Possible unquoted attribute marked as quoted: {filename}: {str(v.path)}, value: {value}')
 						if not path and self.probable_path.search(value):
-							warn(f'Possible misparse of path: {filename}: {str(v.full_path)}, value: {value}')
+							warn(f'Possible misparse of path: {filename}: {str(v.path)}, value: {value}')
 					else:
-						path = value
+						path = v.value
 
-						if '%20' in value:
-							warn(f'Possible quoted attribute marked as unquoted: {filename}: {str(v.full_path)}, value: {value}')
+						if '%20' in v.value:
+							warn(f'Possible quoted attribute marked as unquoted: {filename}: {str(v.path)}, value: {v.value}')
 
 					url_references.add(path)
 
@@ -196,8 +194,8 @@ class ValidateDSONFiles(ProductRuleset):
 		"""Check for duplicate IDs in files."""
 
 		id_counts: dict[str, int] = defaultdict(int)
-		for id in self.id_parser.find(self.dson):
-			id_counts[id.value] += 1
+		for id in cast(list[str], self.id_parser.findall(self.dson)):
+			id_counts[id] += 1
 
 		for id in (k for k, v in id_counts.items() if v > 1):
 			self.duplicate_ids_in_files.setdefault(filename, []).append(id)
@@ -207,13 +205,10 @@ class ValidateDSONFiles(ProductRuleset):
 		"""Get shader types in DUF."""
 
 #		if self.asset_type in ['preset_material', 'preset_shader', 'preset_hierarchical_material']:
-		shaderCount = sum([v.value for v in self.preset_shader_count.find(self.dson)])
-		shaderList: list[str] = [v.value for v in self.preset_shader_parser.find(self.dson)]
 		shaders: set[str] = set()
-
-		if shaderCount == 0 or shaderCount < len(shaderList) :
+		if self.preset_old_shader_parser.findall(self.dson):
 			shaders.add('studio/material/daz_shader')
-		shaders.update(shaderList)
+		shaders.update(cast(list[str], self.preset_shader_parser.findall(self.dson)))
 		shaders.discard('studio_material_channels')
 
 		if shaders:
@@ -222,45 +217,43 @@ class ValidateDSONFiles(ProductRuleset):
 	@rule
 	def _checkFavoritesInMaterialsInDUF(self, filename: str) -> None:
 		"""Check for Favorites saved in Materials."""
-		for favorites in self.favorites_materials_parser.find(self.dson):
-			material: DatumInContext = favorites.context.context.context  # pyright: ignore[reportAssignmentType, reportOptionalMemberAccess]
-			self.favorites_in_materials_in_duf_files.setdefault(filename, {})[material.value['id']] = favorites.value
+
+		for favorites in self.favorites_materials_parser.finditer(self.dson):
+			self.favorites_in_materials_in_duf_files.setdefault(filename, {})[favorites.parent.parent.parent.value['id']] = cast(list[str], favorites.value)  # pyright: ignore[reportIndexIssue, reportOptionalMemberAccess]
 
 	@rule
 	def _checkFavoritesInNodePropertiesInDUF(self, filename: str) -> None:
 		"""Check for Favorites saved in Node Properties."""
-		for favorites in self.favorites_node_properties_parser.find(self.dson):
-			property: DatumInContext = favorites.context.context.context  # pyright: ignore[reportAssignmentType, reportOptionalMemberAccess]
-			self.favorites_in_node_properties_in_duf_files.setdefault(filename, {})[property.value['id']] = favorites.value
+
+		for favorites in self.favorites_node_properties_parser.finditer(self.dson):
+			self.favorites_in_node_properties_in_duf_files.setdefault(filename, {})[favorites.parent.parent.parent.value['id']] = cast(list[str], favorites.value)  # pyright: ignore[reportIndexIssue, reportOptionalMemberAccess]
 
 	@rule
 	def _checkSupportAssetsInDUF(self, filename: str) -> None:
 		"""Check DUF file for data better saved in DSF."""
 
-		geometry: list[str] = [v.value for v in self.geometry_parser.find(self.dson)]
-		uvs: list[str] = [v.value for v in self.uvs_parser.find(self.dson)]
-		morphs: list[str] = [v.value for v in self.morphs_data_parser.find(self.dson)]
-		materials: list[str] = [v.value for v in self.material_daz_brick_parser.find(self.dson)]
+		if x := cast(list[str], self.geometry_parser.findall(self.dson)):
+			self.geometry_in_duf_files[filename] = x
 
-		if geometry:
-			self.geometry_in_duf_files[filename] = geometry
-		if uvs:
-			self.uvs_in_duf_files[filename] = uvs
-		if morphs:
-			self.morphs_in_duf_files[filename] = morphs
-		if materials:
-			self.materials_in_duf_files[filename] = materials
+		if x := cast(list[str], self.uvs_parser.findall(self.dson)):
+			self.uvs_in_duf_files[filename] = x
+
+		if x := cast(list[str], self.morphs_data_parser.findall(self.dson)):
+			self.morphs_in_duf_files[filename] = x
+
+		if x := cast(list[str], self.material_daz_brick_parser.findall(self.dson)):
+			self.materials_in_duf_files[filename] = x
 
 	@rule
 	def _checkActiveMorphsInDSF(self, filename: str) -> None:
 		"""Check for active morphs in DSF."""
 
-		for channel in self.active_morph_parser.find(self.dson):
-			self.active_morphs_in_dsf_files.setdefault(filename, []).append((channel.value['label'], channel.value['value']))
+		if x := [(x['label'], x['value']) for x in cast(list[dict[str, Any]], self.active_morph_parser.findall(self.dson))]:
+			self.active_morphs_in_dsf_files[filename] = x
 
 	@rule
 	def _checkMorphLoaderGroupInDSF(self, filename: str) -> None:
 		"""Check for Morph Loader path in DSF."""
 
-		for channel in self.morph_loader_group_parser.find(self.dson):
-			self.morph_loader_group_in_dsf_files.setdefault(filename, []).append(channel.value['label'])
+		if x := cast(list[str], self.morph_loader_group_parser.findall(self.dson)):
+			self.morph_loader_group_in_dsf_files[filename] = x

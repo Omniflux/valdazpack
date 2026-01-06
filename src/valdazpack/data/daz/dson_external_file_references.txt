@@ -12,7 +12,7 @@
 # Format is X JSONPath
 # X is 1 if value is URL encoded, 0 otherwise
 
-0 $.[geometry_library, modifier_library][*].legacy_source_info.location
+0 $['geometry_library', 'modifier_library'][*].legacy_source_info.location
 0 $.scene.modifiers[*].legacy_source_info.location
 0 $.scene.nodes[*].geometries[*].legacy_source_info.location
 0 $.scene.nodes[*].legacy_alternate_geometries[*].geometries[*].legacy_source_info.location
@@ -27,8 +27,8 @@
 
 0 $.scene.nodes[*].extra[*].settings.Callbacks.value.*
 
-0 $.[material_library, node_library][*].extra[*].channels[?(@.channel.type =~ "^(image|file)$")].channel.current_value
-0 $.scene.materials[*].extra[*].channels[?(@.channel.type =~ "^(image|file)$")].channel.current_value
+0 $['material_library', 'node_library'][*].extra[*].channels[?['image', 'file'] contains @.channel.type].channel.current_value
+0 $.scene.materials[*].extra[*].channels[?['image', 'file'] contains @.channel.type].channel.current_value
 
 0 $.scene.extra[*].settings.PostLoadAddons.value.*.value.AssetFile
 0 $.scene.nodes[*].extra[*].settings.PostLoadScriptSettings.value.AssetFile
@@ -41,7 +41,7 @@
 0 $.scene.nodes[*].extra[*].settings.PostLoadScriptPath
 
 0 $.scene.extra[*].script
-0 $.scene.[materials, nodes][*].extra[*].script
+0 $.scene['materials', 'nodes'][*].extra[*].script
 
 
 1 $.geometry_library[*].default_uv_set
@@ -49,15 +49,15 @@
 1 $.material_library[*].uv_set
 1 $.scene.materials[*].uv_set
 
-1 $.[geometry_library, image_library, material_library, modifier_library, node_library, uvset_library][*].source
+1 $['geometry_library', 'image_library', 'material_library', 'modifier_library', 'node_library', 'uvset_library'][*].source
 
 1 $.material_library[*].*.image
 1 $.scene.nodes[*].extra[*].layers[*].poses[*].image
 
-1 $.scene.[animations, materials, modifiers, nodes, uvs][*].url
-1 $.[modifier_library, node_library][*].formulas[*].operations[*].url
+1 $.scene['animations', 'materials', 'modifiers', 'nodes', 'uvs'][*].url
+1 $['modifier_library', 'node_library'][*].formulas[*].operations[*].url
 1 $.material_library[*].*.map[*].url
-1 $.[image_library, material_library][*].map[*].url
+1 $['image_library', 'material_library'][*].map[*].url
 1 $.scene.materials[*].*.map[*].url
 1 $.material_library[*].extra[*].property_settings.*.map[*].url
 1 $.scene.materials[*].extra[*].property_settings.*.map[*].url
@@ -67,29 +67,29 @@
 
 1 $.modifier_library[*].channel.legacy_link
 1 $.scene.modifiers[*].channel.legacy_link
-1 $.[material_library, node_library][*].extra[*].channels[*].channel.legacy_link
+1 $['material_library', 'node_library'][*].extra[*].channels[*].channel.legacy_link
 
-1 $.[material_library, modifier_library][*].channel.target_channel
+1 $['material_library', 'modifier_library'][*].channel.target_channel
 1 $.scene.modifiers[*].channel.target_channel
 
 1 $.modifier_library[*].extra.smoothing.collision_node
 
-1 $.[modifier_library, node_library][*].formulas[*].output
+1 $['modifier_library', 'node_library'][*].formulas[*].output
 
 1 $.modifier_library[*].skin.joints[*].node
-1 $.modifier_library[*].skin.[geometry, node]
+1 $.modifier_library[*].skin['geometry', 'node']
 
-1 $.modifier_library[*].[skin, legacy_skin].geometry
+1 $.modifier_library[*]['skin', 'legacy_skin'].geometry
 1 $.scene.materials[*].geometry
 
 1 $.modifier_library[*].morph.hd_url
 
-1 $.[modifier_library, node_library][*].parent
-1 $.scene.[modifiers, nodes, uvs][*].parent
-1 $.scene.nodes[*].[conform_target, parent_in_place]
+1 $['modifier_library', 'node_library'][*].parent
+1 $.scene['modifiers', 'nodes', 'uvs'][*].parent
+1 $.scene.nodes[*]['conform_target', 'parent_in_place']
 
-1 $.[modifier_library, node_library][*].presentation.[icon_large, icon_small]
-1 $.scene.presentation.[icon_large, icon_small]
+1 $['modifier_library', 'node_library'][*].presentation['icon_large', 'icon_small']
+1 $.scene.presentation['icon_large', 'icon_small']
 
 1 $.scene.extra[*].objects.*.materials.*.textures[*].fileName
 
@@ -99,11 +99,11 @@
 1 $.scene.extra[*].render_options.render_elements[*].channels[*].channel.image_file
 1 $.scene.extra[*].render_options.render_elements[*].children[*].channels[*].channel.image_file
 1 $.scene.materials[*].*.channel.image_file
-1 $.scene.[materials, modifiers, nodes][*].extra[*].channels[*].channel.image_file
+1 $.scene['materials', 'modifiers', 'nodes'][*].extra[*].channels[*].channel.image_file
 1 $.node_library[*].extra[*].channels[*].channel.image_file
 
 1 $.scene.extra[*].settings.*.*.Diffuse.diffuseTexture
-1 $.scene.nodes[*].extra[*].settings.*.*.[Velvet, Diffuse].diffuseTexture
+1 $.scene.nodes[*].extra[*].settings.*.*['Velvet', 'Diffuse'].diffuseTexture
 
 1 $.scene.nodes[*].extra[*].settings.*.*.Opacity.alphaMapTexture
 
@@ -112,7 +112,7 @@
 1 $.scene.extra[*].settings.*.Modifiers.bumpMap
 1 $.scene.nodes[*].extra[*].settings.*.*.Modifiers.bumpMap
 
-1 $.scene.animations[?(@.url =~ ":.*\?(uv_set|.*/image_file)$")].keys[*][1]
+1 $.scene.animations[?match(@.url, ":.*?(uv_set|.*/image_file)$")].keys[*][1]
 
 
 
@@ -128,6 +128,6 @@
 1 $.scene.nodes[*].extra[*].clone_info_path
 1 $.scene.nodes[*].extra[*].file
 1 $.scene.nodes[*].extra[*].settings.RealityEngine.iblMapFilename
-1 $.scene.nodes[*].extra[*].settings.SaveSettings
+#1 $.scene.nodes[*].extra[*].settings.SaveSettings
 1 $.scene.nodes[*].extra[*].settings.data
 1 $.scene.nodes[*].extra[*].addons[*].folders[*]
