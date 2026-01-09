@@ -23,6 +23,7 @@ from valdazpack.issues.contentdirectory import (
 	FullExtensionTipFilesIssue,
 	UnreferencedFilesInTexturesDirectoryIssue,
 	RepeatedFileExtensionsIssue,
+	DirectXNormalFilesIssue,
 )
 
 from .conftest import mockExistsWithoutFile
@@ -90,4 +91,6 @@ def test_UnreferencedFilesInTexturesDirectoryIssue(validatorINVALID: ValidationD
 
 def test_RepeatedFileExtensionsIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, RepeatedFileExtensionsIssue) for x in validatorINVALID.issues.product)
-	
+
+def test_DirectXNormalFilesIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, DirectXNormalFilesIssue) for x in validatorINVALID.issues.product)

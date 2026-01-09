@@ -73,3 +73,7 @@ class UnreferencedFilesInTexturesDirectoryIssue(ProductNotice):
 class RepeatedFileExtensionsIssue(ProductWarning):
 	title = 'Repeated file extension(s) on file(s) in Content directory'
 	description = "File extensions should not be repeated"
+
+class DirectXNormalFilesIssue(ProductWarning):
+	title = 'DirectX Normal file(s) in Content directory'
+	description = "Normal files must be in OpenGL format"

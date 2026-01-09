@@ -42,6 +42,7 @@ class ValidateContentDirectory(ProductRuleset):
 		self._checkAssetThumbnails()
 		self._checkUnexpectedUserFacingFiles()
 		self._checkRepeatedFileExtensions()
+		self._checkDirectXNormalFiles()
 
 		# TODO Check for duplicate files
 
@@ -273,3 +274,17 @@ class ValidateContentDirectory(ProductRuleset):
 
 		if repeated_extensions:
 			self._addIssue(issues.RepeatedFileExtensionsIssue(repeated_extensions))
+
+	@rule
+	def _checkDirectXNormalFiles(self) -> None:
+		"""Check for files named both 'DirectX' and 'Normal'."""
+		# Do not know a method to check which format a normal file is in, so check for common pattern
+
+		directx_normal_files: list[str] = []
+		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files()):  # pyright: ignore[reportUnknownMemberType]
+			name = Path(file).stem.lower()
+			if 'directx' in name and 'normal' in name:
+				directx_normal_files.append(file)
+
+		if directx_normal_files:
+			self._addIssue(issues.DirectXNormalFilesIssue(directx_normal_files))
