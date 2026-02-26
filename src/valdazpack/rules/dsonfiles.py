@@ -41,6 +41,8 @@ class ValidateDSONFiles(ProductRuleset):
 		self.favorites_node_properties_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio_node_channels"].favorites')
 		self.active_morph_parser = jsonpath.compile('$.modifier_library[?@.channel.value && @.channel.value != 0].channel')
 		self.morph_loader_group_parser = jsonpath.compile('$.modifier_library[?@.group == "/Morphs/Morph Loader"].channel.label')
+		self.tonemapper_options_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio/node/tone_mapper"]')
+		self.environment_options_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio/node/environment"]')
 		self.probable_path = re.compile(r'\b(data|runtime)\/', re.IGNORECASE)
 
 		# TODO Add check for simulation data in non scene files
@@ -56,6 +58,8 @@ class ValidateDSONFiles(ProductRuleset):
 		self.favorites_in_node_properties_in_duf_files: dict[str, dict[str, list[str]]] = {}
 		self.active_morphs_in_dsf_files: dict[str, list[tuple[str, str]]] = {}
 		self.morph_loader_group_in_dsf_files: dict[str, list[str]] = {}
+		self.tonemapper_options_in_duf_files: dict[str, str] = {}
+		self.environment_options_in_duf_files: dict[str, str] = {}
 		for filename in self.data.product_fs.walk.files(filter=['*.dsf', '*.duf']):  # pyright: ignore[reportUnknownMemberType]
 			dson: dict[str, Any] | None = None
 
@@ -93,6 +97,8 @@ class ValidateDSONFiles(ProductRuleset):
 					self._checkFavoritesInMaterialsInDUF(filename)
 					self._checkFavoritesInNodePropertiesInDUF(filename)
 					self._checkSupportAssetsInDUF(filename)
+					self._checkTonemapperOptionsInDUF(filename)
+					self._checkEnvironmentOptionsInDUF(filename)
 
 		if self.invalid_dson_files:
 			self._addIssue(issues.InvalidDSONFilesIssue(self.invalid_dson_files))
@@ -126,6 +132,12 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.morph_loader_group_in_dsf_files:
 			self._addIssue(issues.MorphLoaderGroupInDSFFilesIssue(self.morph_loader_group_in_dsf_files))
+
+		if self.tonemapper_options_in_duf_files:
+			self._addIssue(issues.TonemapperOptionsInDUFFilesIssue(self.tonemapper_options_in_duf_files))
+
+		if self.environment_options_in_duf_files:
+			self._addIssue(issues.EnvironmentOptionsInDUFFilesIssue(self.environment_options_in_duf_files))
 
 	@rule
 	def _getContributors(self) -> None:
@@ -257,3 +269,19 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if x := cast(list[str], self.morph_loader_group_parser.findall(self.dson)):
 			self.morph_loader_group_in_dsf_files[filename] = x
+
+	@rule
+	def _checkTonemapperOptionsInDUF(self, filename: str) -> None:
+		"""Check for Morph Loader path in DSF."""
+
+		if cast(list[str], self.tonemapper_options_parser.findall(self.dson)):
+			if self.asset_type not in ['scene']:
+				self.tonemapper_options_in_duf_files[filename] = self.asset_type
+
+	@rule
+	def _checkEnvironmentOptionsInDUF(self, filename: str) -> None:
+		"""Check for Morph Loader path in DSF."""
+
+		if cast(list[str], self.environment_options_parser.findall(self.dson)):
+			if self.asset_type not in ['scene']:
+				self.environment_options_in_duf_files[filename] = self.asset_type

@@ -49,3 +49,11 @@ class MorphLoaderGroupInDSFFilesIssue(ProductWarning):
 	title = 'Morph(s) in "Morphs/Morph Loader" property group in DSON Support File(s) (*.dsf)'
 	description = ("Morphs should be reassigned from the 'Morphs/Morph Loader' property group to an appropriate "
 	               "group for filtering.")
+
+class TonemapperOptionsInDUFFilesIssue(ProductWarning):
+	title = 'Tonemapper Options unexpectedly included in DSON User File(s) (*.duf)'
+	description = "Tonemapper Options should only be included in Scene and Render Settings files"
+
+class EnvironmentOptionsInDUFFilesIssue(ProductWarning):
+	title = 'Environment Options unexpectedly included in DSON User File(s) (*.duf)'
+	description = "Environment Options should only be included in Scene and Render Settings files"
