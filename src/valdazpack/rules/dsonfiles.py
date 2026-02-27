@@ -38,7 +38,7 @@ class ValidateDSONFiles(ProductRuleset):
 		self.preset_shader_parser = jsonpath.compile('$.scene.materials[*].extra[?startswith(@.type, "studio/material/")].type')
 		self.preset_old_shader_parser = jsonpath.compile('$.scene.materials[*].extra[?!startswith(@.type, "studio/material/")].type')
 		self.favorites_materials_parser = jsonpath.compile('$.scene.materials[*].extra[?@.type == "studio_material_channels"].favorites')
-		self.favorites_node_properties_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio_node_channels"].favorites')
+		self.favorites_node_properties_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio_node_channels"].favorites | $.scene.nodes[*].geometries[*].extra[?@.type == "studio_geometry_channels"].favorites')
 		self.active_morph_parser = jsonpath.compile('$.modifier_library[?@.channel.value && @.channel.value != 0].channel')
 		self.morph_loader_group_parser = jsonpath.compile('$.modifier_library[?@.group == "/Morphs/Morph Loader"].channel.label')
 		self.tonemapper_options_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio/node/tone_mapper"]')
@@ -231,7 +231,8 @@ class ValidateDSONFiles(ProductRuleset):
 		"""Check for Favorites saved in Materials."""
 
 		for favorites in self.favorites_materials_parser.finditer(self.dson):
-			self.favorites_in_materials_in_duf_files.setdefault(filename, {})[favorites.parent.parent.parent.value['id']] = cast(list[str], favorites.value)  # pyright: ignore[reportIndexIssue, reportOptionalMemberAccess]
+			reference = cast(str, favorites.parent.parent.parent.value.get('id') or favorites.parent.parent.parent.value['url']) # pyright: ignore[reportAttributeAccessIssue, reportIndexIssue, reportOptionalMemberAccess, reportUnknownMemberType]
+			self.favorites_in_materials_in_duf_files.setdefault(filename, {})[reference] = cast(list[str], favorites.value)
 
 	@rule
 	def _checkFavoritesInNodePropertiesInDUF(self, filename: str) -> None:
