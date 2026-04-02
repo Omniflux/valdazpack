@@ -13,6 +13,11 @@ class DuplicateIDsInFilesIssue(ProductWarning):
 	title = 'Duplicate ID(s) in file(s)'
 	description = "An ID may only be defined once per file"
 
+class RootNodeWithNonStandardOrientationInFilesIssue(ProductNotice):
+	title = 'Root node with non standard orientation in file(s)'
+	description = ("Using non standard orientation on root nodes can be confusing when not intentional. "
+		           "It often occurs unintentionally when importing objects from FBX.")
+
 class GeometryInDUFFilesIssue(ProductWarning):
 	title = 'Geometry in DSON User File(s) (*.duf)'
 	reference = 'http://docs.daz3d.com/doku.php/public/software/dazstudio/4/userguide/creating_content/packaging/tutorials/packaging_genesis_morph_products/start'

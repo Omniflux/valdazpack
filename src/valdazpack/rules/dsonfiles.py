@@ -33,6 +33,7 @@ class ValidateDSONFiles(ProductRuleset):
 		self.uvs_parser = jsonpath.compile('$.uv_set_library[*].id')
 		self.morphs_data_parser = jsonpath.compile('$.modifier_library[?@.morph || @.skin].id')
 		self.id_parser = jsonpath.compile('$.scene.*[*].id | $.*[*].id')
+		self.root_node_non_standard_orientation_parser = jsonpath.compile('$.node_library[?!@.parent].orientation[?@.value != 0]')
 		self.material_daz_brick_parser = jsonpath.compile('$.material_library[?@.extra[?@.type == "studio/material/daz_brick"]].id')
 		self.asset_type_parser = jsonpath.compile('$.asset_info.type')
 		self.preset_shader_parser = jsonpath.compile('$.scene.materials[*].extra[?startswith(@.type, "studio/material/")].type')
@@ -49,6 +50,7 @@ class ValidateDSONFiles(ProductRuleset):
 
 		self.invalid_dson_files: dict[str, Exception] = {}
 		self.asset_id_mismatch_files: dict[str, str] = {}
+		self.root_node_non_standard_orientation_files: dict[str, dict[str, list[tuple[str, str]]]] = {}
 		self.duplicate_ids_in_files: dict[str, list[str]] = {}
 		self.geometry_in_duf_files: dict[str, list[str]] = {}
 		self.uvs_in_duf_files: dict[str, list[str]] = {}
@@ -87,6 +89,7 @@ class ValidateDSONFiles(ProductRuleset):
 				self._checkAssetID(filename)
 				self._checkDSONFileReferences(filename)
 				self._checkDuplicateIdsInFiles(filename)
+				self._checkRootNodesWithNonStandardOrientationInFiles(filename)
 
 				if filename.lower().endswith('.dsf'):
 					self._checkActiveMorphsInDSF(filename)
@@ -105,6 +108,9 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.asset_id_mismatch_files:
 			self._addIssue(issues.AssetIDMismatchFilesIssue(self.asset_id_mismatch_files))
+
+		if self.root_node_non_standard_orientation_files:
+			self._addIssue(issues.RootNodeWithNonStandardOrientationInFilesIssue(self.root_node_non_standard_orientation_files))
 
 		if self.duplicate_ids_in_files:
 			self._addIssue(issues.DuplicateIDsInFilesIssue(self.duplicate_ids_in_files))
@@ -211,6 +217,12 @@ class ValidateDSONFiles(ProductRuleset):
 
 		for id in (k for k, v in id_counts.items() if v > 1):
 			self.duplicate_ids_in_files.setdefault(filename, []).append(id)
+
+	@rule
+	def _checkRootNodesWithNonStandardOrientationInFiles(self, filename: str) -> None:
+		"""Check for root nodes with non standard orientation in files."""
+		for orientation in self.root_node_non_standard_orientation_parser.finditer(self.dson):
+			self.root_node_non_standard_orientation_files.setdefault(filename, {}).setdefault(cast(str, orientation.parent.parent.value['id']), []).append(cast(tuple[str, str], (orientation.value['id'], orientation.value['value'])))  # pyright: ignore[reportIndexIssue, reportOptionalMemberAccess]
 
 	@rule
 	def _getShaderTypeInDUF(self, filename: str) -> None:
