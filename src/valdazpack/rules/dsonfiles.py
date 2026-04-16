@@ -184,7 +184,7 @@ class ValidateDSONFiles(ProductRuleset):
 							path = unquote(urlparse(value).path.split(':', 1)[-1])
 						else:
 							# Work around double forward slash being interpreted as netloc by urlparse
-							leading_slash_count = len(re.split("[^/]", value, 1)[0])
+							leading_slash_count = len(re.split("[^/]", value, maxsplit=1)[0])
 							value = value.lstrip('/')
 							path = '/' * leading_slash_count + unquote(urlparse(value.split(':', 1)[-1]).path)
 
