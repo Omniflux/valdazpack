@@ -283,7 +283,7 @@ class ValidateContentDirectory(ProductRuleset):
 		directx_normal_files: list[str] = []
 		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files()):  # pyright: ignore[reportUnknownMemberType]
 			name = Path(file).stem.lower()
-			if 'directx' in name and 'normal' in name:
+			if ('directx' or 'dx') in name and 'normal' in name:
 				directx_normal_files.append(file)
 
 		if directx_normal_files:
