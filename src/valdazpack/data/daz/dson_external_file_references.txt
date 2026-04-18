@@ -112,7 +112,7 @@
 1 $.scene.extra[*].settings.*.Modifiers.bumpMap
 1 $.scene.nodes[*].extra[*].settings.*.*.Modifiers.bumpMap
 
-1 $.scene.animations[?match(@.url, ":.*?(uv_set|.*/image_file)$")].keys[*][1]
+1 $.scene.animations[?match(@.url, ".*:(?!//).*\\?(uv_set|.*/image_file)")].keys[*][1]
 
 
 
