@@ -83,7 +83,7 @@ class ValidateDSONFiles(ProductRuleset):
 	
 			if dson:
 				self.dson = dson
-				self.asset_type = cast(str, next(iter(self.asset_type_parser.findall(dson))) or '')
+				self.asset_type = cast(str, next(iter(self.asset_type_parser.findall(dson)), '') or '')
 
 				self._getContributors()
 				self._checkAssetID(filename)
