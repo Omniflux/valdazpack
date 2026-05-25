@@ -512,6 +512,9 @@
 			"id" : "Plane",
 			"name" : "Plane",
 			"parent" : "#geometry",
+			"legacy_source_info" : {
+				"location" : "/PlaneMorph.pp2#plane_A#plane_B"
+			},
 			"presentation" : {
 				"type" : "Modifier/Shape",
 				"label" : "",

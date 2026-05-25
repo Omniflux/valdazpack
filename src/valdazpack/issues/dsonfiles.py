@@ -3,7 +3,11 @@ from . import ProductWarning, ProductNotice
 class InvalidDSONFilesIssue(ProductWarning):
 	title = 'Invalid DSON file(s) in Content directory'
 	reference = 'http://docs.daz3d.com/doku.php/public/dson_spec/start'
-	description = "Content directory contains invalid DSON file"
+	description = "Content directory contains invalid DSON file(s)"
+
+class SourceFileReferencesIssue(ProductNotice):
+	title = 'Source file reference(s) in DSON file(s)'
+	description = "Path to source file included in DSON file(s)"
 
 class AssetIDMismatchFilesIssue(ProductNotice):
 	title = 'Asset ID mismatch(es) in DSON file(s)'

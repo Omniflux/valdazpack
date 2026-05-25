@@ -12,16 +12,6 @@
 # Format is X JSONPath
 # X is 1 if value is URL encoded, 0 otherwise
 
-0 $['geometry_library', 'modifier_library'][*].legacy_source_info.location
-0 $.scene.modifiers[*].legacy_source_info.location
-0 $.scene.nodes[*].geometries[*].legacy_source_info.location
-0 $.scene.nodes[*].legacy_alternate_geometries[*].geometries[*].legacy_source_info.location
-
-0 $.scene.nodes[*].extra[*].source_file
-0 $.scene.nodes[*].geometries[*].extra[*].source_file
-0 $.scene.nodes[*].geometries[*].legacy_source_info.location
-0 $.scene.nodes[*].legacy_alternate_geometries[*].geometries[*].extra[*].source_file
-
 0 $.material_library[*].extra[*].brick_settings.BrickSetup.value.Bricks.value.*.value.Parameters.value.*.value.*.value.MapImage
 0 $.scene.materials[*].extra[*].brick_settings.BrickSetup.value.Bricks.value.*.value.Parameters.value.*.value.*.value.MapImage.value
 

@@ -4,7 +4,7 @@ import re
 
 from collections import defaultdict
 from typing import Any, cast
-from urllib.parse import urlparse, unquote
+from urllib.parse import unquote, urlparse, urlsplit
 from warnings import warn
 
 from ..issues import dsonfiles as issues
@@ -29,6 +29,7 @@ class ValidateDSONFiles(ProductRuleset):
 
 		# Cache these
 		self.ext_file_parsers = [ ({'0': False, '1': True}[(x := line.split(maxsplit=1))[0]], jsonpath.compile(x[1])) for line in read_list_from('daz/dson_external_file_references.txt') ]
+		self.source_file_references_parser = jsonpath.compile('|'.join(line for line in read_list_from('daz/dson_source_file_references.txt')))
 		self.geometry_parser = jsonpath.compile('$.geometry_library[?!@.extra[?@.type == "studio/geometry/shell"]].id')
 		self.uvs_parser = jsonpath.compile('$.uv_set_library[*].id')
 		self.morphs_data_parser = jsonpath.compile('$.modifier_library[?@.morph || @.skin].id')
@@ -49,6 +50,7 @@ class ValidateDSONFiles(ProductRuleset):
 		# TODO Add check for simulation data in non scene files
 
 		self.invalid_dson_files: dict[str, Exception] = {}
+		self.source_file_reference: dict[str, set[str]] = {}
 		self.asset_id_mismatch_files: dict[str, str] = {}
 		self.root_node_non_standard_orientation_files: dict[str, dict[str, list[tuple[str, str]]]] = {}
 		self.duplicate_ids_in_files: dict[str, list[str]] = {}
@@ -88,6 +90,7 @@ class ValidateDSONFiles(ProductRuleset):
 				self._getContributors()
 				self._checkAssetID(filename)
 				self._checkDSONFileReferences(filename)
+				self._checkSourceFileReferences(filename)
 				self._checkDuplicateIdsInFiles(filename)
 				self._checkRootNodesWithNonStandardOrientationInFiles(filename)
 
@@ -105,6 +108,9 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.invalid_dson_files:
 			self._addIssue(issues.InvalidDSONFilesIssue(self.invalid_dson_files))
+
+		if self.source_file_reference:
+			self._addIssue(issues.SourceFileReferencesIssue(self.source_file_reference))
 
 		if self.asset_id_mismatch_files:
 			self._addIssue(issues.AssetIDMismatchFilesIssue(self.asset_id_mismatch_files))
@@ -206,6 +212,14 @@ class ValidateDSONFiles(ProductRuleset):
 		for file in url_references - {''}:
 			if file.startswith('//') or not trackDependencyIfExists(self.data, file, filename):
 				self.data.missing_referenced_files.setdefault(file, set()).add(filename)
+
+	@rule
+	def _checkSourceFileReferences(self, filename: str) -> None:
+		"""Check for source file references. """
+
+		for source_file_reference in self.source_file_references_parser.finditer(self.dson):
+			reference = urlsplit(cast(str, source_file_reference.value)).path
+			self.source_file_reference.setdefault(reference, set()).add(filename)
 
 	@rule
 	def _checkDuplicateIdsInFiles(self, filename: str) -> None:

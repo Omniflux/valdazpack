@@ -1,6 +1,7 @@
 from valdazpack.validator import ValidationData
 from valdazpack.issues.dsonfiles import (
 	InvalidDSONFilesIssue,
+	SourceFileReferencesIssue,
 	AssetIDMismatchFilesIssue,
 	DuplicateIDsInFilesIssue,
 	DuplicateFormulasInMorphsIssue,
@@ -16,6 +17,9 @@ from valdazpack.issues.dsonfiles import (
 
 def test_InvalidDSONFilesIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, InvalidDSONFilesIssue) for x in validatorINVALID.issues.product)
+
+def test_SourceFileReferencesIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, SourceFileReferencesIssue) for x in validatorINVALID.issues.product)
 
 def test_AssetIDMismatchFilesIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, AssetIDMismatchFilesIssue) for x in validatorINVALID.issues.product)

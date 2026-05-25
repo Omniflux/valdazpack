@@ -1,0 +1,14 @@
+# http://docs.daz3d.com/doku.php/public/dson_spec/object_definitions/daz/start
+# Most of these paths are not documented and have been found by observation
+
+# Many paths may be missing.
+
+ $['geometry_library', 'modifier_library'][*].legacy_source_info.location
+ $.scene.modifiers[*].legacy_source_info.location
+ $.scene.nodes[*].geometries[*].legacy_source_info.location
+ $.scene.nodes[*].legacy_alternate_geometries[*].geometries[*].legacy_source_info.location
+
+ $.scene.nodes[*].extra[*].source_file
+ $.scene.nodes[*].geometries[*].extra[*].source_file
+ $.scene.nodes[*].geometries[*].legacy_source_info.location
+ $.scene.nodes[*].legacy_alternate_geometries[*].geometries[*].extra[*].source_file
