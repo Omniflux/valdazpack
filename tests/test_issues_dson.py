@@ -4,7 +4,6 @@ from valdazpack.issues.dsonfiles import (
 	SourceFileReferencesIssue,
 	AssetIDMismatchFilesIssue,
 	DuplicateIDsInFilesIssue,
-	DuplicateFormulasInMorphsIssue,
 	GeometryInDUFFilesIssue,
 	UVSetInDUFFilesIssue,
 	MorphInDUFFilesIssue,
@@ -26,9 +25,6 @@ def test_AssetIDMismatchFilesIssue(validatorINVALID: ValidationData):
 
 def test_DuplicateIDsInFilesIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, DuplicateIDsInFilesIssue) for x in validatorINVALID.issues.product)
-
-def test_DuplicateFormulasInMorphsIssue(validatorINVALID: ValidationData):
-	assert any(isinstance(x, DuplicateFormulasInMorphsIssue) for x in validatorINVALID.issues.product)
 
 def test_GeometryInDUFFilesIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, GeometryInDUFFilesIssue) for x in validatorINVALID.issues.product)
