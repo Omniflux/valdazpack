@@ -257,7 +257,7 @@ class ValidateContentDirectory(ProductRuleset):
 					if not any(self.data.product_fs.exists(f) for f in (splitFile + e[1:] for e in _USER_FACING_FILE_EXTENSIONS_WITH_DJL)):
 						if splitFile.lower().endswith('.tip'):
 							splitFile = splitext(splitFile)[0]
-							if self.data.product_fs.exists(splitFile):
+							if self.data.product_fs.isfile(splitFile):
 								fullExtensionTipFiles.append(file)
 							else:
 								if not any(self.data.product_fs.exists(f) for f in (splitFile + e[1:] for e in _USER_FACING_FILE_EXTENSIONS_WITH_DJL)):
