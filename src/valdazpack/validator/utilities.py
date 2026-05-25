@@ -40,7 +40,7 @@ def thumbnailsFor(fs: FS, path: str) -> tuple[list[str], list[str]]:
 
 	Returns a tuple of existing files in
 		[filename.png, basefilename.png]
-		[filename.tip.png, basefilename.tip.png]
+		[basefilename.tip.png]
 
 	Arguments:
 		fs (fs.FS): PyFilesystem2 filesystem to use.
@@ -55,8 +55,6 @@ def thumbnailsFor(fs: FS, path: str) -> tuple[list[str], list[str]]:
 	if fs.exists(file := splitext(path)[0] + '.png'):
 		thumbnails.append(file)
 
-	if fs.exists(file := path + '.tip.png'):
-		tips.append(file)
 	if fs.exists(file := splitext(path)[0] + '.tip.png'):
 		tips.append(file)
 

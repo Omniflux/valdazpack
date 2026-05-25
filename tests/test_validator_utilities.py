@@ -67,7 +67,7 @@ def test_decompressDSON():
 
 def test_thumbnailsFor(dimzipfileINVALID: Path):
 	v = ValidationData([dimzipfileINVALID])
-	assert thumbnailsFor(v.product_fs, 'Invalid.djl') == (['Invalid.png'], [])
+	assert thumbnailsFor(v.product_fs, 'Invalid.djl') == (['Invalid.djl.png'], [])
 	
 def test_trackDependencyIfExists(dimzipfileINVALID: Path):
 	v = ValidationData([dimzipfileINVALID])

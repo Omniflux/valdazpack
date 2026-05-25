@@ -15,6 +15,7 @@ from ..validator.utilities import Step, checkTypo, thumbnailsFor, trackDependenc
 _TEXTURES_DIR = 'Runtime/Textures'
 _NON_USER_FACING_DIRECTORIES = [d.lower() for d in read_list_from('daz/user_facing_excluded_directories.txt')]
 _USER_FACING_FILE_EXTENSIONS = [f'*.{ext.lower()}' for ext in read_list_from('daz/native_file_extensions.txt')]
+_USER_FACING_FILE_EXTENSIONS_WITH_DJL = _USER_FACING_FILE_EXTENSIONS + ['*.djl']
 _GRATUITOUS_FILES = [f.lower() for f in read_list_from('daz/gratuitous_content_files.txt')]
 _GRATUITOUS_FILE_EXTENSIONS = [f'.{ext.lower()}' for ext in read_list_from('daz/gratuitous_content_file_extensions.txt')]
 
@@ -143,9 +144,9 @@ class ValidateContentDirectory(ProductRuleset):
 		"""Check DAZ JSON Link files."""
 
 		invalid_djl_files: dict[str, Exception] = {}
-		unnecessary_thumbnails_for_djl_files: dict[str, list[str]] = {}
+		overriding_thumbnails_for_djl_files: dict[str, list[str]] = {}
 		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files(filter=['*.djl'])):  # pyright: ignore[reportUnknownMemberType]
-			thumbnails = [t for lst in thumbnailsFor(self.data.product_fs, file) for t in lst]
+			thumbnails = thumbnailsFor(self.data.product_fs, file)
 
 			try:
 				json = SchemaCheckedJSON(self.data.product_fs.openbin(file), 'djl.schema.json')
@@ -156,17 +157,18 @@ class ValidateContentDirectory(ProductRuleset):
 				if not trackDependencyIfExists(self.data, json.data['path'], file):
 					self.data.missing_referenced_files.setdefault(json.data['path'], set()).add(file)
 
-				if thumbnails:
-					target_thumbnails = [t for lst in thumbnailsFor(self.data.filesystem, json.data['path']) for t in lst]
-					if target_thumbnails:
-						unnecessary_thumbnails_for_djl_files[file] = thumbnails
+				if thumbnails and not json.data['path'].lower().endswith('.djl'):
+					target_thumbnails = thumbnailsFor(self.data.filesystem, json.data['path'])
+					if thumbnails[0] and target_thumbnails[0]:
+						overriding_thumbnails_for_djl_files.setdefault(file, []).extend(thumbnails[0])
+					if thumbnails[1] and target_thumbnails[1]:
+						overriding_thumbnails_for_djl_files.setdefault(file, []).extend(thumbnails[1])
 
 		if invalid_djl_files:
 			self._addIssue(issues.InvalidDJLFilesIssue(invalid_djl_files))
 
-		if unnecessary_thumbnails_for_djl_files:
-			self._addIssue(issues.UnnecessaryThumbnailsForDJLIssue(unnecessary_thumbnails_for_djl_files))
-
+		if overriding_thumbnails_for_djl_files:
+			self._addIssue(issues.OverridingThumbnailsForDJLIssue(overriding_thumbnails_for_djl_files))
 
 	@rule
 	def _checkLegacyFormatFiles(self) -> None:
@@ -222,12 +224,21 @@ class ValidateContentDirectory(ProductRuleset):
 
 		missingThumbnails: list[str] = []
 
-		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files(filter=_USER_FACING_FILE_EXTENSIONS, exclude_dirs=_NON_USER_FACING_DIRECTORIES)):  # pyright: ignore[reportUnknownMemberType]
+		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files(filter=_USER_FACING_FILE_EXTENSIONS_WITH_DJL, exclude_dirs=_NON_USER_FACING_DIRECTORIES)):  # pyright: ignore[reportUnknownMemberType]
 			fullExtThumbnail = f'{file}.png'
 
 			if not self.data.product_fs.exists(fullExtThumbnail):
 				if not self.data.product_fs.exists(f'{splitext(file)[0]}.png'):
-					missingThumbnails.append(file)
+					if splitext(file)[1].lower() == '.djl':
+						try:
+							json = SchemaCheckedJSON(self.data.product_fs.openbin(file), 'djl.schema.json')
+						except Exception:
+							missingThumbnails.append(file)
+						else:
+							if not thumbnailsFor(self.data.filesystem, json.data['path'])[0]:
+								missingThumbnails.append(file)
+					else:
+						missingThumbnails.append(file)
 
 		if missingThumbnails:
 			self._addIssue(issues.MissingThumbnailsIssue(missingThumbnails))
@@ -239,17 +250,17 @@ class ValidateContentDirectory(ProductRuleset):
 		unexpectedFiles: list[str] = []
 		fullExtensionTipFiles: list[str] = []
 
-		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files(exclude=_USER_FACING_FILE_EXTENSIONS + ['*.djl'], exclude_dirs=_NON_USER_FACING_DIRECTORIES)):  # pyright: ignore[reportUnknownMemberType]
+		for file in (file.lstrip('/') for file in self.data.product_fs.walk.files(exclude=_USER_FACING_FILE_EXTENSIONS_WITH_DJL, exclude_dirs=_NON_USER_FACING_DIRECTORIES)):  # pyright: ignore[reportUnknownMemberType]
 			if file.lower().endswith('.png'):
 				splitFile = splitext(file)[0]
 				if not self.data.product_fs.exists(splitFile):
-					if not any(self.data.product_fs.exists(f) for f in (splitFile + e[1:] for e in _USER_FACING_FILE_EXTENSIONS + ['*.djl'])):
+					if not any(self.data.product_fs.exists(f) for f in (splitFile + e[1:] for e in _USER_FACING_FILE_EXTENSIONS_WITH_DJL)):
 						if splitFile.lower().endswith('.tip'):
 							splitFile = splitext(splitFile)[0]
 							if self.data.product_fs.exists(splitFile):
 								fullExtensionTipFiles.append(file)
 							else:
-								if not any(self.data.product_fs.exists(f) for f in (splitFile + e[1:] for e in _USER_FACING_FILE_EXTENSIONS + ['*.djl'])):
+								if not any(self.data.product_fs.exists(f) for f in (splitFile + e[1:] for e in _USER_FACING_FILE_EXTENSIONS_WITH_DJL)):
 									unexpectedFiles.append(file)
 						else:
 							unexpectedFiles.append(file)

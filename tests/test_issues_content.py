@@ -12,7 +12,7 @@ from valdazpack.issues.contentdirectory import (
 	GratuitousFilesIssue,
 	EmptyFilesIssue,
 	InvalidDJLFilesIssue,
-	UnnecessaryThumbnailsForDJLIssue,
+	OverridingThumbnailsForDJLIssue,
 	UncommonDirectoryInRootOfContentDirectoryIssue,
 	FilesInVendorDazDirectoryIssue,
 	FilesReferenceNonexistentFilesIssue,
@@ -52,15 +52,15 @@ def test_FilesInVendorDazDirectoryIssue(validatorINVALID: ValidationData):
 def test_InvalidDJLFilesIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, InvalidDJLFilesIssue) for x in validatorINVALID.issues.product)
 
-def test_UnnecessaryThumbnailsForDJLIssue(validatorINVALID: ValidationData):
-	assert any(isinstance(x, UnnecessaryThumbnailsForDJLIssue) for x in validatorINVALID.issues.product)
+def test_OverridingThumbnailsForDJLIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, OverridingThumbnailsForDJLIssue) for x in validatorINVALID.issues.product)
 
-def test_UnnecessaryThumbnailsForDJLNonIssue(dimzipfileINVALID: Path, mocker: MockerFixture):
+def test_OverridingThumbnailsForDJLNonIssue(dimzipfileINVALID: Path, mocker: MockerFixture):
 	v = ValidationData([dimzipfileINVALID])
-	mocker.patch('fs.wrapcifs.WrapCaseInsensitive.exists', side_effect=mockExistsWithoutFile(WrapCaseInsensitive, 'invalid.png'), autospec=True)
+	mocker.patch('fs.wrapcifs.WrapCaseInsensitive.exists', side_effect=mockExistsWithoutFile(WrapCaseInsensitive, 'Plane.png'), autospec=True)
 	validate(v)
 
-	assert not any(isinstance(x, UnnecessaryThumbnailsForDJLIssue) for x in v.issues.product)
+	assert not any(isinstance(x, OverridingThumbnailsForDJLIssue) for x in v.issues.product)
 
 def test_UncommonDirectoryInRootOfContentDirectoryIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, UncommonDirectoryInRootOfContentDirectoryIssue) for x in validatorINVALID.issues.product)

@@ -28,9 +28,10 @@ class InvalidDJLFilesIssue(ProductWarning):
 	title = 'Invalid Daz JSON Link file(s) in Content directory'
 	description = "Content directory contains invalid *.djl file"
 
-class UnnecessaryThumbnailsForDJLIssue(ProductWarning):
-	title = 'Unnecessary thumbnails exist for Daz JSON Link file(s) in Content directory'
-	description = "Content directory contains thumbnail for *.djl file where *.djl target thumbnail exists"
+class OverridingThumbnailsForDJLIssue(ProductNotice):
+	title = 'Overriding thumbnails exist for Daz JSON Link file(s) in Content directory'
+	description = ("Content directory contains thumbnail(s) for *.djl files where *.djl target thumbnails exist. "
+	               "These files are unnecessary unless intentionally different.")
 
 class UncommonDirectoryInRootOfContentDirectoryIssue(ProductWarning):
 	title = 'Uncommon director(y|ies) in root of Content directory'
