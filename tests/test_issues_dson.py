@@ -12,6 +12,8 @@ from valdazpack.issues.dsonfiles import (
 	FavoriteInNodePropertyInDUFFilesIssue,
 	ActiveMorphsInDSFFilesIssue,
 	MorphLoaderGroupInDSFFilesIssue,
+	HiddenParameterNotInHiddenCategoryInFilesIssue,
+	NonHiddenParameterInHiddenCategoryInFilesIssue,
 )
 
 def test_InvalidDSONFilesIssue(validatorINVALID: ValidationData):
@@ -49,3 +51,9 @@ def test_ActiveMorphsInDSFFilesIssue(validatorINVALID: ValidationData):
 
 def test_MorphLoaderGroupInDSFFilesIssue(validatorINVALID: ValidationData):
 	assert any(isinstance(x, MorphLoaderGroupInDSFFilesIssue) for x in validatorINVALID.issues.product)
+
+def test_HiddenParameterNotInHiddenCategoryInFilesIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, HiddenParameterNotInHiddenCategoryInFilesIssue) for x in validatorINVALID.issues.product)
+
+def test_NonHiddenParameterInHiddenCategoryInFilesIssue(validatorINVALID: ValidationData):
+	assert any(isinstance(x, NonHiddenParameterInHiddenCategoryInFilesIssue) for x in validatorINVALID.issues.product)

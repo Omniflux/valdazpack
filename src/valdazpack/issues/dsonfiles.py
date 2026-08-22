@@ -66,3 +66,11 @@ class TonemapperOptionsInDUFFilesIssue(ProductWarning):
 class EnvironmentOptionsInDUFFilesIssue(ProductWarning):
 	title = 'Environment Options unexpectedly included in DSON User File(s) (*.duf)'
 	description = "Environment Options should only be included in Scene and Render Settings files"
+
+class HiddenParameterNotInHiddenCategoryInFilesIssue(ProductWarning):
+	title = 'Hidden parameter(s) not in hidden category in DSON file(s)'
+	description = "Hidden parameters should be in a hidden category"
+
+class NonHiddenParameterInHiddenCategoryInFilesIssue(ProductWarning):
+	title = 'Non hidden parameter(s) in hidden category in DSON file(s)'
+	description = "All parameters in a hidden category should be hidden"

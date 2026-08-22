@@ -527,6 +527,7 @@
 				"type" : "float",
 				"name" : "Value",
 				"label" : "Plane",
+				"visible" : false,
 				"value" : 0,
 				"current_value" : 0,
 				"min" : -1,

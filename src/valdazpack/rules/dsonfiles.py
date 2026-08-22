@@ -43,8 +43,11 @@ class ValidateDSONFiles(ProductRuleset):
 		self.favorites_node_properties_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio_node_channels"].favorites | $.scene.nodes[*].geometries[*].extra[?@.type == "studio_geometry_channels"].favorites')
 		self.active_morph_parser = jsonpath.compile('$.modifier_library[?@.channel.value && @.channel.value != 0].channel')
 		self.morph_loader_group_parser = jsonpath.compile('$.modifier_library[?@.group == "/Morphs/Morph Loader"].channel.label')
+		self.hidden_parameters_not_in_hidden_category_parser = jsonpath.compile('$.modifier_library[?@.channel.visible == false && (!startswith(@.group, "/Hidden/") && @.group != "/Hidden")] | $.scene.modifiers[?@.channel.visible == false && (!startswith(@.group, "/Hidden/") && @.group != "/Hidden")]')
+		self.non_hidden_parameters_in_hidden_category_parser = jsonpath.compile('$.modifier_library[?@.channel.visible != false && (startswith(@.group, "/Hidden/") || @.group == "/Hidden")] | $.scene.modifiers[?@.channel.visible != false && (startswith(@.group, "/Hidden/") || @.group == "/Hidden")]')
 		self.tonemapper_options_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio/node/tone_mapper"]')
 		self.environment_options_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio/node/environment"]')
+
 		self.probable_path = re.compile(r'\b(data|runtime)\/', re.IGNORECASE)
 
 		# TODO Add check for simulation data in non scene files
@@ -62,8 +65,11 @@ class ValidateDSONFiles(ProductRuleset):
 		self.favorites_in_node_properties_in_duf_files: dict[str, dict[str, list[str]]] = {}
 		self.active_morphs_in_dsf_files: dict[str, list[tuple[str, str]]] = {}
 		self.morph_loader_group_in_dsf_files: dict[str, list[str]] = {}
+		self.hidden_parameters_not_in_hidden_category_in_files: dict[str, list[str]] = {}
+		self.non_hidden_parameters_in_hidden_category_in_files: dict[str, list[str]] = {}
 		self.tonemapper_options_in_duf_files: dict[str, str] = {}
 		self.environment_options_in_duf_files: dict[str, str] = {}
+
 		for filename in self.data.product_fs.walk.files(filter=['*.dsf', '*.duf']):  # pyright: ignore[reportUnknownMemberType]
 			dson: dict[str, Any] | None = None
 
@@ -93,6 +99,8 @@ class ValidateDSONFiles(ProductRuleset):
 				self._checkSourceFileReferences(filename)
 				self._checkDuplicateIdsInFiles(filename)
 				self._checkRootNodesWithNonStandardOrientationInFiles(filename)
+				self._checkHiddenParameterNotInHiddenCategoryInFiles(filename)
+				self._checkNonHiddenParameterInHiddenCategoryInFiles(filename)
 
 				if filename.lower().endswith('.dsf'):
 					self._checkActiveMorphsInDSF(filename)
@@ -150,6 +158,12 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.environment_options_in_duf_files:
 			self._addIssue(issues.EnvironmentOptionsInDUFFilesIssue(self.environment_options_in_duf_files))
+
+		if self.hidden_parameters_not_in_hidden_category_in_files:
+			self._addIssue(issues.HiddenParameterNotInHiddenCategoryInFilesIssue(self.hidden_parameters_not_in_hidden_category_in_files))
+
+		if self.non_hidden_parameters_in_hidden_category_in_files:
+			self._addIssue(issues.NonHiddenParameterInHiddenCategoryInFilesIssue(self.non_hidden_parameters_in_hidden_category_in_files))
 
 	@rule
 	def _getContributors(self) -> None:
@@ -237,6 +251,18 @@ class ValidateDSONFiles(ProductRuleset):
 		"""Check for root nodes with non standard orientation in files."""
 		for orientation in self.root_node_non_standard_orientation_parser.finditer(self.dson):
 			self.root_node_non_standard_orientation_files.setdefault(filename, {}).setdefault(cast(str, orientation.parent.parent.value['id']), []).append(cast(tuple[str, str], (orientation.value['id'], orientation.value['value'])))  # pyright: ignore[reportIndexIssue, reportOptionalMemberAccess]
+
+	@rule
+	def _checkHiddenParameterNotInHiddenCategoryInFiles(self, filename: str) -> None:
+		"""Check for hidden parameters not in hidden category in files."""
+		for hidden_parameter in self.hidden_parameters_not_in_hidden_category_parser.finditer(self.dson):
+			self.hidden_parameters_not_in_hidden_category_in_files.setdefault(filename, []).append(cast(str, hidden_parameter.value.get('group', '')) + '/' + cast(str, hidden_parameter.value['channel'].get('label', hidden_parameter.value.get('id', '')))) # pyright: ignore[reportArgumentType, reportAttributeAccessIssue, reportIndexIssue, reportUnknownMemberType]
+
+	@rule
+	def _checkNonHiddenParameterInHiddenCategoryInFiles(self, filename: str) -> None:
+		"""Check for non hidden parameters in hidden category in files."""
+		for non_hidden_parameter in self.non_hidden_parameters_in_hidden_category_parser.finditer(self.dson):
+			self.non_hidden_parameters_in_hidden_category_in_files.setdefault(filename, []).append(cast(str, non_hidden_parameter.value['group']) + '/' + cast(str, non_hidden_parameter.value['channel'].get('label', non_hidden_parameter.value.get('id', '')))) # pyright: ignore[reportArgumentType, reportAttributeAccessIssue, reportIndexIssue, reportUnknownMemberType]
 
 	@rule
 	def _getShaderTypeInDUF(self, filename: str) -> None:
