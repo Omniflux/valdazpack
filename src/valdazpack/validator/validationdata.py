@@ -12,6 +12,7 @@ from fs.path import relpath
 from fs.wrapcifs import WrapCaseInsensitive
 from fs.zipfs import ReadZipFS
 
+from .exceptions import NoDIMContentError
 from .issues import PackageNotice, PackageWarning, ProductNotice, ProductWarning
 from .package import Package
 
@@ -81,7 +82,7 @@ def _create_merged_fs(filesystems: list[Path]) -> MultiFS:
 					if fs.isdir('Content'):
 						fs = fs.opendir('Content')  # pyright: ignore[reportUnknownMemberType]
 					else:
-						raise ValueError(f'DIM ZIP does not have Content: {path}')
+						raise NoDIMContentError(f'DIM ZIP does not contain "Content": {path}')
 				elif isinstance(fs, ReadZipFS):
 					if subpath := cast(str | None, parse_fs_url(f).path):  # pyright: ignore[reportUnknownMemberType]
 						fs = fs.opendir(relpath(subpath.lstrip('\\')))  # pyright: ignore[reportUnknownMemberType]
@@ -89,7 +90,7 @@ def _create_merged_fs(filesystems: list[Path]) -> MultiFS:
 			except (CreateFailed, OpenerError):
 				continue
 
-		raise ValueError(f'Not a ZIP file or directory: {path}')
+		raise NoDIMContentError(f'Not a ZIP file or directory: {path}')
 
 	fs = MultiFS()
 	for f in filesystems:

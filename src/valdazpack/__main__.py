@@ -11,7 +11,7 @@ from pathlib import Path
 from pprint import PrettyPrinter
 from typing import Any
 
-from .validator import ValidationData, validate
+from .validator import NoDIMContentError, ValidationData, validate
 
 class PrettyPrinterWithoutStringWrapping(PrettyPrinter):
 	"""PrettyPrinter without string wrapping."""
@@ -94,7 +94,10 @@ def _main() -> None:
 		template = jinja_env.get_template("report.html.jinja" if args.html else "report.txt.jinja")
 
 	# Validate
-	data = ValidationData(args.product_path, args.dependencies, args.daz, args.daz_original, args.poser, args.dson_schema, args.verbose)
+	try:
+		data = ValidationData(args.product_path, args.dependencies, args.daz, args.daz_original, args.poser, args.dson_schema, args.verbose)
+	except NoDIMContentError as e:
+		raise SystemExit(f"{e.__class__.__name__}: {e}")
 	validate(data)
 
 	args.output.write(template.render(data=data))
