@@ -191,10 +191,10 @@ class ValidateMetadataFiles(ProductRuleset):
 
 		expected_metadata_filenames: list[str] = []
 		for e in self.metadata.xpath("/ContentDBInstall/Products/Product"):
-			storeID = e.xpath('StoreID')[0].attrib['VALUE']
+			storeID = eStore[0].attrib['VALUE'] if (eStore := e.xpath('StoreID')) else None
 			token = eToken[0].attrib['VALUE'] if (eToken := e.xpath('ProductToken')) else None
 			name = e.attrib['VALUE']
-			metadata_filename_base = f"{storeID}_{f'{token}_' if token else ''}{name}"
+			metadata_filename_base = f"{f'{storeID}_' if storeID else ''}{f'{token}_' if token else ''}{name}"
 			expected_metadata_filenames.append(re.sub(REPLACE_METADATA_FILENAME_CHARACTERS, '_', metadata_filename_base) + '.dsx')
 
 		if self.metadata_file.name not in expected_metadata_filenames:
