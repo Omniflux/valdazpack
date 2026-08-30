@@ -1,9 +1,10 @@
 from pathlib import Path
-
-from PIL import Image
+from typing import cast
 
 from ..issues import support as issues
+from ..validator.utilities import checkImage
 from ..validator.ruleset import ProductRuleset, rule
+from ..validator.validationdata import ImageCache
 
 _SUPPORT_DIR = 'Runtime/Support'
 
@@ -73,10 +74,10 @@ class ValidateRuntimeSupportDirectory(ProductRuleset):
 							redundant_icon_files.append((supportDirPath / f"{entry}{suffix}").as_posix())
 
 					for suffix in image_suffixes:
-						with self.data.product_fs.openbin((supportDirPath / f"{entry}{suffix}").as_posix()) as file:
-							dimensions = Image.open(file).size
-							if any (i < j for i, j in zip(dimensions, IMAGE_MINIMUM_DIMENSIONS)):
-								undersized_icon_files[(supportDirPath / f"{entry}{suffix}").as_posix()] = dimensions
+						if img_cache_data := checkImage(self.data, (supportDirPath / f"{entry}{suffix}").as_posix()):
+							img_cache = cast(ImageCache, img_cache_data)
+							if any (i < j for i, j in zip(img_cache['dimensions'], IMAGE_MINIMUM_DIMENSIONS)):
+								undersized_icon_files[(supportDirPath / f"{entry}{suffix}").as_posix()] = img_cache['dimensions']
 
 				if unexpected_suffixes := list(set(metadata[entry]) - set(['.dsa', '.dsx']) - IMAGE_SUFFIXES):
 					for suffix in unexpected_suffixes:

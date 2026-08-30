@@ -1,12 +1,13 @@
+from typing import cast
 from urllib.parse import urlparse
 
 from fs.path import combine, split
-from PIL import Image
 
 from ..issues import runtime as issues
 from ..validator.resources import read_list_from
 from ..validator.ruleset import ProductRuleset, rule
-from ..validator.utilities import checkDirectoryHasSelfAsChild, checkImageDir, checkVendorDirsOnly
+from ..validator.utilities import checkDirectoryHasSelfAsChild, checkImage, checkImageDir, checkVendorDirsOnly
+from ..validator.validationdata import ImageCache
 
 _RUNTIME_DIR = 'Runtime'
 _TEXTURES_DIR = 'Runtime/Textures'
@@ -105,7 +106,7 @@ class ValidateRuntimeDirectory(ProductRuleset):
 		(non_image_texture_files,
 		atypical_image_texture_files,
 		unreadable_image_texture_files,
-		incorrect_image_texture_file_extensions) = checkImageDir(self.data.product_fs, _TEXTURES_DIR, PREFERRED_TEXTURE_SUFFIXES)
+		incorrect_image_texture_file_extensions) = checkImageDir(self.data, _TEXTURES_DIR, PREFERRED_TEXTURE_SUFFIXES)
 
 		if non_image_texture_files:
 			self._addIssue(issues.NonImageFilesInTexturesDirectoryIssue(non_image_texture_files))
@@ -122,22 +123,15 @@ class ValidateRuntimeDirectory(ProductRuleset):
 		single_color_image_files: list[tuple[str,str]] = []
 		if self.data.product_fs.isdir(_TEXTURES_DIR):
 			for file in self.data.product_fs.walk.files(_TEXTURES_DIR):  # pyright: ignore[reportUnknownMemberType]:
-				try:
-					with Image.open(self.data.product_fs.openbin(file)) as im:
-						# TODO: Pillow does not convert from 16/32 bit pixel images to 8bit pixel images well.
-						# https://github.com/python-pillow/Pillow/pull/3838
-						# Find another way to check this (different library?)
-						if not im.mode.startswith('I') and (colors := im.convert('RGBA' if im.has_transparency_data else 'RGB').getcolors(1)):
-							# TODO this incorrectly catches some tiff files. multilayer?
-							single_color_image_files.append((file, str(colors[0][1])))
-				except Exception:
-					pass
+				if img_cache_data := checkImage(self.data, file):
+					img_cache = cast(ImageCache, img_cache_data)
+					if img_cache['single_color']:
+						single_color_image_files.append((file, str(img_cache['single_color'])))
 
 		if single_color_image_files:
 			self._addIssue(issues.SingleColorImageIssue(single_color_image_files))
 
 		# TODO: check bump and displacement maps are 16+bit greyscale? normal maps 16+bit? ensure none are jpg?
-		# Use wand / imagemagick instead of Pillow?
 		# Check for normal map in wrong channel
 
 	@rule
@@ -150,7 +144,7 @@ class ValidateRuntimeDirectory(ProductRuleset):
 		(non_image_template_files,
 		atypical_image_template_files,
 		unreadable_image_template_files,
-		incorrect_image_template_file_extensions) = checkImageDir(self.data.product_fs, _TEMPLATES_DIR, PREFERRED_TEMPLATE_SUFFIXES)
+		incorrect_image_template_file_extensions) = checkImageDir(self.data, _TEMPLATES_DIR, PREFERRED_TEMPLATE_SUFFIXES)
 
 		if non_image_template_files:
 			self._addIssue(issues.NonImageFilesInTemplatesDirectoryIssue(non_image_template_files))

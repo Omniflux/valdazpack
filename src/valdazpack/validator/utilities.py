@@ -1,22 +1,28 @@
 import gzip
 import re
+import tempfile
 
 from contextlib import contextmanager
 from difflib import SequenceMatcher
-from mimetypes import add_type, guess_all_extensions
 from pathlib import Path
-from typing import cast, BinaryIO, Generator, NamedTuple
+from typing import cast, BinaryIO, Generator, NamedTuple, Never
+
+import numpy as np
+import OpenImageIO as oiio
 
 from fs.base import FS
 from fs.errors import InvalidCharsInPath
 from fs.info import Info
 from fs.path import basename, combine, splitext
-from PIL import Image
 
-from .validationdata import ValidationData
+from .validationdata import ImageCache, ValidationData
 
-add_type('image/vnd.adobe.photoshop', '.psd')
-add_type('image/x-tga', '.tga')
+OIIO_EXTENSION_LIST = oiio.get_string_attribute("extension_list")
+oiio_format_extensions: dict[str, list[str]] = {}
+for entry in OIIO_EXTENSION_LIST.split(";"):
+	if ":" in entry:
+		format, extensions = entry.split(":", 1)
+		oiio_format_extensions[format.lower()] = ['.' + e.lower() for e in extensions.split(",")]
 
 class Step(NamedTuple):
 	"""Typing information for pyFilesystem2 Step"""
@@ -94,7 +100,76 @@ def checkVendorDirsOnly(data: ValidationData, dir: str) -> list[str]:
 
 	return root_files
 
-def checkImageDir(fs: FS, dir: str, preferred_suffixes: set[str]) -> tuple[list[str], list[str], list[str], dict[str, str]]:
+def checkImage(data: ValidationData, file: str) -> ImageCache | dict[Never, Never]:
+	"""Check details of an image file.
+
+	Caches details in data.cache['images'] and returns ImageCache if valid image.
+
+	Arguments:
+		data (ValidationData): validation data of product to validate.
+		file (str): File path to image to check.
+	"""
+
+	file = str(file).lstrip('/')
+
+	if file in data.cache['images']:
+		return data.cache['images'][file]
+
+	if not data.filesystem.isfile(file):
+		data.cache['images'][file] = {}
+		return {}
+
+	cleanup_temp: Path | None = None
+	cache: ImageCache | dict[Never, Never] = {}
+
+	try:
+		try:
+			img_sys_path = data.filesystem.getsyspath(file)
+		except Exception:
+			temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=Path(file).suffix)
+			cleanup_temp = Path(temp_file.name)
+
+			with temp_file:
+				with data.filesystem.openbin(file) as f:
+					while chunk := f.read(1024 * 1024):  # 1MB chunk streaming
+						temp_file.write(chunk)
+
+			img_sys_path = temp_file.name
+
+		if (img := oiio.ImageBuf(img_sys_path)) and img.read():
+			spec = img.spec()
+			format_name = img.file_format_name.lower()
+			compression = str(spec.get("compression", "")).lower()
+
+			cache = cast(ImageCache, cache)
+			cache['alpha'] = spec.alpha_channel >= 0
+			cache['channels'] = spec.nchannels
+			cache['bit_depth'] = spec.get_int_attribute("oiio:BitsPerSample", spec.format.size() * 8)
+			cache['dimensions'] = (spec.width, spec.height)
+			cache['format'] = img.file_format_name
+
+			# Check for single color images
+			if (stats := oiio.ImageBufAlgo.computePixelStats(img)) and stats.min == stats.max:
+				dtype = np.dtype(str(spec.format))
+				if np.issubdtype(dtype, np.integer):
+					max_val = np.iinfo(dtype).max
+					cache['single_color'] = [int(round(c * max_val)) for c in stats.min]
+				else:
+					cache['single_color'] = stats.min
+			else:
+				cache['single_color'] = []
+
+		elif img.has_error:
+			img.geterror()	# Discard error
+
+	finally:
+		if cleanup_temp and cleanup_temp.exists():
+			cleanup_temp.unlink()
+
+	data.cache['images'][file] = cache
+	return cache
+
+def checkImageDir(data: ValidationData, dir: str, preferred_suffixes: set[str]) -> tuple[list[str], list[str], list[str], dict[str, str]]:
 	"""Check Image directory only contains supported images.
 
 	Returns a tuple of (
@@ -105,22 +180,22 @@ def checkImageDir(fs: FS, dir: str, preferred_suffixes: set[str]) -> tuple[list[
 	)
 
 	Arguments:
-		fs (fs.FS): PyFilesystem2 filesystem to use.
+		data (ValidationData): validation data of product to validate.
 		dir (str): Root directory to check.
 		preferred_suffixes (set[str]): List of preferred file extensions.
 	"""
 
 	# TODO: I did not document where these extensions came from; find documentation (move to data/daz/image_file_extensions.txt?)
 	DS_SUPPORTED_TEXTURE_SUFFIXES = set(['.bmp', '.bum', '.gif', '.jpeg', '.jpg', '.png', '.hdr', '.exr', '.tif', '.tiff', '.tga'])
-	PIL_UNSUPPORTED_IMAGE_SUFFIXES = set(['.dsi', '.svg', '.hdr', '.exr'])
+	OIIO_UNSUPPORTED_IMAGE_SUFFIXES = set(['.dsi', '.svg'])
 
 	non_image_files: list[str] = []
 	atypical_image_files: list[str] = []
 	unreadable_image_files: list[str] = []
 	incorrect_image_suffixes: dict[str,str] = {}
 
-	if fs.isdir(dir):
-		for file in fs.walk.files(dir):
+	if data.product_fs.isdir(dir):
+		for file in data.product_fs.walk.files(dir): # pyright: ignore[reportUnknownMemberType]
 			path = Path(file)
 			suffix = path.suffix.lower()
 			if suffix not in preferred_suffixes.union(DS_SUPPORTED_TEXTURE_SUFFIXES):
@@ -128,13 +203,13 @@ def checkImageDir(fs: FS, dir: str, preferred_suffixes: set[str]) -> tuple[list[
 			else:
 				if suffix not in preferred_suffixes:
 					atypical_image_files.append(file)
-				try:
-					with Image.open(fs.openbin(file)) as im:
-						im.verify()
-						if (mime_type := im.get_format_mimetype()) and suffix not in guess_all_extensions(mime_type):
-							incorrect_image_suffixes[file] = mime_type
-				except Exception:
-					if suffix not in PIL_UNSUPPORTED_IMAGE_SUFFIXES:
+
+				if img_cache_data := checkImage(data, file):
+					img_cache = cast(ImageCache, img_cache_data)
+					if suffix not in oiio_format_extensions.get(img_cache['format'].lower(), []):
+						incorrect_image_suffixes[file] = img_cache['format']
+
+				elif suffix not in OIIO_UNSUPPORTED_IMAGE_SUFFIXES:
 						unreadable_image_files.append(file)
 
 	return (non_image_files, atypical_image_files, unreadable_image_files, incorrect_image_suffixes)

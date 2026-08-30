@@ -38,11 +38,11 @@ def test_checkVendorDirsOnly(dimzipfileINVALID: Path):
 
 def test_checkImageDir(dimzipfileINVALID: Path):
 	v = ValidationData([dimzipfileINVALID])
-	assert checkImageDir(v.product_fs, 'Runtime/Textures', set(['.png'])) == (
+	assert checkImageDir(v, 'Runtime/Textures', set(['.png'])) == (
 		['Runtime/Textures/DAZ 3D/ReadMe.txt'],
 		['Runtime/Textures/Image.jpg', 'Runtime/Textures/Image.bmp'],
 		['Runtime/Textures/DirectXNormal.png', 'Runtime/Textures/Image.bmp'],
-		{'Runtime/Textures/Image.jpg': 'image/png'}
+		{'Runtime/Textures/Image.jpg': 'png'}
 	)
 
 def test_checkTypo():

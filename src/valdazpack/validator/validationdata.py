@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import cast, Type, TypeVar
+from typing import cast, Never, Type, TypeVar, TypedDict
 
 from fs.base import FS
 from fs.dimzipfs import DIMZipFS
@@ -15,6 +15,19 @@ from fs.zipfs import ReadZipFS
 from .exceptions import NoDIMContentError
 from .issues import PackageNotice, PackageWarning, ProductNotice, ProductWarning
 from .package import Package
+
+class ImageCache(TypedDict): # , closed=True
+	alpha: bool
+	channels: int
+	bit_depth: int
+	dimensions: tuple[int, int]
+	format: str
+	grayscale: bool
+	lossy: str | None
+	single_color: list[float | int]
+
+class Cache(TypedDict): # , closed=True
+	images: dict[str, ImageCache | dict[Never, Never]]
 
 class ValidationData:
 	"""Stores data on what to validate and data discovered during validation.
@@ -73,6 +86,9 @@ class ValidationData:
 		self.shader_users: dict[str, set[str]] = {}
 		self.postload_files: set[str] = set()
 
+		self.cache: Cache = {
+			'images': {}
+		}
 
 def _create_merged_fs(filesystems: list[Path]) -> MultiFS:
 	def _path_to_fs(path: Path) -> FS:
