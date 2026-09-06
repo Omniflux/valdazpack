@@ -50,6 +50,28 @@ class FavoriteInNodePropertyInDUFFilesIssue(ProductWarning):
 	title = 'Favorite(s) in Node Properties(s) in DSON User File(s) (*.duf)'
 	description = "Favorites should not be set in distributed files"
 
+class NormalMapInNonNormalMapChannelInDUFFilesIssue(ProductWarning):
+	title = 'Possible Normal Map(s) in Non-Normal Map channel(s) in DSON User File(s) (*.duf)'
+	description = ("Normal Maps should only be used in Normal Map channels. "
+	               "This is heuristically determined, and may have incorrect results.")
+
+class NonNormalMapInNormalMapChannelInDUFFilesIssue(ProductWarning):
+	title = 'Possible Non-normal Map(s) in Normal Map channel(s) in DSON User File(s) (*.duf)'
+	description = ("Only Normal Maps should be used in Normal Map channels. "
+	               "This is heuristically determined, and may have incorrect results.")
+
+class TextureMapSavedInLossyFormatIssue(ProductWarning):
+	title = 'Texture Map(s) saved in lossy format'
+	description = "Texture maps should be in a lossless format to prevent banding and other artifacts."
+
+class TextureMapSavedWithInsufficientBitDepthIssue(ProductWarning):
+	title = 'Texture Map(s) saved with insufficient bit depth'
+	description = "Normal and displacement texture maps should be in a 16+bit format to prevent banding and other artifacts."
+
+class TextureMapSavedWithTooManyChannelsIssue(ProductWarning):
+	title = 'Texture Map(s) saved with too many channels'
+	description = "Bump and displacement texture maps should be grayscale and contain only one channel of data."
+
 class ActiveMorphsInDSFFilesIssue(ProductWarning):
 	title = 'Active Morph(s) in DSON Support File(s) (*.dsf)'
 	description = "Morphs should be set to 0 or False when saved as Support Assets. Use Presets to set active values."

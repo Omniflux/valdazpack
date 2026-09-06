@@ -11,7 +11,8 @@ from ..issues import dsonfiles as issues
 from ..validator.resources import read_list_from
 from ..validator.ruleset import ProductRuleset, rule
 from ..validator.schema import SchemaCheckedJSON
-from ..validator.utilities import decompressDSON, trackDependencyIfExists
+from ..validator.utilities import checkImage, decompressDSON, trackDependencyIfExists
+from ..validator.validationdata import ImageCache
 
 class ValidateDSONFiles(ProductRuleset):
 	"""Perform validation of DSON files.
@@ -41,6 +42,8 @@ class ValidateDSONFiles(ProductRuleset):
 		self.preset_old_shader_parser = jsonpath.compile('$.scene.materials[*].extra[?!startswith(@.type, "studio/material/")].type')
 		self.favorites_materials_parser = jsonpath.compile('$.scene.materials[*].extra[?@.type == "studio_material_channels"].favorites')
 		self.favorites_node_properties_parser = jsonpath.compile('$.scene.nodes[*].extra[?@.type == "studio_node_channels"].favorites | $.scene.nodes[*].geometries[*].extra[?@.type == "studio_geometry_channels"].favorites')
+		# TODO: Need to check material channels in scene.animations[*]?
+		self.material_channels_with_image_file_parser = jsonpath.compile('$.scene.materials[*].extra[?@.type == "studio_material_channels"].channels[?@.channel.image_file].channel')
 		self.active_morph_parser = jsonpath.compile('$.modifier_library[?@.channel.value && @.channel.value != 0].channel')
 		self.morph_loader_group_parser = jsonpath.compile('$.modifier_library[?@.group == "/Morphs/Morph Loader"].channel.label')
 		self.hidden_parameters_not_in_hidden_category_parser = jsonpath.compile('$.modifier_library[?@.channel.visible == false && (!startswith(@.group, "/Hidden/") && @.group != "/Hidden")] | $.scene.modifiers[?@.channel.visible == false && (!startswith(@.group, "/Hidden/") && @.group != "/Hidden")]')
@@ -63,6 +66,11 @@ class ValidateDSONFiles(ProductRuleset):
 		self.materials_in_duf_files: dict[str, list[str]] = {}
 		self.favorites_in_materials_in_duf_files: dict[str, dict[str, list[str]]] = {}
 		self.favorites_in_node_properties_in_duf_files: dict[str, dict[str, list[str]]] = {}
+		self.normal_map_in_non_normal_map_channel_in_duf_files: dict[str, dict[str, list[tuple[str, str] | tuple[str, str, dict[str, bool | tuple[bool, bool | float]]]]]] = {}
+		self.non_normal_map_in_normal_map_channel_in_duf_files: dict[str, dict[str, list[tuple[str, str] | tuple[str, str, dict[str, bool | tuple[bool, bool | float]]]]]] = {}
+		self.texture_map_saved_in_lossy_format_files: dict[str, str] = {}
+		self.texture_map_saved_with_insufficient_bit_depth_files: dict[str, str] = {}
+		self.texture_map_saved_with_too_many_channels_files: dict[str, str] = {}
 		self.active_morphs_in_dsf_files: dict[str, list[tuple[str, str]]] = {}
 		self.morph_loader_group_in_dsf_files: dict[str, list[str]] = {}
 		self.hidden_parameters_not_in_hidden_category_in_files: dict[str, list[str]] = {}
@@ -111,6 +119,7 @@ class ValidateDSONFiles(ProductRuleset):
 					self._checkFavoritesInMaterialsInDUF(filename)
 					self._checkFavoritesInNodePropertiesInDUF(filename)
 					self._checkSupportAssetsInDUF(filename)
+					self._checkMaterialChannelImageFilesInDUF(filename)
 					self._checkTonemapperOptionsInDUF(filename)
 					self._checkEnvironmentOptionsInDUF(filename)
 
@@ -146,6 +155,21 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if self.favorites_in_node_properties_in_duf_files:
 			self._addIssue(issues.FavoriteInNodePropertyInDUFFilesIssue(self.favorites_in_node_properties_in_duf_files))
+
+		if self.normal_map_in_non_normal_map_channel_in_duf_files:
+			self._addIssue(issues.NormalMapInNonNormalMapChannelInDUFFilesIssue(self.normal_map_in_non_normal_map_channel_in_duf_files))
+
+		if self.non_normal_map_in_normal_map_channel_in_duf_files:
+			self._addIssue(issues.NonNormalMapInNormalMapChannelInDUFFilesIssue(self.non_normal_map_in_normal_map_channel_in_duf_files))
+
+		if self.texture_map_saved_in_lossy_format_files:
+			self._addIssue(issues.TextureMapSavedInLossyFormatIssue(self.texture_map_saved_in_lossy_format_files))
+
+		if self.texture_map_saved_with_insufficient_bit_depth_files:
+			self._addIssue(issues.TextureMapSavedWithInsufficientBitDepthIssue(self.texture_map_saved_with_insufficient_bit_depth_files))
+
+		if self.texture_map_saved_with_too_many_channels_files:
+			self._addIssue(issues.TextureMapSavedWithTooManyChannelsIssue(self.texture_map_saved_with_too_many_channels_files))
 
 		if self.active_morphs_in_dsf_files:
 			self._addIssue(issues.ActiveMorphsInDSFFilesIssue(self.active_morphs_in_dsf_files))
@@ -308,6 +332,44 @@ class ValidateDSONFiles(ProductRuleset):
 
 		if x := cast(list[str], self.material_daz_brick_parser.findall(self.dson)):
 			self.materials_in_duf_files[filename] = x
+
+	@rule
+	def _checkMaterialChannelImageFilesInDUF(self, filename: str) -> None:
+		"""Check image files in material channels in DUF."""
+
+		for channel in self.material_channels_with_image_file_parser.finditer(self.dson):
+			image_file = unquote(cast(str, channel.value['image_file'])) # pyright: ignore[reportIndexIssue]
+			if self.data.filesystem.exists(image_file):
+				parent = channel.parent.parent.parent.parent.parent # pyright: ignore[reportOptionalMemberAccess]
+				parent_name = cast(str, parent.value.get('id', parent.value['groups'][0])) # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue, reportIndexIssue, reportOptionalMemberAccess]
+
+				if img_cache_data := checkImage(self.data, image_file):
+					img_cache = cast(ImageCache, img_cache_data)
+					details = (parent_name, cast(str, channel.value['id'])) # pyright: ignore[reportIndexIssue]
+					norm_details = details + (img_cache['looks_like_tangent_space_normal_map_details'],) if self.data.debug else details
+
+					# Check for map files
+					bump_map = bool(re.search('bump', cast(str, channel.value['id']), re.IGNORECASE)) # pyright: ignore[reportIndexIssue])
+					displacement_map = bool(re.search('displacement', cast(str, channel.value['id']), re.IGNORECASE)) # pyright: ignore[reportIndexIssue])
+					normal_map = bool(re.search('normal', cast(str, channel.value['id']), re.IGNORECASE)) # pyright: ignore[reportIndexIssue])
+
+					if cast(str, channel.value['type']).lower() in ('float', 'image'): # pyright: ignore[reportIndexIssue]
+						if (bump_map or displacement_map or normal_map) and img_cache['lossy']:
+							self.texture_map_saved_in_lossy_format_files[image_file] = img_cache['lossy']
+						if (bump_map or displacement_map) and img_cache['channels'] > 1:
+							self.texture_map_saved_with_too_many_channels_files[image_file] = f"{img_cache['channels']} channels"
+						if (normal_map or displacement_map) and img_cache['bit_depth'] < 16:
+							self.texture_map_saved_with_insufficient_bit_depth_files[image_file] = f"{img_cache['bit_depth']} bits"
+
+						if normal_map:
+							if not img_cache['looks_like_tangent_space_normal_map']:
+								self.non_normal_map_in_normal_map_channel_in_duf_files.setdefault(image_file, {}).setdefault(filename, []).append(norm_details)
+						else:
+							if img_cache['looks_like_tangent_space_normal_map']:
+								self.normal_map_in_non_normal_map_channel_in_duf_files.setdefault(image_file, {}).setdefault(filename, []).append(norm_details)
+					else:
+						if img_cache['looks_like_tangent_space_normal_map']:
+							self.normal_map_in_non_normal_map_channel_in_duf_files.setdefault(image_file, {}).setdefault(filename, []).append(norm_details)
 
 	@rule
 	def _checkActiveMorphsInDSF(self, filename: str) -> None:

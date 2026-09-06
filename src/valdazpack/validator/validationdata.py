@@ -25,6 +25,8 @@ class ImageCache(TypedDict): # , closed=True
 	grayscale: bool
 	lossy: str | None
 	single_color: list[float | int]
+	looks_like_tangent_space_normal_map: bool
+	looks_like_tangent_space_normal_map_details: dict[str, bool | tuple[bool, bool | float]]
 
 class Cache(TypedDict): # , closed=True
 	images: dict[str, ImageCache | dict[Never, Never]]
@@ -58,7 +60,7 @@ class ValidationData:
 			self.artists: set[str] = set()
 			self.stores: set[str] = set()
 
-	def __init__(self, product_paths: list[Path], dependencies_paths: list[Path] | None = None, daz: bool = False, daz_original: bool = False, poser: bool = False, dson_schema: bool = False, verbose: bool = False) -> None:
+	def __init__(self, product_paths: list[Path], dependencies_paths: list[Path] | None = None, daz: bool = False, daz_original: bool = False, poser: bool = False, dson_schema: bool = False, verbose: bool = False, debug: bool = False) -> None:
 		self.product_paths = product_paths
 		self.dependency_paths = dependencies_paths
 		self.poser = poser
@@ -66,6 +68,7 @@ class ValidationData:
 		self.daz_original = daz_original
 		self.dson_schema = dson_schema
 		self.verbose = verbose
+		self.debug = debug
 
 		self.product_fs_unwrapped = _create_merged_fs(product_paths)
 		self.product_fs = WrapCaseInsensitive(self.product_fs_unwrapped)

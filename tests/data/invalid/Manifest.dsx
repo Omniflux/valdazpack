@@ -15,6 +15,7 @@
  <File TARGET="Content" ACTION="Install" VALUE="Content/BadLink.djl"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/GoodLink.djl"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/GoodLink.djl.png"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/ImageMapChannels.duf"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Instructions.pdf"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Invalid.djl"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Invalid.djl.png"/>
@@ -48,6 +49,8 @@
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/DirectXNormal.png"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Image.jpg"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Image.bmp"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Lossy.jpg"/>
+ <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/OpenGLNormal.png"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/SingleColor.png.png"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/Textures"/>
  <File TARGET="Content" ACTION="Install" VALUE="Content/Runtime/Textures/DAZ 3D/ReadMe.txt"/>

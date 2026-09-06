@@ -33,14 +33,14 @@ def test_checkDirectoryHasSelfAsChild(dimzipfileINVALID: Path):
 
 def test_checkVendorDirsOnly(dimzipfileINVALID: Path):
 	v = ValidationData([dimzipfileINVALID])
-	assert checkVendorDirsOnly(v, 'Runtime/Textures') == ['DirectXNormal.png', 'Image.jpg', 'Image.bmp', 'SingleColor.png.png']
+	assert checkVendorDirsOnly(v, 'Runtime/Textures') == ['DirectXNormal.png', 'Image.jpg', 'Image.bmp', 'Lossy.jpg', 'OpenGLNormal.png', 'SingleColor.png.png']
 	assert v.vendor_paths == {'DAZ 3D': {'Runtime/Textures/DAZ 3D'}, 'Textures': {'Runtime/Textures/Textures'}}
 
 def test_checkImageDir(dimzipfileINVALID: Path):
 	v = ValidationData([dimzipfileINVALID])
 	assert checkImageDir(v, 'Runtime/Textures', set(['.png'])) == (
 		['Runtime/Textures/DAZ 3D/ReadMe.txt'],
-		['Runtime/Textures/Image.jpg', 'Runtime/Textures/Image.bmp'],
+		['Runtime/Textures/Image.jpg', 'Runtime/Textures/Image.bmp', 'Runtime/Textures/Lossy.jpg'],
 		['Runtime/Textures/DirectXNormal.png', 'Runtime/Textures/Image.bmp'],
 		{'Runtime/Textures/Image.jpg': 'png'}
 	)

@@ -131,9 +131,6 @@ class ValidateRuntimeDirectory(ProductRuleset):
 		if single_color_image_files:
 			self._addIssue(issues.SingleColorImageIssue(single_color_image_files))
 
-		# TODO: check bump and displacement maps are 16+bit greyscale? normal maps 16+bit? ensure none are jpg?
-		# Check for normal map in wrong channel
-
 	@rule
 	def _checkTemplateImageFiles(self) -> None:
 		"""Check images files in Runtime/Templates."""
