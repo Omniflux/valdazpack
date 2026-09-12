@@ -111,5 +111,5 @@ def _profile() -> None:  # pyright: ignore[reportUnusedFunction]
 	pstats.Stats(profiler).dump_stats('stats.profiler')
  
 if __name__ == '__main__':
-	_profile()
-	# _main()
+	#_profile()
+	_main()
