@@ -24,6 +24,7 @@ class ValidateRuntimeLibrariesDirectory(ProductRuleset):
 			self._checkUnexpectedDirectoriesInLibrariesDirectory()
 			self._checkRootFiles()
 			self._checkValidCompressedFiles()
+			self._getContentTypeOfFiles()
 
 	@rule
 	def _checkExcessLibrariesDirectory(self) -> None:
