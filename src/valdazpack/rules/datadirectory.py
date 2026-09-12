@@ -105,7 +105,7 @@ class ValidateDataDirectory(ProductRuleset):
 			if vendor.is_dir:
 				vendorPath = vendor.make_path(_DATA_DIR)
 				for product in self.data.product_fs.scandir(vendorPath):
-					product_root_files = [entry.make_path(combine(vendor.name, product.name)) for entry in self.data.product_fs.scandir(vendorPath) if entry.is_file]
+					product_root_files.extend([entry.make_path(combine(vendor.name, product.name)) for entry in self.data.product_fs.scandir(vendorPath) if entry.is_file])
 
 		if product_root_files:
 			self._addIssue(issues.FilesInDataProductDirectoryIssue(product_root_files))
