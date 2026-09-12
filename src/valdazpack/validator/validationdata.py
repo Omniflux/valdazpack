@@ -36,8 +36,8 @@ class ValidationData:
 
 	Arguments:
 		product_path (list[pathlib.Path]): A list of files or directories making up the product to validate
-		dependencies_paths (list[pathlib.Path]): A list of files or directories the product may reference
-		                                         but that are not part of the product to validate
+		dependency_paths (list[pathlib.Path]): A list of files or directories the product may reference
+		                                       but that are not part of the product to validate
 		daz (bool): Validate as if this is a product distributed by Daz Productions, Inc
 		daz_original (bool): Validate as if this is a product produced by Daz Productions, Inc
 		poser (bool): Validate using rules for Poser content (experimental)
@@ -46,7 +46,7 @@ class ValidationData:
 	"""
 
 	class Issues:
-		"""Stores issues discovered during validaiton."""
+		"""Stores issues discovered during validation."""
 
 		def __init__(self) -> None:
 			self.package: list[PackageNotice | PackageWarning] = []
@@ -60,9 +60,9 @@ class ValidationData:
 			self.artists: set[str] = set()
 			self.stores: set[str] = set()
 
-	def __init__(self, product_paths: list[Path], dependencies_paths: list[Path] | None = None, daz: bool = False, daz_original: bool = False, poser: bool = False, dson_schema: bool = False, verbose: bool = False, debug: bool = False) -> None:
+	def __init__(self, product_paths: list[Path], dependency_paths: list[Path] | None = None, daz: bool = False, daz_original: bool = False, poser: bool = False, dson_schema: bool = False, verbose: bool = False, debug: bool = False) -> None:
 		self.product_paths = product_paths
-		self.dependency_paths = dependencies_paths
+		self.dependency_paths = dependency_paths
 		self.poser = poser
 		self.daz = daz or daz_original
 		self.daz_original = daz_original
@@ -72,7 +72,7 @@ class ValidationData:
 
 		self.product_fs_unwrapped = _create_merged_fs(product_paths)
 		self.product_fs = WrapCaseInsensitive(self.product_fs_unwrapped)
-		self.filesystem_unwrapped = _create_merged_fs((dependencies_paths or []) + product_paths)
+		self.filesystem_unwrapped = _create_merged_fs((dependency_paths or []) + product_paths)
 		self.filesystem = WrapCaseInsensitive(self.filesystem_unwrapped)
 		
 		self.packages = [Package(dfs) for fs in self.product_fs_unwrapped.iterate_fs() if (dfs := _get_unwrapped_fs(fs[1], DIMZipFS))]
